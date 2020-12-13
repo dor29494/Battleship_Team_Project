@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+
+    <script src="/primus/primus.js"></script>
+    <script> 
+       const primus = new Primus();
+      const $ = (s, p = document) => p.querySelector(s);
+
+      // uForm.onsubmit = (e) => {
+      //     e.preventDefault();
+      //     upper_bar.innerHTML = 
+      //       `<span> name: ${user_name.value} </span>`
+      //     user_name_copy = user_name.value;
+      //     user_name.value = '';
+      //   }
+
+      // lForm.onsubmit = (e) => {
+      //     e.preventDefault();
+      //     if (msg.value !== ''){
+      //       socket.emit('chat message', ([msg.value, user_name_copy]));
+      //       msg.value = '';
+      //     }
+      // };
+
+      // socket.on('chat message', ([msg,name])=>{
+      //   chat.innerHTML +=`<li>${name}: ${msg}</li>`
+      // });
+
+      // socket.on('connection', () => {
+      //   chat.innerHTML +=`<li> bot: a user connected </li>`
+      // });
+
+    </script>
+  </body>
+</html>
