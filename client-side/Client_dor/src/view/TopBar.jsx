@@ -7,7 +7,9 @@ const TopBar = ()=>{
 
     return(
 <Wrapper>
-    
+    <div>
+        Battleship Team Project
+    </div>
 </Wrapper>
 
 

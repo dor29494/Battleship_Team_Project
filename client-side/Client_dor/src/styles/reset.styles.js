@@ -4,9 +4,11 @@ const GlobalStyles = createGlobalStyle`
     html,
     body {
       height: 100%;
+   zoom: 90%;
     }
     html {
       font-size: 10px;
+  
     }
     body {
       font-size: 1.6rem;
