@@ -6,32 +6,58 @@
 
     <script src="/primus/primus.js"></script>
     <script> 
-       const primus = new Primus();
+      const { nanoid } = require('nanoid');
+      const primus = new Primus();
       const $ = (s, p = document) => p.querySelector(s);
+      const play = 'play';
+      const ready = 'ready';
+      const player_room = nanoid();
+      let player_board;
+      let other_player_board;
+      let player_turn;
 
-      // uForm.onsubmit = (e) => {
-      //     e.preventDefault();
-      //     upper_bar.innerHTML = 
-      //       `<span> name: ${user_name.value} </span>`
-      //     user_name_copy = user_name.value;
-      //     user_name.value = '';
-      //   }
+      // play button
+      const play_button = () => {
+        primus.write({ room: player_room, action: play });
+      }
 
-      // lForm.onsubmit = (e) => {
-      //     e.preventDefault();
-      //     if (msg.value !== ''){
-      //       socket.emit('chat message', ([msg.value, user_name_copy]));
-      //       msg.value = '';
-      //     }
-      // };
+      // ready button
+      const ready_button = () => {
+        if (other_player_board) {
+          primus.write({ room: player_room, action: ready, board: player_board });
+        }
+        else{
+          // activating random turn generator
+          primus.write({ room: player_room, action: ready, board: player_board, turn : "some turn"});
+        }
+      }
 
-      // socket.on('chat message', ([msg,name])=>{
-      //   chat.innerHTML +=`<li>${name}: ${msg}</li>`
-      // });
+      // onclick (on the grid)
+      const player_guess = () => {
+        // checking with the other_player_board if bulzai and return result to the server.
+        primus.write({ room: player_room, guess: "hit/miss... (sending the new array or position + value?)"});
+      }
 
-      // socket.on('connection', () => {
-      //   chat.innerHTML +=`<li> bot: a user connected </li>`
-      // });
+      primus.on('data', data => {
+        
+        // need to be solved (what is board?)
+        if (data === board) {
+          other_player_board = board;
+          // reactivating the grid.
+        }
+        else if (data === { board , turn }){
+          other_player_board = board;
+          player_turn = turn;
+        }
+        else if (data === guess){
+          // updating the board (array);
+        }
+
+
+
+
+
+      });
 
     </script>
   </body>

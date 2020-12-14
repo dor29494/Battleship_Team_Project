@@ -1,9 +1,7 @@
-// var app = require('express')();
 const Primus = require('primus');
 const Rooms = require('primus-rooms');
 const http = require('http');
 const fs = require('fs');
-const { nanoid } = require('nanoid');
 const log = require('@ajar/marker')
 
 const { PORT } = process.env;
@@ -22,26 +20,31 @@ primus.plugin('rooms', Rooms);
 
 primus.on('connection', spark => {
 
-  log.d('--> spark.id: ', spark.id);
-
   spark.on('data', (data = {}) => {
 
-    log.obj(data, '--> data:')
+    const { room, action, guess, message, board, turn } = data;
+    let player1;
+    let player2;
 
-    const { action, room, message, board, guess } = data
+    const play = 'play';
+    const ready = 'ready';
 
-    // players board
-    let player1
-    let player2
+    // data index: 
+    // action - play, ready
+    // room - the rooms id
+    // message - for optional chat
+    // board - to send playes boards to one another
+    // guess - the guesses of the players
 
-    log.magenta(`action: ${action}`)
-    log.yellow(`room: ${room}`)
-    log.info(`message: ${message}`)
+    // option for results: hit , miss , sink, win.
 
-    // play - means joining a room 
-    if (action === 'play') {
-      const roomId = nanoid();
-      spark.join(roomId, () => {
+    // option for indexes: sea , ship , miss, hit, sink.
+
+    // play - means joining a room.
+    if (action === play) {
+    
+      // const playerId = nanoid(); ???
+      spark.join(room, () => {
         // send message to this client
         // spark.write('you joined room ' + room);
         // send message to all clients except this one
@@ -49,15 +52,16 @@ primus.on('connection', spark => {
       });
     }
 
-    // ready - locks the clients board and save it on the server.
-    if (action === 'ready') {
-      // + if both board are saved - start the game and randomizing turns.
+    // ready - sends the players board to the other player.
+    if (action === ready) {
+      // + if both are ready - start the game.
       if (player1) {
-        player2 = board;
-        spark.write({ action: "start" });
+        player2 = ready;
+        spark.room(room).except(spark.id).write(board);
       }
       else {
-        player1 = board;
+        player1 = ready;
+        spark.room(room).except(spark.id).write({ board , turn });
       }
       // send message to this client
       // spark.write('you joined room ' + room);
@@ -65,20 +69,14 @@ primus.on('connection', spark => {
       // spark.room(room).except(spark.id).write(`${spark.id} joined room ${room}`);
     }
 
-    // shoots fired - checking if bulzai in the opponent's boad and returns result.
-    if (action === 'shots fired') {
-        board[guess.location] === "hit" ? 
-        spark.write({ action: "hit" }) :
-        spark.write({ action: "miss" });
+    // guess - passing players guess to the other one.
+    if ( guess ) { 
+      spark.room(room).except(spark.id).write(guess);
         // send message to this client
         // spark.write('you joined room ' + room);
         // send message to all clients except this one
         // spark.room(room).except(spark.id).write(`${spark.id} joined room ${room}`);
     }
-
-    // option for results: hit , miss , sink, win.
-
-    // option for indexes: sea , ship , miss, hit, sink.
     
     // leave - player disconnected.
     if (action === 'leave') {
@@ -90,14 +88,9 @@ primus.on('connection', spark => {
       });
     }
 
-    // // Send a message to a room
-    // if (message && room) {
-    //   log.magenta(`writing message to room  ${room}`);
+    // // Send a message. 
+    // if ( message ) {
     //   spark.room(room).write(message);
-    // }
-    // if (message && room === undefined) {
-    //   log.magenta(`writing message to all  ${message}`);
-    //   primus.write(message);
     // }
 
     // if (action === 'typing') {
