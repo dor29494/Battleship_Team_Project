@@ -55,7 +55,8 @@ const SINK = 'SINK';
 const AROUND_SINK = 'AROUND_SINK';
 
 const exmpBoard =
-    [[SEA, SHIPS[1].ship_parts[0], SHIPS[1].ship_parts[1], SHIPS[1].ship_parts[2], SEA, SEA, SEA, SEA, SEA, SEA], [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
+ [ 
+    [SEA, SHIPS[1].ship_parts[0], SHIPS[1].ship_parts[1], SHIPS[1].ship_parts[2], SEA, SEA, SEA, SEA, SEA, SEA], [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
@@ -65,7 +66,6 @@ const exmpBoard =
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA], 
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA]
 ]
-
 const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard) => {
     const new_SHIPS = { ...SHIPS };
     const new_board = [...board];
