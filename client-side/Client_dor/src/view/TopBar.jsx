@@ -10,6 +10,7 @@ const TopBar = ()=>{
     <div>
         Battleship Team Project
     </div>
+    
 </Wrapper>
 
 

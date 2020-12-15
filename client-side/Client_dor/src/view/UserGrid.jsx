@@ -20,7 +20,7 @@ const [abc_store , set_abc_store] = useState(['A','B','C','D','E','F','G','H','I
             {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
                 </AbcWrapper>
             <Grid>
-                {grid_array.map((xArr,Xindex) =><Pixel> id={Xindex,0}</Pixel> && xArr.map((yArr, Yindex) => <Pixel id={ Yindex,Xindex} value={Yindex} key={`g${Yindex}`} onClick={show}></Pixel>))}
+                {grid_array.map((xArr,Xindex) =><Pixel> id={Xindex}</Pixel> && xArr.map((yArr, Yindex) => <Pixel id={Xindex,Yindex} value={Yindex} key={`g${Yindex}`} onClick={show}>{Xindex}{Yindex}</Pixel>))}
                 {/* {grid_array.map((grid, index) => <Pixel id={ index} value={index} key={`g${index}`} onClick={show}></Pixel>)} */}
             </Grid>
            
