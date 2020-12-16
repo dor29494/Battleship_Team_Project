@@ -2,15 +2,12 @@ import React from "react"
 import styled from "styled-components"
 
 const TopBar = () => {
-
-
     return (
         <Wrapper>
             <div>
                 <h1>Battleship Team Project</h1>
-                <h3>120 players online!</h3>
+                <h3>10.4k players online!</h3>
             </div>
-
         </Wrapper>
 
 

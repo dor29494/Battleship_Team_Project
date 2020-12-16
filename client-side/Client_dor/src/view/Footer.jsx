@@ -21,7 +21,7 @@ export default Footer;
 const Wrapper = styled.div`
 
     position: absolute;
-    top: 80rem;
+    top: 85rem;
     buttom: 0;
     right: 0;
     left: 0;

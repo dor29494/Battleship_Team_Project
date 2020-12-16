@@ -7,8 +7,6 @@ import Footer from "./Footer"
 import {BsContext} from "../stateManager/stateManager"
 function App() {
   const {first_state,ships_array,grid_array,set_ships_array,set_grid_array} = useContext(BsContext);
-console.log(first_state)
-console.log(grid_array.length)
   return (
     <>
 
@@ -34,7 +32,7 @@ border-radius: 50%;
 `
 const GameWrapper = styled.div`
 margin-top: 9rem;
-width: 800px;
+width: 1200px;
 display: flex;
 justify-content: space-between;
 `

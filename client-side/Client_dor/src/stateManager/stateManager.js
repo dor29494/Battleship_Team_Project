@@ -70,7 +70,7 @@ const StateManager = ({ children }) => {
   const [grid_clicks, set_GridClicks] = useState({});
   const [grid_array, set_grid_array] = useState([
     [
-      SEA,
+      MISS,
       SHIPS[1].ship_parts[0],
       SHIPS[1].ship_parts[1],
       SHIPS[1].ship_parts[2],
@@ -82,13 +82,13 @@ const StateManager = ({ children }) => {
       SEA,
     ],
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, HIT, SEA, SEA, MISS, SEA, SEA, SEA, SEA, SEA],
+    [SEA, HIT, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, HIT, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SINK, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SINK, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SINK, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SINK, SEA, SEA, SEA, SEA, SEA],
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
   ]);
   const state = {
