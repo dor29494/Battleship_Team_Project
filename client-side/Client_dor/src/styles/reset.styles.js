@@ -4,6 +4,7 @@ const GlobalStyles = createGlobalStyle`
     html,
     body {
       height: 100%;
+      background: white;
    zoom: 90%;
     }
     html {
@@ -17,11 +18,7 @@ const GlobalStyles = createGlobalStyle`
       justify-content: center;
       align-items: center;
      
-      background: linear-gradient(
-        to bottom,
-        #064273 0%,
-        #7fcdff 100%
-      ); 
+
     }
     * {
       margin: 0;
