@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { BsContext } from "../stateManager/stateManager"
 // Last update - Dor
 const Pixel = (props) => {
-    let properties = props
+    let properties = props;
     // return <h1>none</h1>
     if (properties.status === 'SEA') {
         return (
@@ -54,7 +54,6 @@ const UserGrid = () => {
             <Grid>
                 {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel id={Xindex} value={Yindex} key={`g${Yindex}`} onClick={() => { show(Xindex, Yindex) }} status={pixelStatus(Xindex, Yindex)}></Pixel>))}
             </Grid>
-
         </Wrapper>
     )
 }
@@ -136,6 +135,13 @@ const Regularsquare = styled.div`
   border-color: #00FF41;
   width: 50px;
   height: 50px;
+  :hover {
+    background: #00FF41;
+    opacity: 0.5;
+  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Misshit = styled.div`
