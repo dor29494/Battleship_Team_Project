@@ -3,59 +3,70 @@ import styled from "styled-components"
 import { BsContext } from "../stateManager/stateManager"
 // Last update - Dor
 const Pixel = (props) => {
-    let properties = props;
-    // return <h1>none</h1>
-    if (properties.status === 'SEA') {
-        return (
-            <Regularsquare>c</Regularsquare>
-        )
-    }
-    else if (properties.status === 'MISS') {
-        return <Misshit>▪️</Misshit>
-    }
-    else if (properties.status === 'HIT' || properties.status === 'SINK') {
-        return <Shiphit>X</Shiphit>
-    }
-    else {
-        console.log("ELSE IS: ", properties.status)
-        return <Shippart></Shippart> }
-}
-
-const UserGrid = () => {
-    const { ships_array, set_ships_array, grid_array, set_grid_array, grid_clicks, set_grid_clicks } = useContext(BsContext)
-    const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
-    const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-    const show = (x, y) => {
-        if (!grid_clicks[x + y]) {
-            grid_clicks[x + y] = x + y;
-            console.log(grid_clicks)
-            console.log(x, y);
-            const PixelObj = {
-                x,
-                y
-            }
-            return PixelObj
-        }
-        // console.log(grid_clicks);
-
-    }
-    const pixelStatus = (x, y) => {
-        let obj = grid_array[x][y]
-        return obj.toString();
-    }
+  let properties = props;
+  // return <h1>none</h1>
+  if (properties.status === 'SEA') {
     return (
-        <Wrapper>Your Grid
-            <NumWrapper>
-                {num_store.map(num => <NumDiv>{num}</NumDiv>)}
-            </NumWrapper>
-            <AbcWrapper>
-                {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
-            </AbcWrapper>
-            <Grid>
-                {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel id={Xindex} value={Yindex} key={`g${Yindex}`} onClick={() => { show(Xindex, Yindex) }} status={pixelStatus(Xindex, Yindex)}></Pixel>))}
-            </Grid>
-        </Wrapper>
+      <Regularsquare onClick={() => { clickHandler(props.x, props.y) }}>c</Regularsquare>
     )
+  }
+  else if (properties.status === 'MISS') {
+    // return <Misshit>▪️</Misshit>
+    return <Misshit onClick={() => { clickHandler(props.x, props.y) }}>MISS</Misshit>
+  }
+  else if (properties.status === 'HIT' || properties.status === 'SINK') {
+    return <Shiphit onClick={() => { clickHandler(props.x, props.y) }}>X</Shiphit>
+  }
+  else {
+    return <Shippart onClick={() => { clickHandler(props.x, props.y) }}>E</Shippart>
+  }
+}
+const lockGrid = () => {
+  set_lock(true)
+}
+const clickHandler = (x, y) => {
+  if (!lock) {
+    console.log({ x, y })
+  }
+}
+const UserGrid = () => {
+  const { ships_array, set_ships_array, grid_array, set_grid_array, grid_clicks, set_grid_clicks } = useContext(BsContext)
+  const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
+  const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  const [lock, set_lock] = useState(false);
+  const show = (x, y) => {
+    if (!grid_clicks[x + y]) {
+      grid_clicks[x + y] = x + y;
+      console.log(grid_clicks)
+      console.log(x, y);
+      const PixelObj = {
+        x,
+        y
+      }
+      return PixelObj
+    }
+    // console.log(grid_clicks);
+
+  }
+
+  const pixelStatus = (x, y) => {
+    let obj = grid_array[x][y].value
+    // return obj.toString();
+    return obj;
+  }
+  return (
+    <Wrapper>Your Grid
+      <NumWrapper>
+        {num_store.map(num => <NumDiv>{num}</NumDiv>)}
+      </NumWrapper>
+      <AbcWrapper>
+        {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
+      </AbcWrapper>
+      <Grid>
+        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} id={Xindex} value={Yindex} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)} x={Xindex} y={Yindex}></Pixel>))}
+      </Grid>
+    </Wrapper>
+  )
 }
 export default UserGrid
 
@@ -98,9 +109,9 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 justify-items: center;
-position: absolute;
+position: absolute;  
 left: 230px;
-top: 345px;
+top: 310px;
 `
 const AbcDiv = styled.div`
 flex-basis: 10%;

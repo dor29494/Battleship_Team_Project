@@ -1,131 +1,5 @@
-import React, { useState, useEffect } from "react";
-
-const BsContext = React.createContext();
-const { Provider } = BsContext;
-const MISS = 'MISS';
-const HIT = 'HIT';
-const SINK = 'SINK';
-const AROUND_SINK = 'AROUND_SINK';
 const VERTICAL = 'vertical';
 const HORIZONTAL = 'horizontal'
-const SEA = 'SEA';
-const SHIP_PART = 'SHIP_PART';
-
-const StateManager = ({ children }) => {
-  useEffect(() => {
-    let { board: test } = place_ships(initial_game_board(),initial_ships());
-    console.log("TEST: ", test)
-    set_grid_array(test)
-  },[])
-  const [first_state, set_first_state] = useState("hello");
-  const [SHIPS, set_SHIPS] = useState(
-    [
-      {
-        name: "S1",
-        length: 3,
-        ship_parts: [
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 1,
-            is_hit: false,
-          },
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 2,
-            is_hit: false,
-          },
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 3,
-            is_hit: false,
-          },
-        ],
-        direction: VERTICAL,
-      },
-      {
-        name: "S2",
-        ship_parts: [
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 1,
-            is_hit: false,
-          },
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 2,
-            is_hit: false,
-          },
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 3,
-            is_hit: false,
-          },
-        ],
-        length: 3,
-        direction: HORIZONTAL,
-        is_sunk: false,
-      },
-    ]
-);
-  const [grid_clicks, set_GridClicks] = useState({});
-  const [grid_array, set_grid_array] = useState([]);
-  const state = {
-    first_state,
-    SHIPS,
-    grid_array,
-    grid_clicks,
-  };
-  const action = {
-    set_first_state,
-    set_SHIPS,
-    set_grid_array,
-    set_GridClicks,
-  };
-
-  return <Provider value={{ ...state, ...action }}>{children}</Provider>;
-};
-
-export { BsContext, StateManager };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 const random_boolean = () => Math.random() < 0.5;
 
@@ -133,7 +7,7 @@ const RUSSIAN = 'RUSSIAN';
 const FRENCH = 'FRENCH';
 
 // const SEA = 'SEA';
-
+const SEA = 'SEA';
 const SHIPS = [{
     name: 'S1',
     length: 3,
@@ -182,10 +56,23 @@ const SHIPS = [{
     direction: HORIZONTAL,
     is_sunk: false
 },];
+const MISS = 'MISS';
+const HIT = 'HIT';
+const SINK = 'SINK';
+const AROUND_SINK = 'AROUND_SINK';
 
-
-
-
+const exmpBoard =
+    [[SEA, SHIPS[1].ship_parts[0], SHIPS[1].ship_parts[1], SHIPS[1].ship_parts[2], SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
+    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA]
+    ]
 
 const update_board_square_around_sink = (board, x, y) => {
     const new_board = [...board];
@@ -325,7 +212,7 @@ const inspect_hit = (board, x, y) => {
     if (board[x][y].value === SEA) {
         return MISS;
     }
-    else if(board[x][y].value === SHIP_PART){
+    else if(ship_index in board[x][y]){
         return HIT;
     }
     return `err in index x:${x} y:${y}`;
@@ -348,7 +235,7 @@ const place_ships = (board, ships) => {
 
         re_place_ship: while (needs_placing) {
             
-            if (ship.direction === HORIZONTAL) {
+            if (ship.direction = HORIZONTAL) {
                 ship_head_x = random(9);
                 ship_head_y = random(9 - ship.length);
                 
@@ -363,18 +250,15 @@ const place_ships = (board, ships) => {
                         ship_index: index_of_ship,
                         x: ship_head_x,
                         y: ship_head_y + i,
-                        is_hit: false,
-                        value: SHIP_PART
+                        is_hit: false
                     }
 
                     ship.ship_parts.push(new_ship_part);
 
                     new_board[ship_head_x][ship_head_y + i] = new_ship_part;
                 }
-                console.log(index_of_ship);
             }
-
-            if (ship.direction === VERTICAL) {
+            if (ship.direction = VERTICAL) {
                 ship_head_x = random(9 - ship.length);
                 ship_head_y = random(9);
                 for (let i = 0; i < ship.length; i++) {
@@ -388,8 +272,7 @@ const place_ships = (board, ships) => {
                         ship_index: index_of_ship,
                         x: ship_head_x + i,
                         y: ship_head_y,
-                        is_hit: false,
-                        value: SHIP_PART
+                        is_hit: false
                     }
 
                     ship.ship_parts.push(new_ship_part);
@@ -397,7 +280,6 @@ const place_ships = (board, ships) => {
                     new_board[ship_head_x + i][ship_head_y] = new_ship_part;
 
                 }
-                console.log(index_of_ship);
             }
             // console.log(new_board);
             needs_placing = false;
@@ -410,7 +292,7 @@ const place_ships = (board, ships) => {
 
 
 const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], []]) => {
-    const new_board = [...board]
+    new_board = [...board]
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
             new_board[j].push({
@@ -546,14 +428,4 @@ const initial_ships = (game_type = RUSSIAN) => {
         return 'err, game type is non existing/unsuported'
 }
 
-// console.log( place_ships(initial_game_board(),initial_ships()));
-
-
-
-
-
-
-
-
-
-
+console.log( place_ships(initial_game_board(),initial_ships()));
