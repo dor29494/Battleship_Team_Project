@@ -4,6 +4,7 @@ const GlobalStyles = createGlobalStyle`
     html,
     body {
       height: 100%;
+      background: #0D0208;
    zoom: 90%;
     }
     html {
@@ -16,12 +17,10 @@ const GlobalStyles = createGlobalStyle`
       display: flex;
       justify-content: center;
       align-items: center;
+      color: white;
+      font-size: 25px;
      
-      background: linear-gradient(
-        to bottom,
-        #064273 0%,
-        #7fcdff 100%
-      ); 
+
     }
     * {
       margin: 0;
