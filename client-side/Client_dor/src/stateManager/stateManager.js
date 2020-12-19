@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {place_ships,initial_game_board,initial_ships} from "../view/guy"
 const BsContext = React.createContext();
 const { Provider } = BsContext;
 const MISS = 'MISS';
@@ -9,6 +10,7 @@ const VERTICAL = 'vertical';
 const HORIZONTAL = 'horizontal'
 const SEA = 'SEA';
 const SHIP_PART = 'SHIP_PART';
+
 
 const StateManager = ({ children }) => {
   useEffect(() => {
