@@ -13,7 +13,6 @@ const AROUND_SINK = 'AROUND_SINK';
 const SHIP_PART = 'SHIP_PART';
 const AROUND_SHIP = 'AROUND_SHIP';
 
-
 const update_board_square_around_sink = (board, x, y) => {
     const new_board = [...board];
     if (new_board[x][y].value !== MISS)

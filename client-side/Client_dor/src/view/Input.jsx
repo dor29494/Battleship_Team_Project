@@ -7,8 +7,9 @@ const PlayFunc = ()=>{
  set_room_id(play_button())
 }
 // input-value
-const InputFunc = (// input-value
+const InputFunc = (room
     )=>{
+      console.log(room)
     // join_button(input-value)
 }
 
@@ -16,7 +17,7 @@ const InputFunc = (// input-value
    <MiniWrapper>
    <PlayButton onClick={PlayFunc}>Play</PlayButton>
       <UrlHolder>{room_id}</UrlHolder>
-      <JoinButton onClick={InputFunc(room_id)}>Join</JoinButton>
+      <JoinButton onClick={()=>{InputFunc(room_id)}}>Join</JoinButton>
         <InputHolder/>
         <ReadyButton>Ready</ReadyButton>
 
