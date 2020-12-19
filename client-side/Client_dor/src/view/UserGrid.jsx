@@ -7,52 +7,58 @@ const Pixel = (props) => {
   // return <h1>none</h1>
   if (properties.status === 'SEA') {
     return (
-      <Regularsquare onClick={() => { clickHandler(props.x, props.y) }}>c</Regularsquare>
+      <Regularsquare onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>c</Regularsquare>
     )
   }
   else if (properties.status === 'MISS') {
     // return <Misshit>▪️</Misshit>
-    return <Misshit onClick={() => { clickHandler(props.x, props.y) }}>MISS</Misshit>
+    return <Misshit onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>MISS</Misshit>
   }
   else if (properties.status === 'HIT' || properties.status === 'SINK') {
-    return <Shiphit onClick={() => { clickHandler(props.x, props.y) }}>X</Shiphit>
+    return <Shiphit onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>X</Shiphit>
   }
   else {
-    return <Shippart onClick={() => { clickHandler(props.x, props.y) }}>E</Shippart>
+    return <Shippart onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>E</Shippart>
   }
 }
 const lockGrid = () => {
   set_lock(true)
 }
-const clickHandler = (x, y) => {
-  if (!lock) {
-    console.log({ x, y })
-  }
-}
+
 const UserGrid = () => {
   const { ships_array, set_ships_array, grid_array, set_grid_array, grid_clicks, set_grid_clicks } = useContext(BsContext)
   const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   const [lock, set_lock] = useState(false);
-  const show = (x, y) => {
-    if (!grid_clicks[x + y]) {
-      grid_clicks[x + y] = x + y;
-      console.log(grid_clicks)
-      console.log(x, y);
-      const PixelObj = {
-        x,
-        y
-      }
-      return PixelObj
-    }
-    // console.log(grid_clicks);
-
-  }
+  const [lockArray, set_lockArray] = useState([]);
 
   const pixelStatus = (x, y) => {
     let obj = grid_array[x][y].value
     // return obj.toString();
     return obj;
+  }
+  const ClickHandler = (x, y, lock) => {
+    if (!lock) {
+      if (!lockedButton(x, y)) {
+        console.log({ x, y })
+        lockButton(x, y)
+      }
+      else {
+        console.log("locked button")
+      }
+    }
+    else { console.log("locked grid!") }
+  }
+  const lockButton = (x, y) => {
+    let itemLocked = { x, y }
+    set_lockArray([...lockArray, itemLocked])
+  }
+  const lockedButton = (x, y) => {
+    let itemLocked = { x, y }
+    for (let item of lockArray) {
+      if (item.x === x && item.y === y) return true
+    }
+    return false
   }
   return (
     <Wrapper>Your Grid
@@ -63,7 +69,7 @@ const UserGrid = () => {
         {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
       </AbcWrapper>
       <Grid>
-        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} id={Xindex} value={Yindex} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)} x={Xindex} y={Yindex}></Pixel>))}
+        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)} x={Xindex} y={Yindex} clickhandler={ClickHandler}></Pixel>))}
       </Grid>
     </Wrapper>
   )
