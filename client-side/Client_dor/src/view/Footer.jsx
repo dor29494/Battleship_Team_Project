@@ -6,11 +6,7 @@ const Footer = () => {
 
     return (
         <Wrapper>
-            <ButtonsWrapper>
-                <Randomgrid> Random🔄 </Randomgrid>
-                <Resetgrid> Reset👈 </Resetgrid>
-                <Playbtn>Play</Playbtn>
-            </ButtonsWrapper>
+            input
         </Wrapper>
 
 
