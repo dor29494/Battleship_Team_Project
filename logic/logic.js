@@ -5,75 +5,14 @@ const random_boolean = () => Math.random() < 0.5;
 
 const RUSSIAN = 'RUSSIAN';
 const FRENCH = 'FRENCH';
-
-// const SEA = 'SEA';
 const SEA = 'SEA';
-const SHIPS = [{
-    name: 'S1',
-    length: 3,
-    ship_parts: [{
-        ship_index: 0,
-        x: 2,
-        y: 1,
-        is_hit: false
-    },
-    {
-        ship_index: 0,
-        x: 2,
-        y: 2,
-        is_hit: false
-    },
-    {
-        ship_index: 0,
-        x: 2,
-        y: 3,
-        is_hit: false
-    }],
-    direction: VERTICAL,
-    is_sunk: false
-},
-{
-    name: 'S2',
-    ship_parts: [{
-        ship_index: 1,
-        x: 0,
-        y: 1,
-        is_hit: false
-    },
-    {
-        ship_index: 1,
-        x: 0,
-        y: 2,
-        is_hit: false
-    },
-    {
-        ship_index: 1,
-        x: 0,
-        y: 3,
-        is_hit: false
-    }],
-    length: 3,
-    direction: HORIZONTAL,
-    is_sunk: false
-},];
 const MISS = 'MISS';
 const HIT = 'HIT';
 const SINK = 'SINK';
 const AROUND_SINK = 'AROUND_SINK';
 const SHIP_PART = 'SHIP_PART';
 const AROUND_SHIP = 'AROUND_SHIP';
-const exmpBoard =
-    [[SEA, SHIPS[1].ship_parts[0], SHIPS[1].ship_parts[1], SHIPS[1].ship_parts[2], SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
-    [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA]
-    ]
+
 
 const update_board_square_around_sink = (board, x, y) => {
     const new_board = [...board];
@@ -226,7 +165,7 @@ const update_board_around_a_ship = (board, ship, new_value) => {
     return new_board
 }
 
-const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) => {
+export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) => {
     let new_SHIPS = { ...ships };
     let new_board = [...board];
     new_SHIPS[ship_index].ship_parts.filter((part) => part.x === x && part.y === y)[0].is_hit = true;
@@ -318,7 +257,7 @@ const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) =>
 
 }
 
-const inspect_hit = (board, x, y) => {
+export const inspect_hit = (board, x, y) => {
     if (board[x][y].value === SEA) {
         return MISS;
     }
@@ -328,13 +267,13 @@ const inspect_hit = (board, x, y) => {
     return `err in index x:${x} y:${y}`;
 }
 
-const update_board_miss = (board, x, y) => {
+export const update_board_miss = (board, x, y) => {
     const new_board = [...board];
     new_board[x][y].value = MISS;
     return new_board;
 }
 
-const place_ships = (board, ships) => {
+export const place_ships = (board, ships) => {
 
 
     let new_board = [...board];
@@ -400,17 +339,17 @@ const place_ships = (board, ships) => {
                 console.log(index_of_ship);
             }
             // console.log(new_board);
+            new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);
             needs_placing = false;
 
         }
-        new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);
     });
 
     return { board: new_board, ships: new_ships };
 }
 
 
-const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], []]) => {
+export const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], []]) => {
     const new_board = [...board]
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
@@ -428,7 +367,7 @@ const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], []]) =>
 }
 
 
-const initial_ships = (game_type = RUSSIAN) => {
+export const initial_ships = (game_type = RUSSIAN) => {
 
     if (game_type === RUSSIAN) {
         return [{
