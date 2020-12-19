@@ -78,7 +78,7 @@ justify-content: center;
 justify-items: center;
 position: absolute;
 left: 930px;
-top: 345px;
+top: 310px;
 `
 const AbcDiv = styled.div`
 flex-basis: 10%;
