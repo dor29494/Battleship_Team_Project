@@ -61,6 +61,7 @@ const HIT = 'HIT';
 const SINK = 'SINK';
 const AROUND_SINK = 'AROUND_SINK';
 const SHIP_PART = 'SHIP_PART';
+const AROUND_SHIP = 'AROUND_SHIP';
 const exmpBoard =
     [[SEA, SHIPS[1].ship_parts[0], SHIPS[1].ship_parts[1], SHIPS[1].ship_parts[2], SEA, SEA, SEA, SEA, SEA, SEA],
     [SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA, SEA],
@@ -81,60 +82,156 @@ const update_board_square_around_sink = (board, x, y) => {
     return new_board;
 }
 
-const update_board_around_sink = (board, ship) => {
-    if (ship.direction = HORIZONTAL){
+const update_board_square_around_ship = (board, x, y) => {
+    const new_board = [...board];
+    new_board[x][y].around_ship = true;
+    return new_board;
+}
+
+const update_board_around_a_ship = (board, ship, new_value) => {
+    let new_board = [...board];
+    const updater = (what_to_update, x, y) => {
+        if (what_to_update === AROUND_SINK) {
+            new_board = update_board_square_around_sink(board, x, y);
+        }
+        else if (what_to_update === AROUND_SHIP) {
+            new_board = update_board_square_around_ship(board, x, y);
+        }
+    }
+    // updater(new_value, x, y)
+    if (ship.direction = HORIZONTAL) {
         switch (ship.ship_parts[0].x) {
             case 0:
                 switch (ship.ship_parts[0].y) {
                     case 0:
-                        exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                        }
                         break;
                     case 9:
-                        exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                        }
                         break;
-    
+
                     default:
-                        exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
-                        exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                        }
                         break;
                 }
                 break;
-    
+
             case 9:
                 switch (ship.ship_parts[0].y) {
                     case 0:
-                        exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
-    
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+
                         break;
                     case 9:
-                        exmpBoard = update_board_square_around_sink(board, (x - 1), (y - 1));
-    
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+
                         break;
-    
+
                     default:
-                        exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
-                        exmpBoard = update_board_square_around_sink(board, (xx - 1), (y - 1));
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
                         break;
                 }
                 break;
-    
+
             default:
-                exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
-                exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
-                exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
-                exmpBoard = update_board_square_around_sink(board, (x - 1), (y - 1));
-    
+                switch (ship.ship_parts[0].y) {
+                    case 0:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+                        break;
+                    case 9:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+                        break;
+
+                    default: {
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                            }
+                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+                        break;
+                    }
+                }
                 break;
         }
     }
+    return new_board
 }
 
 const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) => {
-    const new_SHIPS = { ...ships };
-    const new_board = [...board];
+    let new_SHIPS = { ...ships };
+    let new_board = [...board];
     new_SHIPS[ship_index].ship_parts.filter((part) => part.x === x && part.y === y)[0].is_hit = true;
 
-    const is_ship_sunk = true;
+    let is_ship_sunk = true;
     for (const ship_part of new_SHIPS[ship_index].ship_parts) {
         if (!ship_part.is_hit)
             is_ship_sunk = false;
@@ -142,11 +239,11 @@ const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) =>
 
     if (is_ship_sunk) {
         new_SHIPS[ship_index].is_sunk = is_ship_sunk;
-        new_SHIPS = update_board_around_sink(new_board, new_SHIPS)
+        new_SHIPS = update_board_around_a_ship(new_board, new_SHIPS[ship_index], AROUND_SINK);
 
     }
 
-    const is_win = true;
+    let is_win = true;
     for (const ship of new_SHIPS) {
         if (!ship.is_sunk)
             is_win = false;
@@ -158,15 +255,15 @@ const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) =>
         case 0:
             switch (y) {
                 case 0:
-                    exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
                     break;
                 case 9:
-                    exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
                     break;
 
                 default:
-                    exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
-                    exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
                     break;
             }
             break;
@@ -174,26 +271,39 @@ const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) =>
         case 9:
             switch (y) {
                 case 0:
-                    exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
 
                     break;
                 case 9:
-                    exmpBoard = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
 
                     break;
 
                 default:
-                    exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
-                    exmpBoard = update_board_square_around_sink(board, (xx - 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
                     break;
             }
             break;
 
         default:
-            exmpBoard = update_board_square_around_sink(board, (x + 1), (y + 1));
-            exmpBoard = update_board_square_around_sink(board, (x + 1), (y - 1));
-            exmpBoard = update_board_square_around_sink(board, (x - 1), (y + 1));
-            exmpBoard = update_board_square_around_sink(board, (x - 1), (y - 1));
+            switch (y) {
+                case 0:
+                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    break;
+                case 9:
+                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    break;
+
+                default:
+                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    break;
+            }
 
             break;
     }
@@ -212,7 +322,7 @@ const inspect_hit = (board, x, y) => {
     if (board[x][y].value === SEA) {
         return MISS;
     }
-    else if(board[x][y].value === SHIP_PART){
+    else if (board[x][y].value === SHIP_PART) {
         return HIT;
     }
     return `err in index x:${x} y:${y}`;
@@ -226,21 +336,23 @@ const update_board_miss = (board, x, y) => {
 
 const place_ships = (board, ships) => {
 
-    const new_board = [... board];
-    const new_ships = [... ships];
+
+    let new_board = [...board];
+    let new_ships = [...ships];
     new_ships.forEach((ship, index_of_ship) => {
         let needs_placing = true;
         let ship_head_x = null;
         let ship_head_y = null;
 
         re_place_ship: while (needs_placing) {
-            
+
+            // if (ship.direction === VERTICAL) {
             if (ship.direction === HORIZONTAL) {
                 ship_head_x = random(9);
                 ship_head_y = random(9 - ship.length);
-                
+
                 for (let i = 0; i < ship.length; i++) {
-                    
+
                     if (new_board[ship_head_x][ship_head_y + i].around_ship !== false) {
                         continue re_place_ship;
                     }
@@ -261,6 +373,7 @@ const place_ships = (board, ships) => {
                 console.log(index_of_ship);
             }
 
+            // if (ship.direction === HORIZONTAL) {
             if (ship.direction === VERTICAL) {
                 ship_head_x = random(9 - ship.length);
                 ship_head_y = random(9);
@@ -290,9 +403,10 @@ const place_ships = (board, ships) => {
             needs_placing = false;
 
         }
+        new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);
     });
 
-    return {board: new_board, ships: new_ships};
+    return { board: new_board, ships: new_ships };
 }
 
 
@@ -433,4 +547,4 @@ const initial_ships = (game_type = RUSSIAN) => {
         return 'err, game type is non existing/unsuported'
 }
 
-console.log( place_ships(initial_game_board(),initial_ships()));
+console.log(place_ships(initial_game_board(), initial_ships()));
