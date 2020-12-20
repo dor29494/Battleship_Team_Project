@@ -1,3 +1,5 @@
+import { version } from "react";
+
 const VERTICAL = 'vertical';
 const HORIZONTAL = 'horizontal'
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -12,6 +14,7 @@ const SINK = 'SINK';
 const AROUND_SINK = 'AROUND_SINK';
 const SHIP_PART = 'SHIP_PART';
 const AROUND_SHIP = 'AROUND_SHIP';
+
 
 const update_board_square_around_sink = (board, x, y) => {
     const new_board = [...board];
@@ -154,6 +157,130 @@ const update_board_around_a_ship = (board, ship, new_value) => {
                             }
                             updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
                             updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                        }
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+    if (ship.direction = VERTICAL) {
+        switch (ship.ship_parts[0].x) {
+            case 0:
+                switch (ship.ship_parts[0].y) {
+                    case 0:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                        }
+                        break;
+                    case 9:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                        }
+                        break;
+
+                    default:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                        }
+                        break;
+                }
+                break;
+
+            case 9:
+                switch (ship.ship_parts[0].y) {
+                    case 0:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                        }
+
+                        break;
+                    case 9:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                        }
+
+                        break;
+
+                    default:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                        }
+                        break;
+                }
+                break;
+
+            default:
+                switch (ship.ship_parts[0].y) {
+                    case 0:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
+                        }
+                        break;
+                    case 9:
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                        }
+                        break;
+
+                    default: {
+                        for (let i = 0; i < ship.length; i++) {
+                            if (i === 0) {
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
+                            }
+                            if (i === ship.length - 1) {
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
+                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
+                            }
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
+                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
                         }
                         break;
                     }
