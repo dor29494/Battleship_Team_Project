@@ -1,64 +1,79 @@
 <!doctype html>
 <html>
-  <head>
-  </head>
-  <body>
 
-    <script src="/primus/primus.js"></script>
-    <script> 
-      const { nanoid } = require('nanoid');
-      const primus = new Primus();
-      const $ = (s, p = document) => p.querySelector(s);
-      const play = 'play';
-      const ready = 'ready';
-      const player_room = nanoid();
-      let player_board;
-      let other_player_board;
-      let player_turn;
+<head>
+</head>
 
-      // play button
-      const play_button = () => {
-        primus.write({ room: player_room, action: play });
+<body>
+
+  <script src="/primus/primus.js"></script>
+  <!-- <script>
+    const { nanoid } = require('nanoid');
+    const primus = new Primus();
+    const $ = (s, p = document) => p.querySelector(s);
+    // const join_input = $('.')
+    const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
+    const play = 'play';
+    const ready = 'ready';
+    let player_room = nanoid();
+    let player_board;
+    let other_player_board;
+    let first_turn;
+
+    // play button
+    const play_button = () => {
+      // present the player_room to the user (so he can send it to he's friend).
+      primus.write({ room: player_room, action: play });
+    }
+
+    // should have an input where the player past the room id inside it.
+    const join_button = () => {
+      // player_room = join_input.value;
+      primus.write({ room: player_room, action: play });
+    }
+
+    // ready button
+    const ready_button = () => {
+      if (other_player_board) {
+        primus.write({ room: player_room, action: ready, board: player_board });
       }
-
-      // ready button
-      const ready_button = () => {
-        if (other_player_board) {
-          primus.write({ room: player_room, action: ready, board: player_board });
-        }
-        else{
-          // activating random turn generator
-          primus.write({ room: player_room, action: ready, board: player_board, turn : "some turn"});
-        }
+      else {
+        // activating random turn generator
+        const turn_generator = randomize(0, 1);
+        turn_generator === 0 ? first_turn === true : first_turn === false;
+        primus.write({ room: player_room, action: ready, board: player_board, turn: !first_turn });
       }
+    }
 
-      // onclick (on the grid)
-      const player_guess = () => {
-        // checking with the other_player_board if bulzai and return result to the server.
-        primus.write({ room: player_room, guess: "hit/miss... (sending the new array or position + value?)"});
+    // onclick (on the grid)
+    const player_guess = () => {
+      // checking with the other_player_board if bulzai and send result to the server.
+      primus.write({ room: player_room, guess: "hit/miss... (sending the new array or position + value?)" });
+      // if guess = miss => locking the grid.
+    }
+
+    primus.on('data', data => {
+      // primus.on('data', (data = {}) => {
+      //   const { room, action, guess, message, board, turn } = data;
+
+      if (board in data && turn in data) {
+        other_player_board = data.board;
+        player_turn = data.turn;
       }
+      else if (board in data) {
+        // if (board) {
+        other_player_board = data.board;
+      }
+      else if (ready_to_start in data && first_turn) {
+        // reactivating the grid.
+      }
+      else if (guess in data) {
+        // updating the board (array).
+        // if guess = miss => reactivating the grid.
+      }
+    });
 
-      primus.on('data', data => {
-        
-        // need to be solved (what is board?)
-        if (data === board) {
-          other_player_board = board;
-          // reactivating the grid.
-        }
-        else if (data === { board , turn }){
-          other_player_board = board;
-          player_turn = turn;
-        }
-        else if (data === guess){
-          // updating the board (array);
-        }
+  </script> -->
+</body>
 
-
-
-
-
-      });
-
-    </script>
-  </body>
 </html>
