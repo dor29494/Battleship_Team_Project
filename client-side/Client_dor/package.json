@@ -5,7 +5,9 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "nanoid": "^3.1.20",
     "polished": "4.0.4",
+    "primus-client": "^7.3.4",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-scripts": "4.0.1",
