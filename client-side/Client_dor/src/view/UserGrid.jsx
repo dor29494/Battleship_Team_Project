@@ -62,12 +62,13 @@ const UserGrid = () => {
   }
   return (
     <Wrapper>Your Grid
-      <NumWrapper>
+      {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
+      {/* <NumWrapper>
         {num_store.map(num => <NumDiv>{num}</NumDiv>)}
       </NumWrapper>
       <AbcWrapper>
         {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
-      </AbcWrapper>
+      </AbcWrapper> */}
       <Grid>
         {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)} x={Xindex} y={Yindex} clickhandler={ClickHandler}></Pixel>))}
       </Grid>

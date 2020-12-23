@@ -23,12 +23,13 @@ return PixelObj
 
     return (
         <Wrapper>Your Grid
-                <NumWrapper>
-            {num_store.map(num => <NumDiv>{num}</NumDiv>)}
-                </NumWrapper>
-            <AbcWrapper>
-            {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
-                </AbcWrapper>
+            {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
+      {/* <NumWrapper>
+        {num_store.map(num => <NumDiv>{num}</NumDiv>)}
+      </NumWrapper>
+      <AbcWrapper>
+        {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
+      </AbcWrapper> */}
             <Grid>
                 {grid_array.map((xArr,Xindex) => xArr.map((yArr, Yindex) => <Pixel id={Xindex} value={Yindex} key={`g${Yindex}`} onClick={()=>{show(Xindex,Yindex)}}>{Xindex}{Yindex}</Pixel>))}
             </Grid>

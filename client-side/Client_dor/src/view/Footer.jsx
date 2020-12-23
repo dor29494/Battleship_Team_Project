@@ -6,7 +6,7 @@ const Footer = () => {
 
     return (
         <Wrapper>
-            input
+            
         </Wrapper>
 
 

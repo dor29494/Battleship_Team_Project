@@ -63,13 +63,14 @@ function App() {
         <Input sendChat={sendChat} socket={socket} />
         <OppnentGrid>
         </OppnentGrid>
-        <Footer />
       </GameWrapper>
+        <Footer />
     </>
   );
 }
 export default App;
 const ShapedBackground = styled.div`
+
 background: #06bcfb;
 background-image: linear-gradient(315deg, #06bcfb 0%, #4884ee 74%);
 height: 900px;
@@ -79,8 +80,10 @@ border-radius: 50%;
 
 `
 const GameWrapper = styled.div`
-margin-top: 9rem;
-width: 1200px;
 display: flex;
 justify-content: space-between;
+max-width: 800px
+border: 3px yellow solid;
+margin-top: 10rem;
+
 `
