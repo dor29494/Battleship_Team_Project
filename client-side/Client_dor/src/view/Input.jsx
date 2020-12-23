@@ -1,32 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-const Input = () => {
-const [room_id,set_room_id] = useState("");
-console.log(room_id)
-const PlayFunc = ()=>{
- set_room_id(play_button())
+// import { play_button, join_button, ready_button, player_guess } from '../sockets/socket-client-side'
+const Input = (props) => {
+  const [room_id, set_room_id] = useState('');
+  const [inputValue, set_inputValue] = useState('');
+  useEffect(() => { 
+    setTimeout(() => {
+      set_inputValue(props.socket.current.id);
+    }, 1000);
+  }, [])
+  const PlayFunc = () => {
+    console.log("PLAY BUTTON ", play_button())
+    set_room_id(play_button())
+  }
+  // input-value
+  const inputEl = useRef();
+  const InputFunc = () => {
+    join_button(inputEl.current.value)
+  }
+const submitFunc = (inputEl) => {
+  console.log("SUBMIT WITH THIS ROOM: ", inputEl.value)
+  
 }
-// input-value
-const InputFunc = (room
-    )=>{
-      console.log(room)
-    // join_button(input-value)
+const set_inputValue_ = (item) => {
+  console.log("***** ", item)
 }
-
   return (
-   <MiniWrapper>
-   <PlayButton onClick={PlayFunc}>Play</PlayButton>
+    <MiniWrapper onSubmit={() => submitFunc(inputEl)}>
+      <PlayButton onClick={() => PlayFunc(props.roomtojoin)}>Play</PlayButton>
       <UrlHolder>{room_id}</UrlHolder>
-      <JoinButton onClick={()=>{InputFunc(room_id)}}>Join</JoinButton>
-        <InputHolder/>
-        <ReadyButton>Ready</ReadyButton>
-
- </MiniWrapper>
-  )}
+      <JoinButton onClick={() => props.sendChat(props.socket, inputEl.current.value) }>Join</JoinButton>
+      <InputHolder value={inputValue} ref={inputEl} onChange={() => set_inputValue(inputEl.current.value || props.socket.current.id)} />
+      <ReadyButton>Ready</ReadyButton>
+    </MiniWrapper>
+  )
+}
 
 export default Input;
 
-const MiniWrapper = styled.div`
+const MiniWrapper = styled.form`
 display:flex;
 flex-direction: column;
 // border: 2px black solid;
@@ -103,7 +115,8 @@ const InputHolder = styled.input`
     border: tomato 2px solid;
   }
 `;
-const JoinButton = styled.div` 
+const JoinButton = styled.div`
+display: ${inputValue => inputValue ? 'flex' : 'none'}
 font-family: "Expletus Sans";
 text-align: left;
 font-size: 2rem;

@@ -15,7 +15,7 @@ const SHIP_PART = 'SHIP_PART';
 const StateManager = ({ children }) => {
   useEffect(() => {
     let { board: test } = place_ships(initial_game_board(),initial_ships());
-    console.log("TEST: ", test)
+    // console.log("TEST: ", test)
     set_grid_array(test)
   },[])
   const [first_state, set_first_state] = useState("hello");

@@ -24,7 +24,7 @@ let example_guess;
 const play_button = () => {
     primus.write({ room: player_room, action: play });
 
-    // return player_room;
+    return player_room;
     // present the player_room to the user (so he can send it to he's friend).
 }
 
@@ -87,9 +87,10 @@ const print = () => console.log(first_turn);
 
 setTimeout(print, 15000);
 
-    // module.exports = {
-    //   play_button,
-    //   join_button,
-    //   ready_button,
-    //   player_guess
-    // }
+    module.exports = {
+      play_button,
+      join_button,
+      ready_button,
+      player_guess
+    }
+
