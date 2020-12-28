@@ -1,0 +1,37 @@
+{
+  "name": "ticker-start",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "src/index.js",
+  "dependencies": {
+    "@ajar/marker": "^1.2.3",
+    "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "nanoid": "^3.1.20",
+    "polished": "4.0.4",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-scripts": "4.0.1",
+    "socket.io-client": "^3.0.4",
+    "sockjs": "^0.3.21",
+    "styled-components": "5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "start2": "nodemon socket-server-side.js"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
