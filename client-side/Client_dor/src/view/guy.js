@@ -291,10 +291,11 @@ const update_board_around_a_ship = (board, ship, new_value) => {
     return new_board
 }
 
-export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) => {
+export const update_board_hit = (x, y, ship_index, board = exmpBoard, ships) => {
     let new_SHIPS = { ...ships };
     let new_board = [...board];
     new_SHIPS[ship_index].ship_parts.filter((part) => part.x === x && part.y === y)[0].is_hit = true;
+new_board[x][y].is_hit = true;
 
     let is_ship_sunk = true;
     for (const ship_part of new_SHIPS[ship_index].ship_parts) {
@@ -373,13 +374,12 @@ export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, sh
             break;
     }
 
-    if (is_ship_sunk)
         if (is_win)
-            return 'WIN';
+           // win the game
+            return { board: new_board, ships: new_SHIPS, is_win: true};
         else
             return { board: new_board, ships: new_SHIPS };
-    else
-        return { board: new_board };
+ 
 
 }
 
@@ -435,7 +435,7 @@ export const place_ships = (board, ships) => {
 
                     new_board[ship_head_x][ship_head_y + i] = new_ship_part;
                 }
-                console.log(index_of_ship);
+                // console.log(index_of_ship);
             }
 
             // if (ship.direction === HORIZONTAL) {
@@ -462,7 +462,7 @@ export const place_ships = (board, ships) => {
                     new_board[ship_head_x + i][ship_head_y] = new_ship_part;
 
                 }
-                console.log(index_of_ship);
+                // console.log(index_of_ship);
             }
             // console.log(new_board);
             new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);

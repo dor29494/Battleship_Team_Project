@@ -7,28 +7,30 @@ const Pixel = (props) => {
   // return <h1>none</h1>
   if (properties.status === 'SEA') {
     return (
-      <Regularsquare onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>c</Regularsquare>
+      <Regularsquare></Regularsquare>
     )
   }
   else if (properties.status === 'MISS') {
     // return <Misshit>▪️</Misshit>
-    return <Misshit onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>MISS</Misshit>
+    return <Misshit>MISS</Misshit>
   }
   else if (properties.status === 'HIT' || properties.status === 'SINK') {
-    return <Shiphit onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>X</Shiphit>
+    return <Shiphit>X</Shiphit>
   }
   else {
-    return <Shippart onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>E</Shippart>
+    return <Shippart></Shippart>
   }
 }
-export const lockGrid = () => {
-  set_lock(true)
+let is_locked;
+export const lockGrid = (toggle) => {
+is_locked = !toggle
 }
 
+
 const UserGrid = () => {
-  const { ships_array, set_ships_array, grid_array, set_grid_array, grid_clicks, set_grid_clicks } = useContext(BsContext)
-  const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
-  const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  const { grid_array, set_grid_array, grid_clicks, player_guess, set_player_guess,set_is_ready,is_ready} = useContext(BsContext)
+  // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
+  // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   const [lock, set_lock] = useState(false);
   const [lockArray, set_lockArray] = useState([]);
 
@@ -37,29 +39,30 @@ const UserGrid = () => {
     // return obj.toString();
     return obj;
   }
-  const ClickHandler = (x, y, lock) => {
-    if (!lock) {
-      if (!lockedButton(x, y)) {
-        console.log({ x, y })
-        lockButton(x, y)
-      }
-      else {
-        console.log("locked button")
-      }
-    }
-    else { console.log("locked grid!") }
-  }
-  const lockButton = (x, y) => {
-    let itemLocked = { x, y }
-    set_lockArray([...lockArray, itemLocked])
-  }
-  const lockedButton = (x, y) => {
-    let itemLocked = { x, y }
-    for (let item of lockArray) {
-      if (item.x === x && item.y === y) return true
-    }
-    return false
-  }
+  // const ClickHandler = (x, y, lock) => {
+  //   if (!lock) {
+  //     if (!lockedButton(x, y)) {
+  //       console.log({ x, y })
+  //       set_player_guess({ x, y })
+  //       lockButton(x, y)
+  //     }
+  //     else {
+  //       console.log("locked button")
+  //     }
+  //   }
+  //   else { console.log("locked grid!") }
+  // }
+  // const lockButton = (x, y) => {
+  //   let itemLocked = { x, y }
+  //   set_lockArray([...lockArray, itemLocked])
+  // }
+  // const lockedButton = (x, y) => {
+  //   let itemLocked = { x, y }
+  //   for (let item of lockArray) {
+  //     if (item.x === x && item.y === y) return true
+  //   }
+  //   return false
+  // }
   return (
     <Wrapper>Your Grid
       {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
@@ -70,7 +73,7 @@ const UserGrid = () => {
         {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
       </AbcWrapper> */}
       <Grid>
-        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)} x={Xindex} y={Yindex} clickhandler={ClickHandler}></Pixel>))}
+        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <Pixel lock={lock} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)}></Pixel>))}
       </Grid>
     </Wrapper>
   )
@@ -153,10 +156,6 @@ const Regularsquare = styled.div`
   border-color: #00FF41;
   width: 50px;
   height: 50px;
-  :hover {
-    background: #00FF41;
-    opacity: 0.5;
-  }
   display: flex;
   justify-content: center;
   align-items: center;

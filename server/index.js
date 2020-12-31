@@ -1,6 +1,7 @@
 const app = require('express')();
 const dotenv = require('dotenv') 
-const cors = require('cors') 
+const cors = require('cors');
+const { Server } = require('socket.io');
 const log = require('@ajar/marker'); 
 
 dotenv.config();
@@ -29,60 +30,46 @@ io.sockets.on('connection', socket => {
 
   socket.on('data', (data = {}) => {
 
-    const { room, action, guess, board, turn, message } = data;
+    const { room, action, guess, board, turn, message, to_player, ships} = data;
 
     const play = 'play';
     const ready = 'ready';
 
-    // data index: 
-    // action - play, ready
-    // room - the rooms id
-    // message - for optional chat
-    // board - to send playes boards to one another
-    // guess - the guesses of the players
-
-    // option for results: hit , miss , sink, win.
-
-    // option for indexes: sea , ship , miss, hit, sink.
-
     // play - means joining a room.
-    if (action === play) {
+    if (action === play && room !== null) {
       socket.join(room);
       console.log("inside room " + room);
-        // spark('id here').write('message')
-        // send message to this client
-        // spark.write('you joined room ' + room);
-        // send message to all clients except this one
-        // spark.room(room).except(spark.id).write(`${spark.id} joined room ${room}`);
     }
 
     // ready - sends the players board to the other player.
     if (action === ready) {
-      if (turn === undefined) {
-        socket.to(room).emit("data",{ board });
-        console.log( "board 2: " + board )
+      // if (turn === undefined) {
+      if (to_player === "1") {
+        socket.broadcast.to(room).emit("data",{ board, ships, to_player });
+        console.log( ">>>emiting from server to: player " + to_player + " ,player2 board: " + "board2" )
         // + if both are ready - start the game.
         socket.emit("data",{ ready_to_start: true });
+        console.log( ">>>emiting to both players: both players are ready to start")
       }
       else {
-        socket.to(room).emit("data",{ board, turn });
-        console.log( "board 1: " + board + " turn: " + turn )
+        socket.broadcast.to(room).emit("data",{ board, ships, turn, to_player });
+        console.log( ">>>emiting from server to: player " + to_player + " ,player1 board: " + "board1" + " ,does player2 starts?: " + turn )
       }
-      // send message to this client
-      // spark.write('you joined room ' + room);
-      // send message to all clients except this one
-      // spark.room(room).except(spark.id).write(`${spark.id} joined room ${room}`);
     }
 
     // guess - passing players guess to the other one.
     if ( guess ) { 
-      socket.to(room).emit("data",{ guess });
-        // send message to this client
-        // spark.write('you joined room ' + room);
-        // send message to all clients except this one
-        // spark.room(room).except(spark.id).write(`${spark.id} joined room ${room}`);
+      socket.broadcast.to(room).emit("data",{ guess });
+      console.log('The server emited the guess:', guess)
     }
     
+    // // Send a message. 
+    if ( message ) {
+      console.log("message recived:");
+      console.dir(message);
+      console.dir(board);
+    }
+
     // leave - player disconnected.
     if (action === 'leave') {
       socket.leave(room, () => {
@@ -93,11 +80,6 @@ io.sockets.on('connection', socket => {
       });
     }
 
-    // // Send a message. 
-    if ( message ) {
-      console.log("message recived:");
-      console.dir(message);
-    }
   })
 });
 
