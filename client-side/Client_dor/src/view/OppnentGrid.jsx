@@ -88,7 +88,7 @@ const UserGrid = () => {
         } else if (result === "HIT") {
           console.log(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
          updated = update_board_hit(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
-         console.log('updated console log',updated)
+        //  console.log('updated console log',updated)
 
         //  set_other_player_board(updated.board);
         //  set_other_player_ships(updated.ships)
