@@ -30,7 +30,7 @@ io.sockets.on('connection', socket => {
 
   socket.on('data', (data = {}) => {
 
-    const { room, action, guess, board, turn, message, to_player } = data;
+    const { room, action, guess, board, turn, message, to_player, ships} = data;
 
     const play = 'play';
     const ready = 'ready';
@@ -45,21 +45,22 @@ io.sockets.on('connection', socket => {
     if (action === ready) {
       // if (turn === undefined) {
       if (to_player === "1") {
-        socket.broadcast.to(room).emit("data",{ board, to_player });
+        socket.to(room).emit("data",{ board, ships, turn, to_player });
         console.log( ">>>emiting from server to: player " + to_player + " ,player2 board: " + "board2" )
         // + if both are ready - start the game.
-        socket.emit("data",{ ready_to_start: true });
+        io.in(room).emit("data",{ ready_to_start: true });
         console.log( ">>>emiting to both players: both players are ready to start")
       }
       else {
-        socket.broadcast.to(room).emit("data",{ board, turn, to_player });
+        socket.to(room).emit("data",{ board, ships, turn, to_player });
         console.log( ">>>emiting from server to: player " + to_player + " ,player1 board: " + "board1" + " ,does player2 starts?: " + turn )
       }
     }
 
     // guess - passing players guess to the other one.
     if ( guess ) { 
-      socket.broadcast.to(room).emit("data",{ guess });
+      socket.to(room).emit("data",{ guess });
+      console.log('The server emited the guess:', guess)
     }
     
     // // Send a message. 

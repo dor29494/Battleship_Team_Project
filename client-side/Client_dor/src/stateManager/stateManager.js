@@ -20,99 +20,56 @@ const StateManager = ({ children }) => {
   // ------------------------------ws states------------------------------
   const [player_room, set_player_room] = useState(null);
   const [player_board, set_player_board] = useState(null);
-  const [other_player_board, set_other_player_board] = useState(null);
+  const [other_player_board, set_other_player_board] = useState(initial_game_board());
+  const [other_player_ships,set_other_player_ships] = useState();
   const [first_turn, set_first_turn] = useState(null);
-  const [guess, set_guess] = useState(null);
+  const [player_guess, set_player_guess] = useState(null);
+  const [opponents_guess,set_opponents_guess] = useState(null);
+  const [is_ready, set_is_ready] = useState(false);
   // ------------------------------ws states------------------------------
 
-  useEffect(() => {
-    let { board: test } = place_ships(initial_game_board(), initial_ships());
-    // console.log("TEST: ", test)
-    set_grid_array(test)
-  }, [])
   const [first_state, set_first_state] = useState("hello");
-  const [SHIPS, set_SHIPS] = useState(
-    [
-      {
-        name: "S1",
-        length: 3,
-        ship_parts: [
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 1,
-            is_hit: false,
-          },
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 2,
-            is_hit: false,
-          },
-          {
-            ship_name: "S1",
-            x: 2,
-            y: 3,
-            is_hit: false,
-          },
-        ],
-        direction: VERTICAL,
-      },
-      {
-        name: "S2",
-        ship_parts: [
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 1,
-            is_hit: false,
-          },
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 2,
-            is_hit: false,
-          },
-          {
-            ship_name: "S2",
-            x: 0,
-            y: 3,
-            is_hit: false,
-          },
-        ],
-        length: 3,
-        direction: HORIZONTAL,
-        is_sunk: false,
-      },
-    ]
-  );
+  const [SHIPS, set_SHIPS] = useState(initial_ships());
   const [grid_clicks, set_GridClicks] = useState({});
   const [grid_array, set_grid_array] = useState([]);
+
+  useEffect(() => {
+    let { board, ships  } = place_ships(initial_game_board(),SHIPS);
+    set_SHIPS(ships)
+    set_grid_array(board)
+  }, [])
+
   const state = {
     // ws states
     player_room,
     player_board,
     other_player_board,
+    other_player_ships,
     first_turn,
-    guess,
+    player_guess,
+    opponents_guess,
+    is_ready,
     // ws states
     first_state,
     SHIPS,
     grid_array,
-    grid_clicks,
+    grid_clicks
   };
   const action = {
     // ws actions
     set_player_room,
     set_player_board,
     set_other_player_board,
+    set_other_player_ships,
     set_first_turn,
-    set_guess,
+    set_player_guess,
+    set_opponents_guess,
+    set_is_ready,
     // ws actions
     set_first_state,
     set_SHIPS,
     set_grid_array,
-    set_GridClicks,
+    set_GridClicks
   };
 
   const ws_connection = {
@@ -122,22 +79,6 @@ const StateManager = ({ children }) => {
   useEffect(() => {
     set_player_board(grid_array);
   },[grid_array]);
-
-  //------------------------------------------ws------------------------------------------
-
-  // set the connection to the server.
-  // const socket = io('ws://localhost:3000');
-  // socket.emit("data", { message: "player is connected" }); // test
-  
-  // onclick (on the grid)
-  // checking with the other_player_board if bulzai and send result to the server.
-  // const player_guess = (player_guess) => {
-  //   socket.emit("data", { room: player_room, guess: player_guess });
-  //   // if guess = miss => locking the grid.
-  // }
-
-  
-
 
   return <Provider value={{ ...state, ...action, ...ws_connection }}>{children}</Provider>;
 };

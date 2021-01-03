@@ -1,11 +1,19 @@
 // import io from 'socket.io-client';
 // import { nanoid } from 'nanoid';
+<<<<<<< HEAD
 // // import  { update_oppnent_grid }  from '../view/OppnentGrid';
 // // import lockGrid from '../view/UserGrid';
 
 // const socket = io('ws://localhost:3000');
 // socket.emit("data", { message: "hello" }); // test
 
+=======
+// import  { update_oppnent_grid }  from '../view/OppnentGrid';
+// import lockGrid from '../view/UserGrid';
+
+// const socket = io('ws://localhost:3000')
+// socket.emit("data", { message: "hello" });
+>>>>>>> cc880c2b24a4ecc4180b255495bb81f0d3f2ea3b
 // // -----------------------------------global variables------------------------------------
 
 // const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -16,6 +24,12 @@
 // let player_board;
 // let other_player_board;
 // let first_turn;
+<<<<<<< HEAD
+=======
+// //
+// // let example_guess;
+// // turn_generator = randomize(0, 1) ? example_guess = "hit" : example_guess = "miss"
+>>>>>>> cc880c2b24a4ecc4180b255495bb81f0d3f2ea3b
 
 // // ----------------------------------------emiting----------------------------------------
 
@@ -42,7 +56,10 @@
 //     if (other_player_board) {
 //         socket.emit("data", { room: player_room, action: ready, board: player_board });
 //         console.log("room:" + player_room + ", action: " + ready + ", board: " + player_board);
+<<<<<<< HEAD
 //         return null;
+=======
+>>>>>>> cc880c2b24a4ecc4180b255495bb81f0d3f2ea3b
 //     }
 //     else {
 //         // activating random turn generator
@@ -50,7 +67,10 @@
 //         turn_generator === 0 ? first_turn = true : first_turn = false;
 //         socket.emit("data", { room: player_room, action: ready, board: player_board, turn: !first_turn });
 //         console.log("room: " + player_room + ", action: " + ready + ", board: " + player_board + ",turn: " + !first_turn);
+<<<<<<< HEAD
 //         return first_turn;
+=======
+>>>>>>> cc880c2b24a4ecc4180b255495bb81f0d3f2ea3b
 //     }
 // }
 
@@ -63,6 +83,10 @@
 
 // // ---------------------------------------listening---------------------------------------
 
+<<<<<<< HEAD
+=======
+// // socket.on('data', data => {
+>>>>>>> cc880c2b24a4ecc4180b255495bb81f0d3f2ea3b
 //     socket.on('data', (data = {}) => {
 //     const { guess, message, board, turn, ready_to_start } = data;
 //     console.log(data);
