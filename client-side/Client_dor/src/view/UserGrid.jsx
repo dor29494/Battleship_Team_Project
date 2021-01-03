@@ -21,7 +21,7 @@ const Pixel = (props) => {
     return <Shippart onClick={() => { props.clickhandler(props.x, props.y, props.lock) }}>E</Shippart>
   }
 }
-const lockGrid = () => {
+export const lockGrid = () => {
   set_lock(true)
 }
 
