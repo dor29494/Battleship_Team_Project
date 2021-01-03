@@ -27,7 +27,7 @@ const update_board_square_around_sink = (board, x, y) => {
 
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-    if('around_ship' in new_board[x][y]){
+    if ('around_ship' in new_board[x][y]) {
         new_board[x][y].around_ship = true;
     }
     return new_board;
@@ -296,10 +296,11 @@ const update_board_around_a_ship = (board, ship, new_value) => {
 }
 
 export const update_board_hit = (x, y, ship_index, board, ships) => {
-    let new_SHIPS = [ ...ships ];
+    let new_SHIPS = [...ships];
     let new_board = [...board];
-    new_SHIPS[ship_index].ship_parts.filter((part) => part.x === x && part.y === y)[0].is_hit = true;
-new_board[x][y].is_hit = true;
+    const part_index = new_SHIPS[ship_index].ship_parts.findIndex((part)=> part.x === x && part.y === y);
+    new_SHIPS[ship_index].ship_parts[part_index].is_hit = true;
+    new_board[x][y].is_hit = true;
 
     let is_ship_sunk = true;
     for (const ship_part of new_SHIPS[ship_index].ship_parts) {
@@ -309,23 +310,23 @@ new_board[x][y].is_hit = true;
 
     if (is_ship_sunk) {
         new_SHIPS[ship_index].is_sunk = is_ship_sunk;
-        new_SHIPS = update_board_around_a_ship(new_board, new_SHIPS[ship_index], AROUND_SINK);
-  
-}
-let is_win = true;
-new_SHIPS.forEach((ship)=>{
-    if(!ship.is_sunk){
-        is_win = false;
+        new_board = update_board_around_a_ship(new_board, new_SHIPS[ship_index], AROUND_SINK);
+
     }
-})
-// for (const ship of new_SHIPS) {
-//     if (!ship.is_sunk){
-//         is_win = false;
+    let is_win = true;
+    new_SHIPS.forEach((ship) => {
+        if (!ship.is_sunk) {
+            is_win = false;
+        }
+    })
+    // for (const ship of new_SHIPS) {
+    //     if (!ship.is_sunk){
+    //         is_win = false;
 
-// }
-// }
+    // }
+    // }
 
-// console.log('About to enter switch case with x&y',x,y)
+    // console.log('About to enter switch case with x&y',x,y)
     switch (x) {
         case 0:
             switch (y) {
@@ -384,13 +385,13 @@ new_SHIPS.forEach((ship)=>{
     }
     // console.log('Updated around_sink:')
 
-        if (is_win)
+    if (is_win)
         // if (false)
-           // win the game
-            return { board: new_board, ships: new_SHIPS, is_win: true};
-        else
-            return { board: new_board, ships: new_SHIPS };
- 
+        // win the game
+        return { board: new_board, ships: new_SHIPS, is_win: true };
+    else
+        return { board: new_board, ships: new_SHIPS };
+
 
 }
 

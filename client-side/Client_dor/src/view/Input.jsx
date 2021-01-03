@@ -12,7 +12,6 @@ const Input = () => {
     player_room,
     set_player_room,
     player_board,
-    other_player_board,
     set_other_player_board,
     first_turn,
     set_first_turn,
@@ -20,7 +19,6 @@ const Input = () => {
     set_opponents_guess,
     set_is_ready,
     is_ready,
-    other_player_ships,
     SHIPS,
     set_other_player_ships
   } = useContext(BsContext);
@@ -82,11 +80,13 @@ const Input = () => {
       console.log("player 1 turn is " + local_turn);
       console.log("player 1 emiting...");
     }
+  }, [is_ready]);
 
-    // ---------------------------------------listening---------------------------------------
+  // ---------------------------------------listening---------------------------------------
 
+  useEffect(() => {
     socket.on("data", (data = {}) => {
-      const { turn, board, ready_to_start, to_player, ships } = data;
+      const { turn, board, ready_to_start, to_player, ships, guess } = data;
 
       if (to_player === "2") {
         set_other_player_board(board);
@@ -99,54 +99,50 @@ const Input = () => {
         set_other_player_ships(ships);
         console.log("player's 2 data recived by player 1");
         console.log("does player1 starts?: " + turn);
-      } else if (ready_to_start) {
+      } else if ( ready_to_start ) {
         console.log("both players are ready");
         // reactivating the grid.
+      } else if (guess) {
+        console.log("Player has recived the opponents guess", guess);
+        set_opponents_guess(guess);
+        // updating the board.`
+        // if guess = miss => reactivating the grid.
       }
     });
-    }, [is_ready]);
+  }, [])
 
-    // ---------------------------------------guessing---------------------------------------
+  // ---------------------------------------guessing---------------------------------------
 
-    useEffect(() => {
-      // inspect_hit(other_player_board,guess.x,guess.y)
-      socket.emit("data", { room: player_room, guess: player_guess });
-      console.log("emited guess");
-      socket.on("data", (data = {}) => {
-        const { guess } = data;
-        if (guess) {
-          console.log("Player has recived the opponents guess", guess);
-          set_opponents_guess(guess);
-          // updating the board.`
-          // if guess = miss => reactivating the grid.
-        }
-      });
-    }, [player_guess]);
+  useEffect(() => {
+    // inspect_hit(other_player_board,guess.x,guess.y)
+    socket.emit("data", { room: player_room, guess: player_guess });
+    console.log("emited guess");
+  }, [player_guess]);
 
 
-    return (
-      <MiniWrapper>
-        <PlayButton onClick={() => play_button()}>Play</PlayButton>
-        <UrlHolder>{player_room}</UrlHolder>
-        <JoinButton onClick={() => join_button(inputEl.current.value)}>
-          Join
+  return (
+    <MiniWrapper>
+      <PlayButton onClick={() => play_button()}>Play</PlayButton>
+      <UrlHolder>{player_room}</UrlHolder>
+      <JoinButton onClick={() => join_button(inputEl.current.value)}>
+        Join
       </JoinButton>
-        <InputHolder ref={inputEl} />
-        <ReadyButton onClick={() => ready_button()}>Ready</ReadyButton>
-      </MiniWrapper>
-    );
-  };
+      <InputHolder ref={inputEl} />
+      <ReadyButton onClick={() => ready_button()}>Ready</ReadyButton>
+    </MiniWrapper>
+  );
+};
 
-  export default Input;
+export default Input;
 
-  const MiniWrapper = styled.form`
+const MiniWrapper = styled.form`
   display: flex;
   flex-direction: column;
   // border: 2px black solid;
   height: 100%;
   justify-content: space-around;
 `;
-  const UrlHolder = styled.div`
+const UrlHolder = styled.div`
   height: 4rem;
   width: 45rem;
   outline: none;
@@ -160,7 +156,7 @@ const Input = () => {
     border: tomato 2px solid;
   }
 `;
-  const ReadyButton = styled.div`
+const ReadyButton = styled.div`
   font-family: "Expletus Sans";
   text-align: left;
   font-size: 2rem;
@@ -180,9 +176,9 @@ const Input = () => {
   }
 `;
 
-  const PlayButton = styled(ReadyButton)``;
+const PlayButton = styled(ReadyButton)``;
 
-  const InputHolder = styled.input`
+const InputHolder = styled.input`
   height: 4rem;
   width: 20rem;
   outline: none;
@@ -197,7 +193,7 @@ const Input = () => {
   }
   margin-bottom: 0.6rem;
 `;
-  const JoinButton = styled.div`
+const JoinButton = styled.div`
 display: ${(inputValue) => (inputValue ? "flex" : "none")}
 font-family: "Expletus Sans";
 text-align: left;

@@ -6,15 +6,14 @@ import io from 'socket.io-client';
 export const socket = io('ws://localhost:3000');
 const BsContext = React.createContext(socket);
 const { Provider } = BsContext;
-const MISS = 'MISS';
-const HIT = 'HIT';
-const SINK = 'SINK';
-const AROUND_SINK = 'AROUND_SINK';
-const VERTICAL = 'vertical';
-const HORIZONTAL = 'horizontal'
-const SEA = 'SEA';
-const SHIP_PART = 'SHIP_PART';
-
+export const MISS = 'MISS';
+export const HIT = 'HIT';
+export const SINK = 'SINK';
+export const AROUND_SINK = 'AROUND_SINK';
+export const VERTICAL = 'vertical';
+export const HORIZONTAL = 'horizontal'
+export const SEA = 'SEA';
+export const SHIP_PART = 'SHIP_PART';
 
 const StateManager = ({ children }) => {
   // ------------------------------ws states------------------------------
