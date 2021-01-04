@@ -1,41 +1,53 @@
-import React, { useContext, useState, useEffect } from "react"
-import styled from "styled-components"
-import { BsContext } from "../stateManager/stateManager"
-import { inspect_hit, update_board_hit, update_board_miss } from "./guy";
+import React, { useContext, useEffect } from "react";
+import { BsContext } from "../stateManager/stateManager";
+import { update_board_hit, update_board_miss } from "./guy";
+import { SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
+import styled from "styled-components";
 import UserPixel from "./UserPixel";
 
 const UserGrid = () => {
-  const { grid_array, player_board, opponents_guess, SHIPS, set_player_board, set_SHIPS, set_other_player_board, set_other_player_ships, set_grid_array, grid_clicks, player_guess, set_player_guess, set_is_ready, is_ready } = useContext(BsContext)
+  const { 
+    player_board,
+    set_player_board,
+    player_ships,
+    other_player_guess
+  } = useContext(BsContext)
+
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-  const [lock, set_lock] = useState(false);
-  const [lockArray, set_lockArray] = useState([]);
+
+  // *** i dont think we need this
+  //#region 
+  // const [lock, set_lock] = useState(false);
+  // const [lockArray, set_lockArray] = useState([]);
+  //#endregion
 
   const pixelStatus = (x, y) => {
-    let obj = grid_array[x][y].value;
-    if(obj === "SHIP_PART" && grid_array[x][y].is_hit === true){
-      return "HIT"
+    let obj = player_board[x][y].value;
+    if (obj === SHIP_PART && player_board[x][y].is_hit === true) {
+      return HIT
     }
     return obj;
   }
 
   useEffect(() => {
-    if (opponents_guess) {
-      const { result, x, y } = opponents_guess;
+    if (other_player_guess) {
+      const { result, x, y } = other_player_guess;
       let updated;
-      if (result === "MISS") {
+      if (result === MISS) {
         updated = update_board_miss(player_board, x, y);
         set_player_board(updated)
-      } else if (result === "HIT") {
-        updated = update_board_hit(x, y, player_board[x][y].ship_index, player_board, SHIPS)
+      } else if (result === HIT) {
+        updated = update_board_hit(x, y, player_board[x][y].ship_index, player_board, player_ships)
         // *** need checking out
-         set_player_board(updated.board);
-         console.log("shipssssssssssss: ",updated.ships);
-        // set_SHIPS(updated.ships);
+        set_player_board(updated.board);
+        // set_player_ships(updated.ships);
       }
     }
-  }, [opponents_guess])
+  }, [other_player_guess])
 
+    // *** i dont think we need this
+    //#region 
   // const ClickHandler = (x, y, lock) => {
   //   if (!lock) {
   //     if (!lockedButton(x, y)) {
@@ -60,6 +72,8 @@ const UserGrid = () => {
   //   }
   //   return false
   // }
+  //#endregion
+  
   return (
     <Wrapper>Your Grid
       {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
@@ -70,12 +84,28 @@ const UserGrid = () => {
         {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
       </AbcWrapper> */}
       <Grid>
-        {grid_array.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <UserPixel lock={lock} key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)}></UserPixel>))}
+        {player_board.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <UserPixel 
+        // lock={lock} 
+        key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)}></UserPixel>))}
       </Grid>
     </Wrapper>
   )
-}
+};
+
 export default UserGrid
+
+const Grid = styled.div`
+display: flex;
+flex-wrap: wrap;
+height: 500px;
+width: 500px;
+color: #003B00;
+`;
+
+const Wrapper = styled(Grid)`
+border: none;
+color: white;
+`;
 
 // const StyledPixel = styled.div`
 // min-width: 2rem;
@@ -89,55 +119,43 @@ export default UserGrid
 // border: 1px solid #00FF41;
 // if (props.status === 'SEA') { return background: blue }
 // `
-const Grid = styled.div`
-display: flex;
-flex-wrap: wrap;
-height: 500px;
-width: 500px;
-color: #003B00;
+// const AbcWrapper = styled.div`
+// border: 2px solid black;
+// min-height: 2rem;
+// width: 500px;
+// display: flex;
+// `
+// const NumWrapper = styled.div`
+// // border: 1px solid white;
+// width: 50px;
+// height: 500px;
+// display: flex;
+// flex-direction: column;
+// justify-content: center;
+// justify-items: center;
+// position: absolute;  
+// left: 230px;
+// top: 310px;
+// `
+// const AbcDiv = styled.div`
+// flex-basis: 10%;
+// height: 50px;
+// width: 50px;
+// // border: 1px solid white;
+// display: flex;
+// justify-content: center;
+// align-items: center;
 
-`
-const Wrapper = styled(Grid)`
-border: none;
-color: white;
-`
-const AbcWrapper = styled.div`
-border: 2px solid black;
-min-height: 2rem;
-width: 500px;
-display: flex;
-`
-const NumWrapper = styled.div`
-// border: 1px solid white;
-width: 50px;
-height: 500px;
-display: flex;
-flex-direction: column;
-justify-content: center;
-justify-items: center;
-position: absolute;  
-left: 230px;
-top: 310px;
-`
-const AbcDiv = styled.div`
-flex-basis: 10%;
-height: 50px;
-width: 50px;
-// border: 1px solid white;
-display: flex;
-justify-content: center;
-align-items: center;
-
-`
-const NumDiv = styled.div`
-flex-basis: 10%;
-height: 50px;
-margin-left: 5px;
-// border: 1px solid white;
-display: flex;
-justify-content: center;
-width: 50px;
-`
+// `
+// const NumDiv = styled.div`
+// flex-basis: 10%;
+// height: 50px;
+// margin-left: 5px;
+// // border: 1px solid white;
+// display: flex;
+// justify-content: center;
+// width: 50px;
+// `
 
 // const Invlidmove = styled.div`
 //   border: 1px solid;

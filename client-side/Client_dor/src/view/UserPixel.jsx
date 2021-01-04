@@ -1,34 +1,30 @@
 import React from "react"
 import styled from "styled-components"
+import { SEA, MISS, HIT, SINK, AROUND_SINK, SHIP_PART } from "../stateManager/stateManager";
 
 const UserPixel = ({ status }) => {
-    // return <h1>none</h1>
-    if (status === 'SEA') {
-      return (
-        <Regularsquare></Regularsquare>
-      )
-    }
-    else if (status === 'MISS') {
-      // return <Misshit>▪️</Misshit>
-      return <Misshit>MISS</Misshit>
-    }
-    else if (status === 'HIT' || status === 'SINK') {
-      return <Shiphit>X</Shiphit>
-    }
-    else if (status === 'AROUND_SINK') {
-      // return <Misshit>▪️</Misshit>
-      return <AroundSink>•</AroundSink>
-    }
-    else if (status === 'SHIP_PART') {
-      return <Shippart></Shippart>
-    }
+
+  if (status === SEA) {
+    return <RegularSquare></RegularSquare>
+  }
+  else if (status === MISS) {
+    return <MissHit></MissHit>
+  }
+  else if (status === HIT || status === SINK) {
+    return <ShipHit>X</ShipHit>
+  }
+  else if (status === AROUND_SINK) {
+    return <AroundSink>•</AroundSink>
+  }
+  else if (status === SHIP_PART) {
+    return <ShipPart></ShipPart>
   }
 
-  export default UserPixel;
-  
-  const Regularsquare = styled.div`
-  border: 1px solid;
-  border-color: #00FF41;
+};
+
+export default UserPixel;
+
+const Standard = styled.div`
   width: 50px;
   height: 50px;
   display: flex;
@@ -36,38 +32,30 @@ const UserPixel = ({ status }) => {
   align-items: center;
 `;
 
-const Misshit = styled.div`
-background: #00FF41;
-opacity: 0.3;
-border: 3px solid #00FF41;
-display: flex;
-  align-items: center;
-  justify-content: center;
-width: 50px;
-height: 50px;
+const RegularSquare = styled(Standard)`
+  border: 1px solid #00FF41;
 `;
 
-const AroundSink = styled(Misshit)`
-background: red;
+const MissHit = styled(Standard)`
+  border: 3px solid #00FF41;
+  background: #00FF41;
+  opacity: 0.3;
 `;
 
-const Shiphit = styled.div`
-  border: 1px solid;
+const AroundSink = styled(Standard)`
+  border: 3px solid #00FF41;
+  background: red;
+  opacity: 0.3;
+`;
+
+const ShipHit = styled(Standard)`
+  border: 1px solid lightblue;
+  background: rgba(255, 153, 153, 0.5);
   color: red;
   font-size: 5vh;
-  border-color: lightblue;
-  background: rgba(255, 153, 153, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
 `;
 
-const Shippart = styled.div`
+const ShipPart = styled(Standard)`
   border: 3px solid blue;
-//   background-color: lightgray;
-width: 50px;
-height: 50px;
-  cursor: move;
+  // cursor: move;
 `;

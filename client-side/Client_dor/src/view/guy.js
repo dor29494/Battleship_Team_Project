@@ -1,16 +1,18 @@
-import { version } from "react";
+// *** to ask guy about it:
+// import {VERTICAL, HORIZONTAL, RUSSIAN, FRENCH, SEA, MISS, HIT, AROUND_SINK, SHIP_PART, AROUND_SHIP } from "../stateManager/stateManager"
+// import { version } from "react";
 
-const VERTICAL = 'vertical';
-const HORIZONTAL = 'horizontal'
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 const random_boolean = () => Math.random() < 0.5;
 
+const VERTICAL = 'vertical';
+const HORIZONTAL = 'horizontal'
 const RUSSIAN = 'RUSSIAN';
 const FRENCH = 'FRENCH';
 const SEA = 'SEA';
 const MISS = 'MISS';
 const HIT = 'HIT';
-const SINK = 'SINK';
+// const SINK = 'SINK';
 const AROUND_SINK = 'AROUND_SINK';
 const SHIP_PART = 'SHIP_PART';
 const AROUND_SHIP = 'AROUND_SHIP';
@@ -296,30 +298,30 @@ const update_board_around_a_ship = (board, ship, new_value) => {
 }
 
 export const update_board_hit = (x, y, ship_index, board, ships) => {
-    let new_SHIPS = [...ships];
+    let new_ships = [...ships];
     let new_board = [...board];
-    const part_index = new_SHIPS[ship_index].ship_parts.findIndex((part)=> part.x === x && part.y === y);
-    new_SHIPS[ship_index].ship_parts[part_index].is_hit = true;
+    const part_index = new_ships[ship_index].ship_parts.findIndex((part)=> part.x === x && part.y === y);
+    new_ships[ship_index].ship_parts[part_index].is_hit = true;
     new_board[x][y].is_hit = true;
 
     let is_ship_sunk = true;
-    for (const ship_part of new_SHIPS[ship_index].ship_parts) {
+    for (const ship_part of new_ships[ship_index].ship_parts) {
         if (!ship_part.is_hit)
             is_ship_sunk = false;
     }
 
     if (is_ship_sunk) {
-        new_SHIPS[ship_index].is_sunk = is_ship_sunk;
-        new_board = update_board_around_a_ship(new_board, new_SHIPS[ship_index], AROUND_SINK);
+        new_ships[ship_index].is_sunk = is_ship_sunk;
+        new_board = update_board_around_a_ship(new_board, new_ships[ship_index], AROUND_SINK);
 
     }
     let is_win = true;
-    new_SHIPS.forEach((ship) => {
+    new_ships.forEach((ship) => {
         if (!ship.is_sunk) {
             is_win = false;
         }
     })
-    // for (const ship of new_SHIPS) {
+    // for (const ship of new_ships) {
     //     if (!ship.is_sunk){
     //         is_win = false;
 
@@ -388,9 +390,9 @@ export const update_board_hit = (x, y, ship_index, board, ships) => {
     if (is_win)
         // if (false)
         // win the game
-        return { board: new_board, ships: new_SHIPS, is_win: true };
+        return { board: new_board, ships: new_ships, is_win: true };
     else
-        return { board: new_board, ships: new_SHIPS };
+        return { board: new_board, ships: new_ships };
 
 
 }

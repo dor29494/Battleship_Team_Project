@@ -1,11 +1,9 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
-import { inspect_hit } from "./guy";
 
 const Input = () => {
-  //-------------------------------------------ws-----------------------------------------
 
   const {
     socket,
@@ -13,14 +11,15 @@ const Input = () => {
     set_player_room,
     player_board,
     set_other_player_board,
+    player_ships,
+    set_other_player_ships,
     first_turn,
     set_first_turn,
     player_guess,
-    set_opponents_guess,
-    set_is_ready,
-    is_ready,
-    SHIPS,
-    set_other_player_ships
+    set_other_player_guess,
+    player_is_ready,
+    set_player_is_ready,
+    set_both_players_ready
   } = useContext(BsContext);
 
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -48,7 +47,7 @@ const Input = () => {
   //--------------------ready to play-------------------------
 
   const ready_button = () => {
-    set_is_ready(true);
+    set_player_is_ready(true);
   };
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const Input = () => {
         room: player_room,
         action: ready,
         board: player_board,
-        ships: SHIPS,
+        ships: player_ships,
         turn: !first_turn,
         to_player: "1",
       });
@@ -66,12 +65,12 @@ const Input = () => {
     } else {
       let local_turn;
       const turn_generator = randomize(0, 1);
-      turn_generator === 0 ? (local_turn = true) : (local_turn = false);
+      turn_generator === 0 ? local_turn = true : local_turn = false;
       socket.emit("data", {
         room: player_room,
         action: ready,
         board: player_board,
-        ships: SHIPS,
+        ships: player_ships,
         turn: !local_turn,
         to_player: "2",
       });
@@ -80,7 +79,14 @@ const Input = () => {
       console.log("player 1 turn is " + local_turn);
       console.log("player 1 emiting...");
     }
-  }, [is_ready]);
+  }, [player_is_ready]);
+
+  //--------------------guessing-------------------------
+
+  useEffect(() => {
+    socket.emit("data", { room: player_room, guess: player_guess });
+    console.log("emited guess");
+  }, [player_guess]);
 
   // ---------------------------------------listening---------------------------------------
 
@@ -101,24 +107,13 @@ const Input = () => {
         console.log("does player1 starts?: " + turn);
       } else if ( ready_to_start ) {
         console.log("both players are ready");
-        // reactivating the grid.
+        set_both_players_ready(true);
       } else if (guess) {
         console.log("Player has recived the opponents guess", guess);
-        set_opponents_guess(guess);
-        // updating the board.`
-        // if guess = miss => reactivating the grid.
+        set_other_player_guess(guess);
       }
     });
   }, [])
-
-  // ---------------------------------------guessing---------------------------------------
-
-  useEffect(() => {
-    // inspect_hit(other_player_board,guess.x,guess.y)
-    socket.emit("data", { room: player_room, guess: player_guess });
-    console.log("emited guess");
-  }, [player_guess]);
-
 
   return (
     <MiniWrapper>

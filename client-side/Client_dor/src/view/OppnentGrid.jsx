@@ -1,20 +1,20 @@
 import React, { useContext, useState } from "react";
-import styled from "styled-components";
 import { BsContext } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "./guy";
+import { SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
+import styled from "styled-components";
 import OppnentPixel from "./OppnentPixel";
 
 const OppnentGrid = () => {
   const {
-    grid_array,
-    grid_clicks,
-    player_guess,
-    set_player_guess,
     other_player_board,
     set_other_player_board,
     other_player_ships,
-    set_other_player_ships
+    set_player_guess,
+    both_players_ready,
+    first_turn // *** if "both_players_ready" & "first_turn" are true => this player can unlock his oppnent grid.
   } = useContext(BsContext);
+  
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   const [lock, set_lock] = useState(false);
@@ -22,8 +22,8 @@ const OppnentGrid = () => {
 
   const pixelStatus = (x, y) => {
     let obj = other_player_board[x][y].value;
-    if(obj === "SHIP_PART" && other_player_board[x][y].is_hit === true){
-      return "HIT"
+    if(obj === SHIP_PART && other_player_board[x][y].is_hit === true){
+      return HIT
     }
     return obj;
   }
@@ -37,7 +37,7 @@ const OppnentGrid = () => {
         const result = inspect_hit(other_player_board, x, y);
         // console.log(result)
         set_player_guess({ x, y, result });
-        if (result === "MISS") {
+        if (result === MISS) {
           // console.log('guy func',update_board_miss(other_player_board, x, y))
           // console.log(other_player_board, x, y);
           // let updated_board = [...other_player_board]
@@ -45,9 +45,9 @@ const OppnentGrid = () => {
           // console.log(updated);
           set_other_player_board(updated)
           
-        } else if (result === "HIT") {
+        } else if (result === HIT) {
           console.log(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
-         updated = update_board_hit(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
+         updated = update_board_hit(x, y,other_player_board[x][y].ship_index, other_player_board, other_player_ships)
         //  console.log('updated console log',updated)
 
         //  set_other_player_board(updated.board);
@@ -104,19 +104,8 @@ const OppnentGrid = () => {
     </Wrapper>
   );
 };
-export default OppnentGrid;
 
-// const styledPixel = styled.div`
-//   min-width: 2rem;
-//   min-height: 2rem;
-//   width: 50px;
-//   height: 50px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   cursor: pointer;
-//   border: 1px solid #00ff41;
-// `;
+export default OppnentGrid;
 
 const Grid = styled.div`
   display: flex;
@@ -130,6 +119,20 @@ const Wrapper = styled(Grid)`
   border: none;
   color: white;
 `;
+
+// const styledPixel = styled.div`
+//   min-width: 2rem;
+//   min-height: 2rem;
+//   width: 50px;
+//   height: 50px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   border: 1px solid #00ff41;
+// `;
+
+
 
 // const AbcWrapper = styled.div`
 //   border: 2px solid black;
