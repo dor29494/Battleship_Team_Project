@@ -11,81 +11,78 @@ const OppnentGrid = () => {
     set_other_player_board,
     other_player_ships,
     set_player_guess,
-    both_players_ready,
     other_player_guess,
-    player_guess,
-    first_turn // *** if "both_players_ready" & "first_turn" are true => this player can unlock his oppnent grid.
+    both_players_ready,
+    first_turn,
+    set_winnig
   } = useContext(BsContext);
-  
+
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
   const [lock_board, set_lock_board] = useState(true);
   const [lockArray, set_lockArray] = useState([]);
 
-  useEffect(()=>{
-if(first_turn){
-  set_lock_board(false)
-}
-  },[both_players_ready])
+  // unlock the board of the first player.
+  useEffect(() => {
+    if (first_turn) { set_lock_board(false) }
+  }, [both_players_ready]);
+
+  // unlock the players board if the other player missed.
   useEffect(() => {
     if (other_player_guess) {
-      const { result, x, y } = other_player_guess;
-      
-      if (result === MISS) {
-       set_lock_board(false)
-      } 
+      const { result } = other_player_guess;
+      if (result === MISS) { set_lock_board(false) }
     }
-  }, [other_player_guess])
+  }, [other_player_guess]);
 
+  // return the playe's guess result (hit, miss...)
   const pixelStatus = (x, y) => {
-    let obj = other_player_board[x][y].value;
-    if(obj === SHIP_PART && other_player_board[x][y].is_hit === true){
+    const obj = other_player_board[x][y].value;
+    if (obj === SHIP_PART && other_player_board[x][y].is_hit === true) {
       return HIT
     }
     return obj;
-  }
+  };
 
-  // console.log(player_guess);
-  const ClickHandler = (x, y, lock) => {
-    let updated
-    if (!lock_board) {
-      if (!lockedButton(x, y)) {
-        // console.log({ x, y });
+  const onClick = (x, y, lock) => {
+    let updated;
+    if (!lock) {
+      if (!locked_pixels(x, y)) {
         const result = inspect_hit(other_player_board, x, y);
-        // console.log(result)
         set_player_guess({ x, y, result });
         if (result === MISS) {
           updated = update_board_miss(other_player_board, x, y);
           set_other_player_board(updated)
           set_lock_board(true);
-          
-        } else if (result === HIT) {
-          console.log(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
-         updated = update_board_hit(x, y,other_player_board[x][y].ship_index, other_player_board, other_player_ships)
 
-        //  set_other_player_board(updated.board);
-        //  set_other_player_ships(updated.ships);
+        } else if (result === HIT) {
+          // console.log(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
+          updated = update_board_hit(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
+          if (updated.is_win) { 
+            set_winnig(true);
+            set_lock_board(true);
+          };
+          //  set_other_player_board(updated.board);
+          //  set_other_player_ships(updated.ships);
         }
-       
-        
-        
-        lockButton(x, y);
+
+        lock_Button(x, y);
       } else {
-        // console.log("locked button");
+        console.log("this pixel has already had been clicked (locked button)");
       }
     } else {
-      // console.log("locked grid!");
+      console.log("Its not your turn! (locked grid)");
     }
   };
-  const lockButton = (x, y) => {
+  const lock_Button = (x, y) => {
     let itemLocked = { x, y };
     set_lockArray([...lockArray, itemLocked]);
-    console.log(lockArray)
   };
-  const lockedButton = (x, y) => {
-    let itemLocked = { x, y };
+
+  const locked_pixels = (x, y) => {
     for (let item of lockArray) {
-      if (item.x === x && item.y === y) return true;
+      if (item.x === x && item.y === y) { return true };
     }
     return false;
   };
@@ -110,7 +107,7 @@ if(first_turn){
               status={pixelStatus(Xindex, Yindex)}
               x={Xindex}
               y={Yindex}
-              clickhandler={ClickHandler}
+              clickhandler={onClick}
             ></OppnentPixel>
           ))
         )}

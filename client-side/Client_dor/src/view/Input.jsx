@@ -19,7 +19,9 @@ const Input = () => {
     set_other_player_guess,
     player_is_ready,
     set_player_is_ready,
-    set_both_players_ready
+    set_both_players_ready,
+    winnig,
+    set_winnig
   } = useContext(BsContext);
 
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -87,13 +89,31 @@ const Input = () => {
     socket.emit("data", { room: player_room, guess: player_guess });
     console.log("emited guess");
   }, [player_guess]);
+  //---------------------winnig--------------------------
+
+  useEffect(() => {
+    if (winnig === true) {
+      socket.emit("data", { is_winnig: true });
+      alert("you won!");
+    }
+    if (winnig === false) {
+      alert("you loose :[");
+    }
+  }, [winnig]);
 
   // ---------------------------------------listening---------------------------------------
 
   useEffect(() => {
     socket.on("data", (data = {}) => {
-      const { turn, board, ready_to_start, to_player, ships, guess } = data;
+      // *** winning does not reach to the other player for some reason
+      console.log(data);
+      console.log(is_winnig);
+      const { turn, board, ready_to_start, to_player, ships, guess, is_winnig } = data;
 
+      if (is_winnig) {
+        console.log("The other player won!");
+        set_winnig(!is_winnig);
+      }
       if (to_player === "2") {
         set_other_player_board(board);
         set_other_player_ships(ships);
@@ -105,7 +125,7 @@ const Input = () => {
         set_other_player_ships(ships);
         console.log("player's 2 data recived by player 1");
         console.log("does player1 starts?: " + turn);
-      } else if ( ready_to_start ) {
+      } else if (ready_to_start) {
         console.log("both players are ready");
         set_both_players_ready(true);
       } else if (guess) {
@@ -137,6 +157,7 @@ const MiniWrapper = styled.form`
   height: 100%;
   justify-content: space-around;
 `;
+
 const UrlHolder = styled.div`
   height: 4rem;
   width: 45rem;
@@ -147,9 +168,9 @@ const UrlHolder = styled.div`
   padding: 1rem;
   z-index: 1;
 
-  &:focus {
-    border: tomato 2px solid;
-  }
+    &:focus {
+      border: tomato 2px solid;
+    }
 `;
 const ReadyButton = styled.div`
   font-family: "Expletus Sans";
@@ -165,10 +186,11 @@ const ReadyButton = styled.div`
   border: none;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
-  &:focus {
-    outline: none;
-    box-shadow: 0px 0px yellow, -1em 0 04em white;
-  }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0px 0px yellow, -1em 0 04em white;
+    }
 `;
 
 const PlayButton = styled(ReadyButton)``;
@@ -182,12 +204,13 @@ const InputHolder = styled.input`
   transition: border 0.5s;
   padding: 1rem;
   z-index: 1;
-
-  &:focus {
-    border: tomato 2px solid;
-  }
   margin-bottom: 0.6rem;
+
+    &:focus {
+      border: tomato 2px solid;
+    }
 `;
+
 const JoinButton = styled.div`
 display: ${(inputValue) => (inputValue ? "flex" : "none")}
 font-family: "Expletus Sans";
@@ -203,9 +226,10 @@ background: white;
 border: none;
 box-shadow: inset 0 0.1rem 1.5rem lightgrey;
 cursor: pointer;
-&:focus{
- outline: none;
- box-shadow: 0px 0px yellow, -1em 0 04em white;
-}
 margin-bottom: 0.6rem;
+
+  &:focus{
+    outline: none;
+    box-shadow: 0px 0px yellow, -1em 0 04em white;
+  }
 `;

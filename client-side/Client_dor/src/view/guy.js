@@ -21,8 +21,9 @@ const AROUND_SHIP = 'AROUND_SHIP';
 const update_board_square_around_sink = (board, x, y) => {
     // console.log('trying to update around sink',x,y)
     const new_board = [...board];
-    if (new_board[x][y].value !== MISS)
+    if (new_board[x][y].value !== MISS && new_board[x][y].value !== SHIP_PART) {
         new_board[x][y].value = AROUND_SINK;
+    }
     return new_board;
 }
 
