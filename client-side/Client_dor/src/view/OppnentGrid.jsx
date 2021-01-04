@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "./guy";
 import { SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
@@ -12,13 +12,30 @@ const OppnentGrid = () => {
     other_player_ships,
     set_player_guess,
     both_players_ready,
+    other_player_guess,
+    player_guess,
     first_turn // *** if "both_players_ready" & "first_turn" are true => this player can unlock his oppnent grid.
   } = useContext(BsContext);
   
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-  const [lock, set_lock] = useState(false);
+  const [lock_board, set_lock_board] = useState(true);
   const [lockArray, set_lockArray] = useState([]);
+
+  useEffect(()=>{
+if(first_turn){
+  set_lock_board(false)
+}
+  },[both_players_ready])
+  useEffect(() => {
+    if (other_player_guess) {
+      const { result, x, y } = other_player_guess;
+      
+      if (result === MISS) {
+       set_lock_board(false)
+      } 
+    }
+  }, [other_player_guess])
 
   const pixelStatus = (x, y) => {
     let obj = other_player_board[x][y].value;
@@ -31,24 +48,20 @@ const OppnentGrid = () => {
   // console.log(player_guess);
   const ClickHandler = (x, y, lock) => {
     let updated
-    if (!lock) {
+    if (!lock_board) {
       if (!lockedButton(x, y)) {
         // console.log({ x, y });
         const result = inspect_hit(other_player_board, x, y);
         // console.log(result)
         set_player_guess({ x, y, result });
         if (result === MISS) {
-          // console.log('guy func',update_board_miss(other_player_board, x, y))
-          // console.log(other_player_board, x, y);
-          // let updated_board = [...other_player_board]
           updated = update_board_miss(other_player_board, x, y);
-          // console.log(updated);
           set_other_player_board(updated)
+          set_lock_board(true);
           
         } else if (result === HIT) {
           console.log(x, y,other_player_board[x][y].ship_index,other_player_board,other_player_ships)
          updated = update_board_hit(x, y,other_player_board[x][y].ship_index, other_player_board, other_player_ships)
-        //  console.log('updated console log',updated)
 
         //  set_other_player_board(updated.board);
         //  set_other_player_ships(updated.ships);
@@ -67,6 +80,7 @@ const OppnentGrid = () => {
   const lockButton = (x, y) => {
     let itemLocked = { x, y };
     set_lockArray([...lockArray, itemLocked]);
+    console.log(lockArray)
   };
   const lockedButton = (x, y) => {
     let itemLocked = { x, y };
@@ -86,12 +100,12 @@ const OppnentGrid = () => {
           <AbcWrapper>
             {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
           </AbcWrapper> */}
-      <Grid>
+      <Grid lock={lock_board}>
         {/* {console.log('The other player board',other_player_board)} */}
         {other_player_board.map((xArr, Xindex) =>
           xArr.map((yArr, Yindex) => (
             <OppnentPixel
-              lock={lock}
+              lock={lock_board}
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex)}
               x={Xindex}
@@ -113,6 +127,8 @@ const Grid = styled.div`
   height: 500px;
   width: 500px;
   color: #003b00;
+  cursor-pointer: ${({ lock_board }) => (lock_board ? 'none' : 'auto')};
+
 `;
 
 const Wrapper = styled(Grid)`
