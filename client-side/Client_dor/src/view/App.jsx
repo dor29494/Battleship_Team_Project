@@ -7,6 +7,7 @@ import Footer from "./Footer"
 import Input from "./Input"
 import { BsContext } from "../stateManager/stateManager"
 function App() {
+  const { first_state, ships_array, grid_array, set_ships_array, set_grid_array } = useContext(BsContext);
   return (
     <>
       <TopBar />

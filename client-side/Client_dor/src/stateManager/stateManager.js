@@ -33,7 +33,6 @@ const StateManager = ({ children }) => {
   const [other_player_guess,set_other_player_guess] = useState(null);
   const [player_is_ready, set_player_is_ready] = useState(false);
   const [both_players_ready, set_both_players_ready] = useState(false);
-  
 
   // *** check with guy if we can make this better.
   useEffect(() => {
