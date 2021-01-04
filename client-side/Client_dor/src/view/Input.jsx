@@ -20,8 +20,8 @@ const Input = () => {
     player_is_ready,
     set_player_is_ready,
     set_both_players_ready,
-    winnig,
-    set_winnig
+    winning,
+    set_winning
   } = useContext(BsContext);
 
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -92,28 +92,21 @@ const Input = () => {
   //---------------------winnig--------------------------
 
   useEffect(() => {
-    if (winnig === true) {
-      socket.emit("data", { is_winnig: true });
+    if (winning === true) {
+      socket.emit("data", { room: player_room, is_winnig: winning });
       alert("you won!");
     }
-    if (winnig === false) {
+    if (winning === false) {
       alert("you loose :[");
     }
-  }, [winnig]);
+  }, [winning]);
 
   // ---------------------------------------listening---------------------------------------
 
   useEffect(() => {
     socket.on("data", (data = {}) => {
-      // *** winning does not reach to the other player for some reason
-      console.log(data);
-      console.log(is_winnig);
       const { turn, board, ready_to_start, to_player, ships, guess, is_winnig } = data;
 
-      if (is_winnig) {
-        console.log("The other player won!");
-        set_winnig(!is_winnig);
-      }
       if (to_player === "2") {
         set_other_player_board(board);
         set_other_player_ships(ships);
@@ -132,9 +125,13 @@ const Input = () => {
         console.log("Player has recived the opponents guess", guess);
         set_other_player_guess(guess);
       }
+      if (is_winnig) {
+        console.log("The other player won!");
+        set_winning(!is_winnig);
+      }
     });
   }, [])
-
+  
   return (
     <MiniWrapper>
       <PlayButton onClick={() => play_button()}>Play</PlayButton>

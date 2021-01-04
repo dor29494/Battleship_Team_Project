@@ -66,8 +66,7 @@ io.sockets.on('connection', socket => {
 
     // is_winning - if one of the players won, notify the players.
     if ( is_winnig ) { 
-      // io.in(room).emit("data",{ is_winnig });
-      socket.to(room).emit("data",{ guess: "yabalulu" });
+      socket.to(room).emit("data",{ is_winnig });
       console.log( "the server emiting victory to the other player" );
     }
     
