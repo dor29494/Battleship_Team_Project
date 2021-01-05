@@ -20,8 +20,8 @@ const Input = () => {
     player_is_ready,
     set_player_is_ready,
     set_both_players_ready,
-    winnig,
-    set_winnig
+    winning,
+    set_winning
   } = useContext(BsContext);
 
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -89,17 +89,17 @@ const Input = () => {
     socket.emit("data", { room: player_room, guess: player_guess });
     console.log("emited guess");
   }, [player_guess]);
-  //---------------------winnig--------------------------
+  //---------------------winning--------------------------
 
   useEffect(() => {
-    if (winnig === true) {
-      socket.emit("data", { is_winnig: true });
+    if (winning === true) {
+      socket.emit("data", { room: player_room, is_winning: true });
       alert("you won!");
     }
-    if (winnig === false) {
+    if (winning === false) {
       alert("you loose :[");
     }
-  }, [winnig]);
+  }, [winning]);
 
   // ---------------------------------------listening---------------------------------------
 
@@ -107,12 +107,12 @@ const Input = () => {
     socket.on("data", (data = {}) => {
       // *** winning does not reach to the other player for some reason
       console.log(data);
-      console.log(is_winnig);
-      const { turn, board, ready_to_start, to_player, ships, guess, is_winnig } = data;
+      console.log(is_winning);
+      const { turn, board, ready_to_start, to_player, ships, guess, is_winning } = data;
 
-      if (is_winnig) {
+      if (is_winning) {
         console.log("The other player won!");
-        set_winnig(!is_winnig);
+        set_winning(!is_winning);
       }
       if (to_player === "2") {
         set_other_player_board(board);
@@ -134,7 +134,12 @@ const Input = () => {
       }
     });
   }, [])
-
+  document.addEventListener("keydown", event => {
+    if (event.keyCode == 32) {
+      console.log("trying something")
+      socket.emit("data", { room: player_room, is_winning: true });
+    }
+  })
   return (
     <MiniWrapper>
       <PlayButton onClick={() => play_button()}>Play</PlayButton>

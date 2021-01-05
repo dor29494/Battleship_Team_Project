@@ -14,7 +14,8 @@ const OppnentGrid = () => {
     other_player_guess,
     both_players_ready,
     first_turn,
-    set_winnig
+    set_winning
+    
   } = useContext(BsContext);
 
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
@@ -60,7 +61,7 @@ const OppnentGrid = () => {
           // console.log(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
           updated = update_board_hit(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
           if (updated.is_win) { 
-            set_winnig(true);
+            set_winning(true);
             set_lock_board(true);
           };
           //  set_other_player_board(updated.board);

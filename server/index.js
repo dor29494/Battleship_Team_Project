@@ -31,7 +31,7 @@ io.sockets.on('connection', socket => {
 
   socket.on('data', (data = {}) => {
 
-    const { room, action, guess, board, turn, message, to_player, ships, is_winnig } = data;
+    const { room, action, guess, board, turn, message, to_player, ships, is_winning } = data;
 
     const play = 'play';
     const ready = 'ready';
@@ -57,7 +57,6 @@ io.sockets.on('connection', socket => {
         console.log( ">>>emiting from server to: player " + to_player + " ,player1 board: " + "board1" + " ,does player2 starts?: " + turn );
       }
     }
-
     // guess - passing guesses between the players.
     if ( guess ) { 
       socket.to(room).emit("data",{ guess });
@@ -65,9 +64,9 @@ io.sockets.on('connection', socket => {
     }
 
     // is_winning - if one of the players won, notify the players.
-    if ( is_winnig ) { 
-      // io.in(room).emit("data",{ is_winnig });
-      socket.to(room).emit("data",{ guess: "yabalulu" });
+    if ( is_winning ) { 
+      // io.in(room).emit("data",{ is_winning });
+      socket.to(room).emit("data",{ is_winning });
       console.log( "the server emiting victory to the other player" );
     }
     
