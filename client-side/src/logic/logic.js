@@ -1,31 +1,22 @@
-import { version } from "react";
+import {VERTICAL, HORIZONTAL, RUSSIAN, FRENCH, SEA, MISS, HIT, AROUND_SINK, SHIP_PART, AROUND_SHIP } from "../stateManager/stateManager";
 
-const VERTICAL = 'vertical';
-const HORIZONTAL = 'horizontal'
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 const random_boolean = () => Math.random() < 0.5;
 
-const RUSSIAN = 'RUSSIAN';
-const FRENCH = 'FRENCH';
-const SEA = 'SEA';
-const MISS = 'MISS';
-const HIT = 'HIT';
-const SINK = 'SINK';
-const AROUND_SINK = 'AROUND_SINK';
-const SHIP_PART = 'SHIP_PART';
-const AROUND_SHIP = 'AROUND_SHIP';
-
-
 const update_board_square_around_sink = (board, x, y) => {
+    // console.log('trying to update around sink',x,y)
     const new_board = [...board];
-    if (new_board[x][y].value !== MISS)
+    if (new_board[x][y].value !== MISS && new_board[x][y].value !== SHIP_PART) {
         new_board[x][y].value = AROUND_SINK;
+    }
     return new_board;
-}
+};
 
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-    new_board[x][y].around_ship = true;
+    if ('around_ship' in new_board[x][y]) {
+        new_board[x][y].around_ship = true;
+    }
     return new_board;
 }
 
@@ -291,44 +282,51 @@ const update_board_around_a_ship = (board, ship, new_value) => {
     return new_board
 }
 
-export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, ships) => {
-    let new_SHIPS = { ...ships };
+export const update_board_hit = (x, y, ship_index, board, ships) => {
+    let new_ships = [...ships];
     let new_board = [...board];
-    new_SHIPS[ship_index].ship_parts.filter((part) => part.x === x && part.y === y)[0].is_hit = true;
+    const part_index = new_ships[ship_index].ship_parts.findIndex((part)=> part.x === x && part.y === y);
+    new_ships[ship_index].ship_parts[part_index].is_hit = true;
+    new_board[x][y].is_hit = true;
 
     let is_ship_sunk = true;
-    for (const ship_part of new_SHIPS[ship_index].ship_parts) {
+    for (const ship_part of new_ships[ship_index].ship_parts) {
         if (!ship_part.is_hit)
             is_ship_sunk = false;
     }
 
     if (is_ship_sunk) {
-        new_SHIPS[ship_index].is_sunk = is_ship_sunk;
-        new_SHIPS = update_board_around_a_ship(new_board, new_SHIPS[ship_index], AROUND_SINK);
+        new_ships[ship_index].is_sunk = is_ship_sunk;
+        new_board = update_board_around_a_ship(new_board, new_ships[ship_index], AROUND_SINK);
 
     }
-
     let is_win = true;
-    for (const ship of new_SHIPS) {
-        if (!ship.is_sunk)
+    new_ships.forEach((ship) => {
+        if (!ship.is_sunk) {
             is_win = false;
-    }
+        }
+    })
+    // for (const ship of new_ships) {
+    //     if (!ship.is_sunk){
+    //         is_win = false;
 
-    new_board[x][y].is_hit = true;
+    // }
+    // }
 
+    // console.log('About to enter switch case with x&y',x,y)
     switch (x) {
         case 0:
             switch (y) {
                 case 0:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y + 1));
                     break;
                 case 9:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y - 1));
                     break;
 
                 default:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
-                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y - 1));
                     break;
             }
             break;
@@ -336,17 +334,17 @@ export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, sh
         case 9:
             switch (y) {
                 case 0:
-                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y + 1));
 
                     break;
                 case 9:
-                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y - 1));
 
                     break;
 
                 default:
-                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
-                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y - 1));
                     break;
             }
             break;
@@ -354,32 +352,33 @@ export const update_board_hit = (x = 0, y = 3, ship_index, Board = exmpBoard, sh
         default:
             switch (y) {
                 case 0:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
-                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y + 1));
                     break;
                 case 9:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
-                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y - 1));
                     break;
 
                 default:
-                    new_board = update_board_square_around_sink(board, (x + 1), (y + 1));
-                    new_board = update_board_square_around_sink(board, (x - 1), (y + 1));
-                    new_board = update_board_square_around_sink(board, (x + 1), (y - 1));
-                    new_board = update_board_square_around_sink(board, (x - 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y + 1));
+                    new_board = update_board_square_around_sink(new_board, (x + 1), (y - 1));
+                    new_board = update_board_square_around_sink(new_board, (x - 1), (y - 1));
                     break;
             }
 
             break;
     }
+    // console.log('Updated around_sink:')
 
-    if (is_ship_sunk)
-        if (is_win)
-            return 'WIN';
-        else
-            return { board: new_board, ships: new_SHIPS };
+    if (is_win)
+        // if (false)
+        // win the game
+        return { board: new_board, ships: new_ships, is_win: true };
     else
-        return { board: new_board };
+        return { board: new_board, ships: new_ships };
+
 
 }
 
@@ -435,7 +434,7 @@ export const place_ships = (board, ships) => {
 
                     new_board[ship_head_x][ship_head_y + i] = new_ship_part;
                 }
-                console.log(index_of_ship);
+                // console.log(index_of_ship);
             }
 
             // if (ship.direction === HORIZONTAL) {
@@ -462,7 +461,7 @@ export const place_ships = (board, ships) => {
                     new_board[ship_head_x + i][ship_head_y] = new_ship_part;
 
                 }
-                console.log(index_of_ship);
+                // console.log(index_of_ship);
             }
             // console.log(new_board);
             new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);
@@ -612,4 +611,4 @@ export const initial_ships = (game_type = RUSSIAN) => {
         return 'err, game type is non existing/unsuported'
 }
 
-console.log(place_ships(initial_game_board(), initial_ships()));
+// console.log(place_ships(initial_game_board(), initial_ships()));

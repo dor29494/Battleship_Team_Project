@@ -1,35 +1,40 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { BsContext } from "../stateManager/stateManager";
-import { update_board_hit, update_board_miss } from "./guy";
-import { SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import styled from "styled-components";
+import { update_board_hit, update_board_miss } from "../logic/logic";
+import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
+import { Wrapper, PlayerGrid, GridHeaders } from "../styles/GlobalStyles";
 import UserPixel from "./UserPixel";
 
 const UserGrid = () => {
-  const { 
+  const {
     player_board,
     set_player_board,
     player_ships,
-    other_player_guess
+    other_player_guess,
+    player_is_ready
   } = useContext(BsContext)
 
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
   // const [num_store, set_num_store] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 
-  // *** i dont think we need this
-  //#region 
-  // const [lock, set_lock] = useState(false);
-  // const [lockArray, set_lockArray] = useState([]);
-  //#endregion
+  const [lock_ship_position, set_lock_ship_position] = useState(false);
 
-  const pixelStatus = (x, y) => {
-    let obj = player_board[x][y].value;
-    if (obj === SHIP_PART && player_board[x][y].is_hit === true) {
-      return HIT
+  // *** lock the user's ship when ready after reordering
+  useEffect(() => {
+    set_lock_ship_position(true)
+  }, [player_is_ready])
+
+  // *** we are reusing this in OpponentGrid - worth cheking.
+  // return the player's guess result (hit, miss...)
+  const pixelStatus = (x, y, board, ships) => {
+    const pixel = board[x][y];
+    if (ships && pixel.value === SHIP_PART) {
+      return ships[pixel.ship_index].is_sunk ? SINK : pixel.is_hit ? HIT : pixel.value;
     }
-    return obj;
+    return pixel.value;
   }
 
+  // updating the player's board and lock it.
   useEffect(() => {
     if (other_player_guess) {
       const { result, x, y } = other_player_guess;
@@ -46,36 +51,9 @@ const UserGrid = () => {
     }
   }, [other_player_guess])
 
-    // *** i dont think we need this
-    //#region 
-  // const ClickHandler = (x, y, lock) => {
-  //   if (!lock) {
-  //     if (!lockedButton(x, y)) {
-  //       console.log({ x, y })
-  //       set_player_guess({ x, y })
-  //       lockButton(x, y)
-  //     }
-  //     else {
-  //       console.log("locked button")
-  //     }
-  //   }
-  //   else { console.log("locked grid!") }
-  // }
-  // const lockButton = (x, y) => {
-  //   let itemLocked = { x, y }
-  //   set_lockArray([...lockArray, itemLocked])
-  // }
-  // const lockedButton = (x, y) => {
-  //   let itemLocked = { x, y }
-  //   for (let item of lockArray) {
-  //     if (item.x === x && item.y === y) return true
-  //   }
-  //   return false
-  // }
-  //#endregion
-  
   return (
-    <Wrapper>Your Grid
+    <Wrapper>
+      <GridHeaders>Your Grid</GridHeaders>
       {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
       {/* <NumWrapper>
         {num_store.map(num => <NumDiv>{num}</NumDiv>)}
@@ -83,29 +61,20 @@ const UserGrid = () => {
       <AbcWrapper>
         {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
       </AbcWrapper> */}
-      <Grid>
-        {player_board.map((xArr, Xindex) => xArr.map((yArr, Yindex) => <UserPixel 
-        // lock={lock} 
-        key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)}></UserPixel>))}
-      </Grid>
+      <PlayerGrid>
+        {player_board.map((xArr, Xindex, board) =>
+          xArr.map((yArr, Yindex) =>
+            <UserPixel
+              lock={lock_ship_position} // *** for the ship reordering function.
+              key={`g${Yindex}`}
+              status={pixelStatus(Xindex, Yindex, board, player_ships)}
+            ></UserPixel>))}
+      </PlayerGrid>
     </Wrapper>
   )
 };
 
-export default UserGrid
-
-const Grid = styled.div`
-display: flex;
-flex-wrap: wrap;
-height: 500px;
-width: 500px;
-color: #003B00;
-`;
-
-const Wrapper = styled(Grid)`
-border: none;
-color: white;
-`;
+export default UserGrid;
 
 // const StyledPixel = styled.div`
 // min-width: 2rem;

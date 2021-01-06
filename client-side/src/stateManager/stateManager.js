@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { place_ships, initial_game_board, initial_ships } from "../view/guy";
+import { place_ships, initial_game_board, initial_ships } from "../logic/logic";
 import io from 'socket.io-client';
 
 // *** we still need to make the url dynamic.
