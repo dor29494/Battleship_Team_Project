@@ -1,7 +1,8 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
+import { MdContentCopy, MdNoEncryption } from 'react-icons/md'
 
 const Input = () => {
 
@@ -21,9 +22,9 @@ const Input = () => {
     set_player_is_ready,
     set_both_players_ready,
     winning,
-    set_winning
+    set_winning,
   } = useContext(BsContext);
-
+const [join, set_join] = useState(false);
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
 
   const play = "play";
@@ -34,12 +35,22 @@ const Input = () => {
 
   //--------------------joining room-------------------------
   const play_button = () => {
-    set_player_room(nanoid());
+    if (player_room) set_player_room()
+    else { set_player_room(nanoid()) }
   };
 
   const join_button = (input_value) => {
     set_player_room(input_value);
   };
+  const copy_id = () => {
+    event.preventDefault();
+    // if (inputValue) { console.log(">>> ", inputValue) }
+    navigator.clipboard.writeText(player_room).then(function () {
+      /* clipboard successfully set */
+    }, function () {
+      /* clipboard write failed */
+    });
+  }
 
   useEffect(() => {
     console.log("room:", player_room);
@@ -132,6 +143,10 @@ const Input = () => {
         console.log("Player has recived the opponents guess", guess);
         set_other_player_guess(guess);
       }
+      if (is_winning) {
+        console.log("The other player won!");
+        set_winning(!is_winning);
+      }
     });
   }, [])
   document.addEventListener("keydown", event => {
@@ -142,12 +157,13 @@ const Input = () => {
   })
   return (
     <MiniWrapper>
-      <PlayButton onClick={() => play_button()}>Play</PlayButton>
-      <UrlHolder>{player_room}</UrlHolder>
+      <PlayButton onClick={() => play_button()}>Host</PlayButton>
+      <UrlHolder player_room={player_room}><CopyButton onClick={() => copy_id()}><MdContentCopy /></CopyButton>{player_room}</UrlHolder>
       <JoinButton onClick={() => join_button(inputEl.current.value)}>
         Join
       </JoinButton>
-      <InputHolder ref={inputEl} />
+      <InputHolder join={join} ref={inputEl} />
+
       <ReadyButton onClick={() => ready_button()}>Ready</ReadyButton>
     </MiniWrapper>
   );
@@ -161,24 +177,29 @@ const MiniWrapper = styled.form`
   // border: 2px black solid;
   height: 100%;
   justify-content: space-around;
+  padding: 1.5rem;
 `;
 
 const UrlHolder = styled.div`
+margin: 0.5rem;
   height: 4rem;
-  width: 45rem;
-  outline: none;
+  width: 20rem;
+    outline: none;
   border-radius: 4rem;
   border: white 2px solid;
   transition: border 0.5s;
-  padding: 1rem;
+  font-size: 1.2rem;
   z-index: 1;
+  align-items: center;
 
     &:focus {
       border: tomato 2px solid;
     }
+    display: ${props => props.player_room ? 'flex' : 'none'}
 `;
 const ReadyButton = styled.div`
-  font-family: "Expletus Sans";
+margin: 0.5rem;
+  // font-family: "Expletus Sans";
   text-align: left;
   font-size: 2rem;
   width: 20rem;
@@ -186,9 +207,9 @@ const ReadyButton = styled.div`
   text-align: center;
   border-radius: 3rem;
   font-weight: 400;
-  color: black;
+  color: #004f14;
   background: white;
-  border: none;
+  border: 1px solid #00FF41;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
 
@@ -196,45 +217,34 @@ const ReadyButton = styled.div`
       outline: none;
       box-shadow: 0px 0px yellow, -1em 0 04em white;
     }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 const PlayButton = styled(ReadyButton)``;
 
 const InputHolder = styled.input`
+margin: 0.5rem;
   height: 4rem;
   width: 20rem;
   outline: none;
   border-radius: 4rem;
   border: white 2px solid;
   transition: border 0.5s;
-  padding: 1rem;
   z-index: 1;
-  margin-bottom: 0.6rem;
+  // margin-bottom: 0.6rem;
 
     &:focus {
       border: tomato 2px solid;
     }
 `;
 
-const JoinButton = styled.div`
-display: ${(inputValue) => (inputValue ? "flex" : "none")}
-font-family: "Expletus Sans";
-text-align: left;
-font-size: 2rem;
-width: 20rem;
-max-height: 7rem;
-text-align: center;
-border-radius: 3rem;
-font-weight: 400;
-color: black;
-background: white;
-border: none;
-box-shadow: inset 0 0.1rem 1.5rem lightgrey;
-cursor: pointer;
-margin-bottom: 0.6rem;
+const JoinButton = styled(ReadyButton)``;
+const CopyButton = styled.button`
 
-  &:focus{
-    outline: none;
-    box-shadow: 0px 0px yellow, -1em 0 04em white;
-  }
-`;
+  // height: 30px;
+  // width: 30px;
+  position: relative;
+  left: 23vh;
+`
