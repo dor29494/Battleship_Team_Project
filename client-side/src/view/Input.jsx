@@ -157,7 +157,7 @@ const MiniWrapper = styled.form`
 
 const UrlHolder = styled.div`
   height: 4rem;
-  width: 45rem;
+  width: 30rem;
   outline: none;
   border-radius: 4rem;
   border: white 2px solid;

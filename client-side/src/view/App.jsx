@@ -29,12 +29,3 @@ max-width: 800px
 border: 3px solid;
 margin-top: 15rem;
 `;
-
-// const ShapedBackground = styled.div`
-// background: #06bcfb;
-// background-image: linear-gradient(315deg, #06bcfb 0%, #4884ee 74%);
-// height: 900px;
-// position: fixed;
-// border: 1px solid red;
-// border-radius: 50%;
-// `;

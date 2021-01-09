@@ -33,15 +33,16 @@ const GlobalStyles = createGlobalStyle`
 
 export default GlobalStyles
 
-// UserPixel + OpponentPixel components:
-
+// general:
 export const StandardPixel = styled.div`
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+width: 50px;
+height: 50px;
+display: flex;
+justify-content: center;
+align-items: center;
 `;
+
+// UserPixel + OpponentPixel components:
 
 export const RegularSquare = styled(StandardPixel)`
   border: 1px solid #00FF41;
@@ -87,27 +88,58 @@ export const OpponentSquare = styled(RegularSquare)`
 
 // UserGrid + OpponentGrid components:
 
+export const Wrapper = styled.div`
+// border: 1px solid white;
+  height: 580px;
+  width: 560px;
+  color: white;
+  margin: 20px;
+  display: grid;
+  grid-template-areas:
+  'header header'
+  'emptyPixel lettersBar'
+  'numbersBar grid';
+`;
+
 export const PlayerGrid = styled.div`
-display: flex;
-flex-wrap: wrap;
-height: 500px;
-width: 500px;
-color: #003B00;
+  display: flex;
+  flex-wrap: wrap;
+  height: 500px;
+  width: 500px;
+  color: #003B00;
+  grid-area: grid;
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
-cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'none' : 'auto')};
-`;
-
-export const Wrapper = styled(PlayerGrid)`
-  border: none;
-  color: white;
-  margin: 10px;
-  justify-content: center;
+  cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'none' : 'auto')};
 `;
 
 export const GridHeaders = styled.span`
-text-align: center;
+  text-align: center;
+  grid-area: header;
+`;
+
+export const LettersBar = styled.div`
+  // border: 1px solid white;
+  width: 500px;
+  display: flex;
+  grid-area: lettersBar;
+`;
+
+export const NumbersBar = styled.div`
+  // border: 1px solid white;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  grid-area: numbersBar;
+`;
+export const BarPixel = styled(StandardPixel)`
+  // border: 1px solid white;
+`;
+
+export const PlaceFiller = styled(StandardPixel)`
+  grid-area: emptyPixel;
 `;
 
 //--------------------------------------------
