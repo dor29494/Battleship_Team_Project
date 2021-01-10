@@ -91,7 +91,6 @@ useEffect(()=>{
         to_player: "2",
       });
       if (player_room) { set_first_turn(local_turn)
-      set_player_id(socket.id)
       }
       console.log("this is player 1");
       console.log("player 1 turn is " + local_turn);
