@@ -4,6 +4,7 @@ import { update_board_hit, update_board_miss } from "./guy";
 import { SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
 import styled from "styled-components";
 import UserPixel from "./UserPixel";
+import Chat from "./Chat"
 
 const UserGrid = () => {
   const { 
@@ -88,6 +89,7 @@ const UserGrid = () => {
         // lock={lock} 
         key={`g${Yindex}`} status={pixelStatus(Xindex, Yindex)}></UserPixel>))}
       </Grid>
+      <Chat/>
     </Wrapper>
   )
 };

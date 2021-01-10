@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { place_ships, initial_game_board, initial_ships } from "../view/guy";
 import io from 'socket.io-client';
+import shortid from "shortid"
 
 // *** we still need to make the url dynamic.
 // import { SOCKET_URL } from "dotenv";
@@ -33,6 +34,12 @@ const StateManager = ({ children }) => {
   const [other_player_guess,set_other_player_guess] = useState(null);
   const [player_is_ready, set_player_is_ready] = useState(false);
   const [both_players_ready, set_both_players_ready] = useState(false);
+  const [player_message, set_player_message] = useState([]);
+  const [other_player_message, set_other_player_message] = useState([]);
+  const [chat_array_message, set_chat_array_message] = useState([]);
+  const [player_id, set_player_id] = useState(shortid.generate());
+
+
   const [winning, set_winning] = useState(null);
 
   // *** check with guy if we can make this better.
@@ -53,7 +60,11 @@ const StateManager = ({ children }) => {
     other_player_guess,
     player_is_ready,
     both_players_ready,
-    winning
+    winning,
+    player_message,
+    other_player_message,
+    chat_array_message,
+    player_id,
   };
 
   const action = {
@@ -67,7 +78,11 @@ const StateManager = ({ children }) => {
     set_other_player_guess,
     set_player_is_ready,
     set_both_players_ready,
-    set_winning
+    set_winning,
+    set_player_message,
+    set_other_player_message,
+    set_chat_array_message,
+    set_player_id,
   };
 
   const ws_connection = {

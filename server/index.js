@@ -71,11 +71,10 @@ io.sockets.on('connection', socket => {
     }
     
     // // Send a message. 
-    // if ( message ) {
-    //   console.log("message recived:");
-    //   console.dir(message);
-    //   console.dir(board);
-    // }
+    if (action === 'chat_message') {
+      console.log("message recived:",message);
+      socket.to(room).emit("data",{ message });
+    }
 
     // leave - player disconnected.
     if (action === 'leave') {

@@ -21,17 +21,31 @@ const Input = () => {
     set_player_is_ready,
     set_both_players_ready,
     winning,
-    set_winning
+    set_winning,
+    player_message,
+    set_player_message,
+    other_player_message,
+    set_other_player_message,
+    set_player_id,
+    player_id,
+    set_chat_array_message,
+    chat_array_message,
+    
   } = useContext(BsContext);
 
   const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
 
   const play = "play";
   const ready = "ready";
+  const chat_message = "chat_message"
   const inputEl = useRef();
-
   // ----------------------------------------emiting---------------------------------------
+//--------------------Send a message-------------------------
+useEffect(()=>{
+  console.log('Inside UseEffect of player_message:' , chat_array_message[chat_array_message.length-1])
+  socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length-1]});
 
+},[player_message])
   //--------------------joining room-------------------------
   const play_button = () => {
     set_player_room(nanoid());
@@ -76,7 +90,9 @@ const Input = () => {
         turn: !local_turn,
         to_player: "2",
       });
-      if (player_room) { set_first_turn(local_turn) }
+      if (player_room) { set_first_turn(local_turn)
+      set_player_id(socket.id)
+      }
       console.log("this is player 1");
       console.log("player 1 turn is " + local_turn);
       console.log("player 1 emiting...");
@@ -97,7 +113,7 @@ const Input = () => {
       alert("you won!");
     }
     if (winning === false) {
-      alert("you loose :[");
+      alert("you lose :[");
     }
   }, [winning]);
 
@@ -105,8 +121,23 @@ const Input = () => {
 
   useEffect(() => {
     socket.on("data", (data = {}) => {
-      const { turn, board, ready_to_start, to_player, ships, guess, is_winnig } = data;
-
+      const { turn, board, ready_to_start, to_player, ships, guess, is_winnig, message } = data;
+if(message){
+  set_other_player_message(...other_player_message, message)
+  // set_chat_array_message([...chat_array_message,{
+  //   id: socket.id,
+  //   msg: message.msg
+  //        }
+           
+  //       ])
+        set_chat_array_message((prev) => ([
+          ...prev,
+          {
+            id: player_id,
+            msg: message.msg
+                 }
+        ]));
+}
       if (to_player === "2") {
         set_other_player_board(board);
         set_other_player_ships(ships);
