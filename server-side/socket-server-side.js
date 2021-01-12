@@ -1,5 +1,5 @@
 const app = require('express')();
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const log = require('@ajar/marker');
 const cors = require('cors');
 const { Server } = require('socket.io');

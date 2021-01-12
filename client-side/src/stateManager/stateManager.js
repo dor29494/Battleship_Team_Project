@@ -39,8 +39,13 @@ const StateManager = ({ children }) => {
   const [show_modal, set_show_modal] = useState(false);
   const [winning, set_winning] = useState(null);
 
+  const [note_status, set_note_status] = useState(null);
+  const [connected, set_connected] = useState(false);
+  const [opponent_precents, set_opponent_precents] = useState(0);
+  const [user_precents, set_user_precents] = useState(0);
+
   useEffect(() => {
-    let { board, ships  } = place_ships(initial_game_board(), initial_ships());
+    let { board, ships } = place_ships(initial_game_board(), initial_ships());
     set_player_ships(ships);
     set_player_board(board);
   }, [random_board]);
@@ -61,7 +66,12 @@ const StateManager = ({ children }) => {
     random_board,
     game_status,
     winning,
-    show_modal
+    show_modal,
+
+    note_status,
+    connected,
+    opponent_precents,
+    user_precents
   };
 
   const action = {
@@ -80,7 +90,12 @@ const StateManager = ({ children }) => {
     set_random_board,
     set_game_status,
     set_winning,
-    set_show_modal
+    set_show_modal,
+
+    set_note_status,
+    set_connected,
+    set_opponent_precents,
+    set_user_precents
   };
 
   const ws_connection = {

@@ -32,9 +32,9 @@ function App() {
   );
 }
 export default App;
-
 const GameWrapper = styled.div`
 display: flex;
 width: 100%;
+height: 100%;
 margin-top: 15rem;
 `;

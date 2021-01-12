@@ -15,6 +15,7 @@ const UserPixel = ({ status, lock }) => {
     return <ShipHit>X</ShipHit>
   }
   else if (status === SINK) {
+
     return <ShipSink></ShipSink>
   }
   else if (status === AROUND_SINK) {

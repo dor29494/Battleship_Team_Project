@@ -35,8 +35,9 @@ export default GlobalStyles
 
 // general:
 export const StandardPixel = styled.div`
-width: 50px;
-height: 50px;
+width: 10%;
+height: 10%;
+//50px
 display: flex;
 justify-content: center;
 align-items: center;
@@ -45,12 +46,12 @@ align-items: center;
 // input component:
 
 export const Button = styled.div`
-// font-family: "Expletus Sans";
-  margin: 0.5rem;
+  margin: 2%;
+  // font-family: "Expletus Sans";
   text-align: left;
   font-size: 2rem;
-  width: 20rem;
-  height: 3rem;
+  width: 60%;
+  height: 20%;
   text-align: center;
   border-radius: 3rem;
   font-weight: 400;
@@ -59,15 +60,23 @@ export const Button = styled.div`
   border: 1px solid #00FF41;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 
     &:focus {
       outline: none;
       box-shadow: 0px 0px yellow, -1em 0 04em white;
     }
+    &:hover {
+      background: #1aff1a;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
+
+
 
 // UserPixel + OpponentPixel components:
 
@@ -118,17 +127,21 @@ export const ShipPart = styled(StandardPixel)`
 
 export const GridWrapper = styled.div`
 // border: 1px solid white;
-  height: 580px;
-  width: 560px;
+  border: none;
+  height: 500px;
+  width: 800px;
   color: white;
-  margin: 20px;
+  margin: 10%;
   display: grid;
+  justify-content: center;
+
   grid-template-areas:
   'header header'
+  'progressBar progressBar'
   'emptyPixel lettersBar'
   'numbersBar grid';
-`;
-
+  `;
+  
 export const PlayerGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -139,13 +152,22 @@ export const PlayerGrid = styled.div`
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
-  cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'none' : 'auto')};
+  cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'not-allowed' : 'pointer')};
   opacity: ${({ lock_other_player_board }) => (lock_other_player_board ? '0.3' : '1')};
   `;
 
 export const GridHeaders = styled.span`
   text-align: center;
   grid-area: header;
+`;
+
+export const LittleWrapper = styled.div`
+width: 100%;
+padding: 2%;
+display: flex;
+align-items: center;
+justify-content: center;
+grid-area: progressBar;
 `;
 
 export const LettersBar = styled.div`
