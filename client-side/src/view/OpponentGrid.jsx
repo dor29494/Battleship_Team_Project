@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import { Wrapper, OtherPlayerGrid, GridHeaders, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
+import { GridWrapper, OtherPlayerGrid, GridHeaders, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import OpponentPixel from "./OpponentPixel";
 
 const OpponentGrid = () => {
@@ -14,10 +14,11 @@ const OpponentGrid = () => {
     other_player_guess,
     both_players_ready,
     first_turn,
-    set_winning
+    set_winning,
+    lock_other_player_board,
+    set_lock_other_player_board
   } = useContext(BsContext);
 
-  const [lock_other_player_board, set_lock_other_player_board] = useState(true);
   const [lockArray, set_lockArray] = useState([]);
 
   // unlock the board of the first player.
@@ -88,7 +89,7 @@ const OpponentGrid = () => {
   };
 
   return (
-    <Wrapper>
+    <GridWrapper>
       <GridHeaders>Opponents Grid</GridHeaders>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num,i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter,i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
@@ -96,6 +97,7 @@ const OpponentGrid = () => {
         {other_player_board.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) => (
             <OpponentPixel
+            myturn={!lock_other_player_board}
               lock={lock_other_player_board}
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex, board, other_player_ships)}
@@ -106,7 +108,7 @@ const OpponentGrid = () => {
           ))
         )}
       </OtherPlayerGrid>
-    </Wrapper>
+    </GridWrapper>
   );
 };
 

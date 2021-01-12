@@ -3,7 +3,6 @@ import styled from "styled-components"
 
 const Footer = () => {
 
-
     return (
         <FooterWrapper>
            created by:

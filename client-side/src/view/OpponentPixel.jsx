@@ -2,9 +2,9 @@ import React from "react";
 import { OpponentSquare, MissHit, ShipHit, ShipSink, AroundSink, ShipPart } from "../styles/GlobalStyles"
 import { SEA, MISS, HIT, SINK, AROUND_SINK, SHIP_PART } from "../stateManager/stateManager";
 
-const dev = false // necessary only for dev - let you see the opponent ship
+const dev = true // necessary only for dev - let you see the opponent ship
 
-const OpponentPixel = ({ status, x, y, lock, clickhandler }) => {
+const OpponentPixel = ({ status, x, y, lock, clickhandler, myturn }) => {
 
   if (status === SEA) {
     return <OpponentSquare onClick={() => clickhandler(x, y, lock)} ></OpponentSquare>

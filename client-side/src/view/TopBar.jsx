@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState, useContext } from "react";
+import { IoIosHelpCircleOutline, IoIosHelpCircle } from 'react-icons/io'
 import battleship_logo from "../logo/battleship_logo.jpg"
+import styled from "styled-components";
 
 const TopBar = () => {
+
+    const [help, set_help] = useState(false);
 
     // regenerate false (dynamic) number of players (lol).
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -23,6 +26,7 @@ const TopBar = () => {
             <div>
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} />
+                    <h1 onClick={() => set_help(!help)}>{help ? <IoIosHelpCircle /> : <IoIosHelpCircleOutline />}</h1>
                 </LogoWrapper>
                 <TopBarHeader>players online: {num}</TopBarHeader>
             </div>
@@ -46,7 +50,11 @@ const TopBarWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-    width: 100%;   
+    width: 1600px;   
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 const Logo = styled.img`
@@ -56,12 +64,3 @@ const Logo = styled.img`
 const TopBarHeader = styled.span`
   font-size: 2.5rem;
 `;
-
-// const Randomgrid = styled.button`
-//   border: 1px solid;
-//   background-color: white;
-//   color: blue;
-//   min-width: 6vh;
-//   min-height: 6vh;
-//   cursor: pointer;
-// `;

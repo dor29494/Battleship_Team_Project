@@ -42,10 +42,45 @@ justify-content: center;
 align-items: center;
 `;
 
+// input component:
+
+export const Button = styled.div`
+// font-family: "Expletus Sans";
+  margin: 0.5rem;
+  text-align: left;
+  font-size: 2rem;
+  width: 20rem;
+  height: 3rem;
+  text-align: center;
+  border-radius: 3rem;
+  font-weight: 400;
+  color: white;
+  background: #003B00;
+  border: 1px solid #00FF41;
+  box-shadow: inset 0 0.1rem 1.5rem lightgrey;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0px 0px yellow, -1em 0 04em white;
+    }
+`;
+
 // UserPixel + OpponentPixel components:
 
 export const RegularSquare = styled(StandardPixel)`
   border: 1px solid #00FF41;
+`;
+
+export const OpponentSquare = styled(RegularSquare)`
+
+    :hover {
+      background: #00ff41;
+      opacity: 0.5;
+    }
 `;
 
 export const MissHit = styled(StandardPixel)`
@@ -68,27 +103,20 @@ export const ShipHit = styled(StandardPixel)`
 `;
 
 export const ShipSink = styled(StandardPixel)`
-  background: rgba(128, 128, 128, 0.8);
+  background: grey;
 `;
 
 export const ShipPart = styled(StandardPixel)`
   border: 3px solid blue;
   background: rgba(0, 0, 255, 0.3);
-`;
-
-export const OpponentSquare = styled(RegularSquare)`
-
-    :hover {
-      background: #00ff41;
-      opacity: 0.5;
-    }
+  // background: white;
 `;
 
 //--------------------------------------------
 
 // UserGrid + OpponentGrid components:
 
-export const Wrapper = styled.div`
+export const GridWrapper = styled.div`
 // border: 1px solid white;
   height: 580px;
   width: 560px;
@@ -112,7 +140,8 @@ export const PlayerGrid = styled.div`
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
   cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'none' : 'auto')};
-`;
+  opacity: ${({ lock_other_player_board }) => (lock_other_player_board ? '0.3' : '1')};
+  `;
 
 export const GridHeaders = styled.span`
   text-align: center;
@@ -143,3 +172,4 @@ export const PlaceFiller = styled(StandardPixel)`
 `;
 
 //--------------------------------------------
+

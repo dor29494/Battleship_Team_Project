@@ -1,232 +1,319 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
+import styled, { keyframes } from "styled-components";
 import { BsContext } from "../stateManager/stateManager";
-import styled from "styled-components";
+import { MdContentCopy } from 'react-icons/md';
+import { fadeOut, flash, __esModule } from 'react-animations';
+import { Button } from "../styles/GlobalStyles";
 import { nanoid } from "nanoid";
+import Modal from "./MsgModal";
+
+
+// *** needed?
+// const fadeoutAnimation = keyframes`${fadeOut}`;
+const flashAnimation = keyframes`${flash}`;
 
 const Input = () => {
 
   const {
-    socket,
-    player_room,
     set_player_room,
-    player_board,
-    set_other_player_board,
-    player_ships,
-    set_other_player_ships,
-    first_turn,
-    set_first_turn,
-    player_guess,
-    set_other_player_guess,
+    both_players_connected,
+    other_player_ships,
     player_is_ready,
     set_player_is_ready,
-    set_both_players_ready,
-    winning,
-    set_winning
+    both_players_ready,
+    lock_other_player_board,
+    random_board,
+    set_random_board,
+    game_status,
+    set_game_status,
+    show_modal,
+    winning
   } = useContext(BsContext);
 
-  const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
-
-  const play = "play";
-  const ready = "ready";
+  // local states:
   const inputEl = useRef();
+  const [show_host_button, set_show_host_button] = useState(true);
+  const [show_join_button, set_show_join_button] = useState(true);
+  const [show_host_url, set_show_host_url] = useState(false);
+  const [host_url, set_host_url] = useState(null);
+  const [show_join_button_input, set_show_join_button_input] = useState(false);
+  const [show_ready_box, set_show_ready_box] = useState(false);
+  const [copied_msg, set_copied_msg] = useState('');
+  const [connected, set_connected] = useState(false);
+  const [game_started, set_game_started] = useState(false);
+  const [game_over_msg, set_game_over_msg] = useState(null);
 
-  // ----------------------------------------emiting---------------------------------------
+  const host_button = () => {
+    if (!show_host_url) {
+      set_show_join_button(false);
+      set_show_host_url(true);
+      set_host_url(nanoid(4));
+    }
+    else if (show_host_url) {
+      set_show_host_url(false);
+      set_show_join_button(true);
+    }
+  }
 
-  //--------------------joining room-------------------------
-  const play_button = () => {
-    set_player_room(nanoid());
-  };
-
-  const join_button = (input_value) => {
-    set_player_room(input_value);
-  };
+  const copy_id = () => {
+    event.preventDefault();
+    navigator.clipboard.writeText(host_url).then(function () {
+      set_copied_msg("Id copied to clipboard!")
+      set_show_host_url(false);
+    });
+  }
 
   useEffect(() => {
-    console.log("room:", player_room);
-    socket.emit("data", { room: player_room, action: play });
-  }, [player_room]);
+    setTimeout(() => {
+      set_copied_msg('');
+    }, 3000);
+  }, [copied_msg]);
 
-  //--------------------ready to play-------------------------
+  const join_button = () => {
+    if (!show_join_button_input) {
+      set_show_host_button(false);
+      set_show_join_button_input(true);
+    }
+    else if (show_join_button_input) {
+      set_show_join_button_input(false);
+      set_show_host_button(true);
+    }
+  };
+
+  const start_button = () => {
+    if (show_host_button) {
+      set_show_host_button(false);
+      set_player_room(host_url);
+    }
+    else if (show_join_button) {
+      set_player_room(inputEl.current.value)
+      set_show_join_button(false);
+    }
+    set_show_ready_box(true);
+    set_connected(true);
+  }
 
   const ready_button = () => {
     set_player_is_ready(true);
+    set_show_ready_box(false);
+    
   };
 
+  const RandomBoard = () => {
+    set_random_board(!random_board)
+  }
+
   useEffect(() => {
-    if (first_turn !== null) {
-      socket.emit("data", {
-        room: player_room,
-        action: ready,
-        board: player_board,
-        ships: player_ships,
-        turn: !first_turn,
-        to_player: "1",
-      });
-      console.log("this is player 2");
-      console.log("player 2 emiting...");
-    } else {
-      let local_turn;
-      const turn_generator = randomize(0, 1);
-      turn_generator === 0 ? local_turn = true : local_turn = false;
-      socket.emit("data", {
-        room: player_room,
-        action: ready,
-        board: player_board,
-        ships: player_ships,
-        turn: !local_turn,
-        to_player: "2",
-      });
-      if (player_room) { set_first_turn(local_turn) }
-      console.log("this is player 1");
-      console.log("player 1 turn is " + local_turn);
-      console.log("player 1 emiting...");
+    if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to the other player. Then press start.") }
+    else if (!show_host_button && show_join_button){ set_game_status("Please past the room ID. Then press start.") }
+    else if (show_ready_box && !both_players_connected) { set_game_status("You are connected! Waiting for another player to connect...") }
+    else if (other_player_ships && !both_players_ready) { set_game_status('Your oppnent is ready.') }
+    else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
+    else if (player_is_ready && !both_players_ready) { set_game_status("Waiting for your opponent to be ready...") }
+    else if (both_players_ready) { 
+      set_game_status("You are good to go! Good luck!");
+      setTimeout(() => set_game_started(true), 2000);
     }
-  }, [player_is_ready]);
-
-  //--------------------guessing-------------------------
-
-  useEffect(() => {
-    socket.emit("data", { room: player_room, guess: player_guess });
-    console.log("emited guess");
-  }, [player_guess]);
-  //---------------------winnig--------------------------
+    if (!lock_other_player_board && game_started) { set_game_status("Its your turn") }
+    else if (lock_other_player_board && game_started) { set_game_status('') }
+  }, [show_host_button, show_join_button,show_ready_box,both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
 
   useEffect(() => {
     if (winning === true) {
-      socket.emit("data", { room: player_room, is_winnig: winning });
-      alert("you won!");
+      set_game_over_msg('YOU WON!!!');
+      set_connected(false);
     }
-    if (winning === false) {
-      alert("you loose :[");
+    else if (winning === false) {
+      set_game_over_msg('you loose')
+      set_connected(false);
     }
   }, [winning]);
 
-  // ---------------------------------------listening---------------------------------------
+  const renderDecideder = () => {
+    if (show_host_button && show_join_button) {
+      return (
+        <>
+          <HostButton onClick={() => host_button()}>Host</HostButton>
+          <JoinButton onClick={() => join_button()}>Join</JoinButton>
+        </>
+      );
+    }
+    else if (show_host_button && !show_join_button) {
+      return (
+        <>
+          <HostButton onClick={() => host_button()}>Back</HostButton>
+          <UrlHolder><CopyButton onClick={() => copy_id()}> { <MdContentCopy /> } </CopyButton>{host_url}</UrlHolder>
+          <StartButton onClick={() => start_button()}>Start</StartButton>
+        </>
+      )
+    }
+    else if (!show_host_button && show_join_button) {
+      return (
+        <>
+          <JoinButton onClick={() => join_button()}>Back</JoinButton>
+          <InputHolder placeholder="Enter game id" ref={inputEl} />
+          <StartButton onClick={() => start_button()}>Start</StartButton>
+        </>
+      )
+    }
+    else if (show_ready_box && both_players_connected) {
+      return (
+        <>
+          <ReadyButton onClick={() => ready_button()}>{!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}</ReadyButton>
+          <Random onClick={RandomBoard}>Random</Random>
+        </>
+      )
+    }
+    else if (show_modal) {
+      return <Modal />
+    }
+  }
 
-  useEffect(() => {
-    socket.on("data", (data = {}) => {
-      const { turn, board, ready_to_start, to_player, ships, guess, is_winnig } = data;
-
-      if (to_player === "2") {
-        set_other_player_board(board);
-        set_other_player_ships(ships);
-        set_first_turn(turn);
-        console.log("player's 1 data recived by player 2");
-        console.log("does player2 starts?: " + turn);
-      } else if (to_player === "1") {
-        set_other_player_board(board);
-        set_other_player_ships(ships);
-        console.log("player's 2 data recived by player 1");
-        console.log("does player1 starts?: " + turn);
-      } else if (ready_to_start) {
-        console.log("both players are ready");
-        set_both_players_ready(true);
-      } else if (guess) {
-        console.log("Player has recived the opponents guess", guess);
-        set_other_player_guess(guess);
-      }
-      if (is_winnig) {
-        console.log("The other player won!");
-        set_winning(!is_winnig);
-      }
-    });
-  }, [])
-  
   return (
-    <MiniWrapper>
-      <PlayButton onClick={() => play_button()}>Play</PlayButton>
-      <UrlHolder>{player_room}</UrlHolder>
-      <JoinButton onClick={() => join_button(inputEl.current.value)}>
-        Join
-      </JoinButton>
-      <InputHolder ref={inputEl} />
-      <ReadyButton onClick={() => ready_button()}>Ready</ReadyButton>
-    </MiniWrapper>
+    <InputWrapper connected={connected} game_over_msg={game_over_msg} game_started={game_started}>
+      {!game_over_msg ?
+        <MiniWrapper>
+          <StaticStatus>{game_status}</StaticStatus>
+          {renderDecideder()}
+        </MiniWrapper>
+        : <GameOver onClick={() => location.reload()}>{game_over_msg}</GameOver>}
+    </InputWrapper>
   );
 };
 
 export default Input;
 
+const InputWrapper = styled.div`
+    // border: 1px solid white;
+    background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
+    display: ${({ game_started, game_over_msg }) => game_started && !game_over_msg ? 'none' : 'flex'};
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    top: 200px;
+    width: 96%;
+    right: ${({ connected }) => connected ? '-400px' : '60px'};
+    position: fixed;
+    z-index: 100;
+    `;
+
 const MiniWrapper = styled.form`
   display: flex;
   flex-direction: column;
-  // border: 2px black solid;
-  height: 100%;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  height: 35%;
+  width: 20%;
+  background: black;
+  border: 3px solid #00ff3c; 
+  box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.81);
+  border-radius: 50px;
+`;
+
+const HostButton = styled(Button)``;
+
+const JoinButton = styled(Button)``;
+
+const StartButton = styled(Button)``;
+
+const ReadyButton = styled(Button)``;
+
+const Random = styled(Button)``;
+
+const CopyButton = styled.button`
+  position: relative;
+  left: 23vh;
 `;
 
 const UrlHolder = styled.div`
+  padding: 0.5rem;
+  margin: 0.5rem;
   height: 4rem;
-  width: 30rem;
-  outline: none;
-  border-radius: 4rem;
-  border: white 2px solid;
-  transition: border 0.5s;
-  padding: 1rem;
-  z-index: 1;
-
-    &:focus {
-      border: tomato 2px solid;
-    }
-`;
-const ReadyButton = styled.div`
-  font-family: "Expletus Sans";
-  text-align: left;
-  font-size: 2rem;
   width: 20rem;
-  height: 3rem;
-  text-align: center;
-  border-radius: 3rem;
-  font-weight: 400;
-  color: black;
-  background: white;
-  border: none;
-  box-shadow: inset 0 0.1rem 1.5rem lightgrey;
-  cursor: pointer;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0px 0px yellow, -1em 0 04em white;
-    }
+  outline: none; 
+  border-radius: 4rem;
+  border: white 1px solid;
+  transition: border 0.5s;
+  font-size: 1.5rem;
+  z-index: 1;
+  align-items: center;
+  display: flex;
 `;
-
-const PlayButton = styled(ReadyButton)``;
 
 const InputHolder = styled.input`
+  margin: 0.5rem;
+  padding: 0.5rem;
   height: 4rem;
   width: 20rem;
-  outline: none;
   border-radius: 4rem;
-  border: white 2px solid;
+  border: white 1px solid;
   transition: border 0.5s;
-  padding: 1rem;
+  font-size: 1.5rem;
   z-index: 1;
-  margin-bottom: 0.6rem;
+  outline: none;
+  align-items: center;
+  display: flex;
+  background: none; 
+  color: #00ff41;
+  caret-color: white;
 
     &:focus {
-      border: tomato 2px solid;
+      border: white 1px dashed;
+    }
+
+    ::placeholder {
+    color: white;
     }
 `;
 
-const JoinButton = styled.div`
-display: ${(inputValue) => (inputValue ? "flex" : "none")}
-font-family: "Expletus Sans";
-text-align: left;
+const Flash = styled.h1`
 font-size: 2rem;
-width: 20rem;
-max-height: 7rem;
-text-align: center;
-border-radius: 3rem;
-font-weight: 400;
-color: black;
-background: white;
-border: none;
-box-shadow: inset 0 0.1rem 1.5rem lightgrey;
-cursor: pointer;
-margin-bottom: 0.6rem;
-
-  &:focus{
-    outline: none;
-    box-shadow: 0px 0px yellow, -1em 0 04em white;
-  }
+animation: 1s ${flashAnimation};
+animation-iteration-count: infinite;
 `;
+
+const StaticStatus = styled.h1`
+// border: 1px solid white;
+font-size: 2rem;
+text-align: center;
+color: white;
+`;
+
+const GameOver = styled.div`
+cursor: pointer;
+width: 100%;
+height: 70%;
+position: fixed;
+top: 200px;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 20rem;
+font-weight: bold;
+background: rgba(0,0,0,0.8);
+`;
+
+// *** needed?
+
+// const StatusBox = styled.div`
+//   width: 50rem;
+//   height: 4rem;
+//   position: relative;
+//   top: -100px;
+//   left: 800px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `
+// const Animated = styled.h1`
+//   font-size: 2rem;
+//   animation: 3s ${fadeoutAnimation};
+//   display: flex;
+//   align-content: center;
+// `
+
+
+
+
+
