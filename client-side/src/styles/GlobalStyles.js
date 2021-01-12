@@ -36,8 +36,9 @@ export default GlobalStyles
 // UserPixel + OpponentPixel components:
 
 export const StandardPixel = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 10%;
+  height: 10%;
+  //50px
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,18 +94,21 @@ display: flex;
 flex-wrap: wrap;
 height: 500px;
 width: 500px;
+//500px
 color: #003B00;
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
-cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'none' : 'auto')};
+cursor: ${({ lock_other_player_board }) => (lock_other_player_board ? 'not-allowed' : 'pointer')};
 opacity: ${({ lock_other_player_board }) => (lock_other_player_board ? '0.3' : '1')};
 `;
 
 export const Wrapper = styled(PlayerGrid)`
+height: 500px;
+width: 800px;
   border: none;
   color: white;
-  margin: 180px;
+  margin: 10%;
   justify-content: center;
 
 `;
@@ -118,12 +122,12 @@ text-align: center;
 
 
 export const Button = styled.div`
-margin: 0.5rem;
+margin: 2%;
   // font-family: "Expletus Sans";
   text-align: left;
   font-size: 2rem;
-  width: 20rem;
-  height: 3rem;
+  width: 60%;
+  height: 20%;
   text-align: center;
   border-radius: 3rem;
   font-weight: 400;
@@ -132,12 +136,26 @@ margin: 0.5rem;
   border: 1px solid #00FF41;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
+  -webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
 
     &:focus {
       outline: none;
       box-shadow: 0px 0px yellow, -1em 0 04em white;
     }
+    &:hover {
+      background: #1aff1a;
+    }
     display: flex;
     align-items: center;
     justify-content: center;
 `;
+
+export const LittleWrapper = styled.div`
+width: 100%;
+padding: 2%;
+display: flex;
+align-items: center;
+justify-content: center;
+`

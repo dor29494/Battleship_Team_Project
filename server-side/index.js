@@ -51,11 +51,14 @@ io.sockets.on('connection', socket => {
     const play = 'play';
     const ready = 'ready';
     console.log("action: ", action)
+    if (action == 'sunk') {
+      socket.to(room).emit("data", { sunk: 'sunk' });
+      console.log("SUNKKKKKKKK");
+    }
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
       console.log("inside room " + room);
-      Clients[socket.id] = room;
 
       // tell the client that another player is in (and the show the 'ready' button)
       socket.to(room).emit("data", { join: 'join' });

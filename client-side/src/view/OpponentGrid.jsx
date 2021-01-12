@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { BsContext } from "../stateManager/stateManager";
+import { BsContext, socket } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import { Wrapper, OtherPlayerGrid, GridHeaders } from "../styles/GlobalStyles";
+import { Wrapper, OtherPlayerGrid, GridHeaders, LittleWrapper } from "../styles/GlobalStyles";
 import OpponentPixel from "./OpponentPixel";
-
+import ProgressBar from '@ramonak/react-progress-bar';
+import styled from "styled-components";
 const OpponentGrid = () => {
   const {
     other_player_board,
@@ -16,8 +17,13 @@ const OpponentGrid = () => {
     first_turn,
     set_winning,
     lock_other_player_board,
-    set_lock_other_player_board
-    
+    set_lock_other_player_board,
+    connected,
+    status,
+    set_status,
+    opponent_precents,
+set_opponent_precents
+
   } = useContext(BsContext);
 
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
@@ -28,14 +34,20 @@ const OpponentGrid = () => {
 
   // unlock the board of the first player.
   useEffect(() => {
-    if (first_turn) { set_lock_other_player_board(false) }
+    if (first_turn) {
+      set_lock_other_player_board(false);
+    }
   }, [both_players_ready]);
 
   // unlock the players board if the other player missed.
   useEffect(() => {
     if (other_player_guess) {
       const { result } = other_player_guess;
-      if (result === MISS) { set_lock_other_player_board(false) }
+      if (result === MISS) {
+        set_lock_other_player_board(false);
+        // alert("maybe my turn");
+
+      }
     }
   }, [other_player_guess]);
 
@@ -62,9 +74,21 @@ const OpponentGrid = () => {
           updated = update_board_miss(other_player_board, x, y);
           set_other_player_board(updated)
           set_lock_other_player_board(true);
+          setTimeout(() => {
+            set_status('MISS');
+          }, 100); 
         } else if (result === HIT) {
           // console.log(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
           updated = update_board_hit(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
+          console.log(updated)
+          if (updated.sunk) {
+            set_status('SINK!')
+            // NOT WORKING!!
+          }
+          else {
+          set_status('HIT!');
+          set_opponent_precents((opponent_precents + 1));
+          }
           if (updated.is_win) {
             set_winning(true);
             set_lock_other_player_board(true);
@@ -72,15 +96,14 @@ const OpponentGrid = () => {
           //  set_other_player_board(updated.board);
           //  set_other_player_ships(updated.ships);
         }
-
         lock_Pixel(x, y);
       } else {
-        console.log("this pixel has already had been clicked (locked button)");
+        set_status('Already clicked!')
       }
     } else {
-      console.log("Its not your turn! (locked grid)");
+      set_status('Locked board! Its not your turn')
     }
-  };
+  }
 
   const lock_Pixel = (x, y) => {
     let itemLocked = { x, y };
@@ -94,9 +117,14 @@ const OpponentGrid = () => {
     return false;
   };
 
+
   return (
     <Wrapper>
       <GridHeaders>Opponents Grid</GridHeaders>
+      <LittleWrapper>
+        <ProgressBar bgcolor="#00FF41" labelColor="black" completed={opponent_precents * 5 || 0} width={'300px'}/>
+        </LittleWrapper>
+
       {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
       {/* <NumWrapper>
             {num_store.map(num => <NumDiv>{num}</NumDiv>)}
@@ -105,12 +133,12 @@ const OpponentGrid = () => {
             {abc_store.map(abc => <AbcDiv>{abc}</AbcDiv>)}
           </AbcWrapper> */}
       <OtherPlayerGrid
-      lock_other_player_board={lock_other_player_board}
-      lock={lock_other_player_board}>
+        lock_other_player_board={lock_other_player_board}
+        lock={lock_other_player_board}>
         {other_player_board.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) => (
             <OpponentPixel
-            myturn={!lock_other_player_board}
+              myturn={!lock_other_player_board}
               lock={lock_other_player_board}
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex, board, other_player_ships)}
@@ -126,7 +154,6 @@ const OpponentGrid = () => {
 };
 
 export default OpponentGrid;
-
 // const styledPixel = styled.div`
 //   min-width: 2rem;
 //   min-height: 2rem;
@@ -202,3 +229,6 @@ export default OpponentGrid;
 // width: 10vh;
 // height:6vh;
 // `;
+
+
+

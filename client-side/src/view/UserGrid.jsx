@@ -2,8 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import { Wrapper, PlayerGrid, GridHeaders } from "../styles/GlobalStyles";
+import { Wrapper, PlayerGrid, GridHeaders, LittleWrapper } from "../styles/GlobalStyles";
 import UserPixel from "./UserPixel";
+import ProgressBar from '@ramonak/react-progress-bar';
 
 const UserGrid = () => {
   const {
@@ -11,7 +12,9 @@ const UserGrid = () => {
     set_player_board,
     player_ships,
     other_player_guess,
-    player_is_ready
+    player_is_ready,
+    user_precents,
+    set_user_precents
   } = useContext(BsContext)
 
   // const [abc_store, set_abc_store] = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'])
@@ -43,6 +46,7 @@ const UserGrid = () => {
         updated = update_board_miss(player_board, x, y);
         set_player_board(updated)
       } else if (result === HIT) {
+        set_user_precents(user_precents + 1);
         updated = update_board_hit(x, y, player_board[x][y].ship_index, player_board, player_ships)
         // *** need checking out
         set_player_board(updated.board);
@@ -54,6 +58,9 @@ const UserGrid = () => {
   return (
     <Wrapper>
       <GridHeaders>Your Grid</GridHeaders>
+      <LittleWrapper>
+        <ProgressBar bgcolor="#00FF41" labelColor="black" completed={user_precents * 5 || 0} width={'300px'}/>
+        </LittleWrapper>
       {/* הורדנו את החרא הזה, זה פה למי שרוצה להחזיר */}
       {/* <NumWrapper>
         {num_store.map(num => <NumDiv>{num}</NumDiv>)}

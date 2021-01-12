@@ -27,20 +27,23 @@ const StateManager = ({ children }) => {
   const [player_board, set_player_board] = useState([]);
   const [other_player_board, set_other_player_board] = useState(initial_game_board());
   const [player_ships, set_player_ships] = useState(initial_ships());
-  const [other_player_ships,set_other_player_ships] = useState();
+  const [other_player_ships, set_other_player_ships] = useState();
   const [first_turn, set_first_turn] = useState(null);
   const [player_guess, set_player_guess] = useState(null);
-  const [other_player_guess,set_other_player_guess] = useState(null);
+  const [other_player_guess, set_other_player_guess] = useState(null);
   const [player_is_ready, set_player_is_ready] = useState(false);
   const [both_players_ready, set_both_players_ready] = useState(false);
   const [winning, set_winning] = useState(null);
   const [random_board, set_random_board] = useState(0);
   const [lock_other_player_board, set_lock_other_player_board] = useState(true);
   const [show_modal, set_show_modal] = useState(false);
-  const [help, set_help] = useState(false);
+  const [connected, set_connected] = useState(false);
+  const [status, set_status] = useState('');
+  const [opponent_precents, set_opponent_precents] = useState(0);
+  const [user_precents, set_user_precents] = useState(0);
   // *** check with guy if we can make this better.
   useEffect(() => {
-    let { board, ships  } = place_ships(initial_game_board(),player_ships);
+    let { board, ships } = place_ships(initial_game_board(), initial_ships());
     set_player_ships(ships);
     set_player_board(board);
   }, [random_board]);
@@ -60,7 +63,10 @@ const StateManager = ({ children }) => {
     random_board,
     lock_other_player_board,
     show_modal,
-    help
+    connected,
+    status,
+    opponent_precents,
+    user_precents
   };
 
   const action = {
@@ -78,7 +84,10 @@ const StateManager = ({ children }) => {
     set_random_board,
     set_lock_other_player_board,
     set_show_modal,
-    set_help
+    set_connected,
+    set_status,
+    set_opponent_precents,
+    set_user_precents
   };
 
   const ws_connection = {
