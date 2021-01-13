@@ -26,9 +26,10 @@ justify-content: center;
 -ms-user-select: none;
 user-select: none;
 position: absolute;
-right: 33%;
+right: 27.5%;
 top: 25%;
 z-index: 1000;
+font-size: 2rem;
 `;
 
 const Animated = styled.h1`

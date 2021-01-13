@@ -38,11 +38,15 @@ const StateManager = ({ children }) => {
   const [game_status, set_game_status] = useState('Welcome');
   const [show_modal, set_show_modal] = useState(false);
   const [winning, set_winning] = useState(null);
+  const [game_over_msg, set_game_over_msg] = useState(null);
 
   const [note_status, set_note_status] = useState(null);
   const [connected, set_connected] = useState(false);
   const [opponent_precents, set_opponent_precents] = useState(0);
   const [user_precents, set_user_precents] = useState(0);
+  const [show_host_button, set_show_host_button] = useState(true);
+  const [show_host_url, set_show_host_url] = useState(false);
+  const [show_join_button, set_show_join_button] = useState(true);
 
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
@@ -67,11 +71,15 @@ const StateManager = ({ children }) => {
     game_status,
     winning,
     show_modal,
-
+    set_show_host_button,
+    show_host_button,
     note_status,
     connected,
     opponent_precents,
-    user_precents
+    user_precents,
+    show_join_button,
+    show_host_url,
+    game_over_msg,
   };
 
   const action = {
@@ -91,11 +99,13 @@ const StateManager = ({ children }) => {
     set_game_status,
     set_winning,
     set_show_modal,
-
     set_note_status,
     set_connected,
     set_opponent_precents,
-    set_user_precents
+    set_user_precents,
+    set_show_join_button,
+    set_show_host_url,
+    set_game_over_msg,
   };
 
   const ws_connection = {

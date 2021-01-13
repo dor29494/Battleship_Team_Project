@@ -7,17 +7,18 @@ const GlobalStyles = createGlobalStyle`
       height: 100%;
       background: #000000;
    zoom: 90%;
-    }
-
-    html {
-      font-size: 10px;
+   
+  }
   
-    }
-
-    body {
-      font-size: 1.6rem;
-      font-family:sans-serif;
-      display: flex;
+  html {
+    font-size: 16px;
+    
+  }
+  
+  body {
+    // font-family:sans-serif;
+    font-family: 'Rajdhani', sans-serif;
+    display: flex;
       justify-content: center;
       align-items: center;
       color: white;
@@ -28,6 +29,9 @@ const GlobalStyles = createGlobalStyle`
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 `;
 
@@ -46,12 +50,12 @@ align-items: center;
 // input component:
 
 export const Button = styled.div`
-  margin: 2%;
+  margin: 1%;
   // font-family: "Expletus Sans";
   text-align: left;
-  font-size: 2rem;
-  width: 60%;
-  height: 20%;
+  font-size: 2.2rem;
+  width: 30%;
+  height: 10%;
   text-align: center;
   border-radius: 3rem;
   font-weight: 400;
@@ -59,10 +63,8 @@ export const Button = styled.div`
   background: #003B00;
   border: 1px solid #00FF41;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
+  // #00FF41
   cursor: pointer;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 
     &:focus {
       outline: none;
@@ -70,6 +72,9 @@ export const Button = styled.div`
     }
     &:hover {
       background: #1aff1a;
+      color: black;
+      -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
+box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
     }
     display: flex;
     align-items: center;
@@ -126,12 +131,11 @@ export const ShipPart = styled(StandardPixel)`
 // UserGrid + OpponentGrid components:
 
 export const GridWrapper = styled.div`
-// border: 1px solid white;
   border: none;
-  height: 500px;
+  height: 100%;
   width: 800px;
   color: white;
-  margin: 10%;
+  // margin: 10%;
   display: grid;
   justify-content: center;
 
@@ -140,8 +144,9 @@ export const GridWrapper = styled.div`
   'progressBar progressBar'
   'emptyPixel lettersBar'
   'numbersBar grid';
+  // 
   `;
-  
+
 export const PlayerGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -149,25 +154,29 @@ export const PlayerGrid = styled.div`
   width: 500px;
   color: #003B00;
   grid-area: grid;
+
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
-  cursor-pointer: ${({ lock_other_player_board }) => (lock_other_player_board ? 'not-allowed' : 'pointer')};
+  cursor: ${({ lock_other_player_board }) => (lock_other_player_board ? 'not-allowed' : 'pointer')};
   opacity: ${({ lock_other_player_board }) => (lock_other_player_board ? '0.3' : '1')};
   `;
 
 export const GridHeaders = styled.span`
   text-align: center;
   grid-area: header;
+  font-size: 2rem;
 `;
 
 export const LittleWrapper = styled.div`
 width: 100%;
-padding: 2%;
+padding-top: 2%;
+padding-bottom: 5%;
 display: flex;
 align-items: center;
 justify-content: center;
 grid-area: progressBar;
+color: red;
 `;
 
 export const LettersBar = styled.div`

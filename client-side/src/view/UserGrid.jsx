@@ -13,6 +13,8 @@ const UserGrid = () => {
     player_ships,
     other_player_guess,
     player_is_ready,
+    lock_other_player_board,
+    game_started,
 
     user_precents,
     set_user_precents
@@ -55,10 +57,11 @@ const UserGrid = () => {
   }, [other_player_guess])
 
   return (
-    <GridWrapper>
+    <GridWrapper lock={lock_other_player_board} game={game_started} type="user">
       <GridHeaders>Your Grid</GridHeaders>
       <LittleWrapper>
-        <ProgressBar bgcolor="#00FF41" labelColor="black" completed={user_precents * 5 || 0} width={'300px'} />
+        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'300px'} height={'22px'} />
+
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>

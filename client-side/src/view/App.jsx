@@ -9,6 +9,7 @@ import Input from "./Input"
 import Sockets from "../sockets/socket-client-side"
 import Confetti from 'react-confetti'
 
+
 function App() {
   
   const { winning } = useContext(BsContext);
@@ -34,7 +35,12 @@ function App() {
 export default App;
 const GameWrapper = styled.div`
 display: flex;
-width: 100%;
-height: 100%;
-margin-top: 15rem;
+align-items: center;
+align-content: center;
+justify-content: center;
+// width: 1000px;
+// height: 1000px;
+// margin-top: 15rem;
+// border: 1px solid red;
+// background: yellow;
 `;

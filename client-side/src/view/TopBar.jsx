@@ -5,12 +5,13 @@ import styled, { keyframes } from "styled-components";
 import { flash } from 'react-animations';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
+import Modal from './MsgModal'
 
 const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { connected, both_players_ready, lock_other_player_board } = useContext(BsContext);
+    const { connected, both_players_ready, lock_other_player_board, show_modal, game_over_msg } = useContext(BsContext);
 
 
     // regenerate false (dynamic) number of players (lol).
@@ -36,6 +37,7 @@ const TopBar = () => {
                 {both_players_ready && connected ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
                 </TurnHolder> : ' '}
             </div>
+            { show_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
 };
@@ -44,46 +46,51 @@ export default TopBar
 
 const TopBarWrapper = styled.div`
   position: absolute;
-  align-items: center;
-  top: 3rem;
-  buttom: 0;
-  right: 0;
-  left: 0;
+  top: 0;
   display: flex;
-  min-height: 10rem;
+  width: 100%;
+  height: 16%;
+  right: 0;
+  align-items: center;
+  align-content: center;
+  align-items: center;
   color: white;
-  margin-left: 10rem;
-  height: 10%;
-//   height: 2%;
+  z-index: 100;
 `;
 
 const LogoWrapper = styled.div`
-    width: 90%;  
+    width: 100%;  
     height: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 `;
 
 const Logo = styled.img`
-  height: 100%;
+  height: 90%;
+  margin: 5%;
 `;
 
 const TopBarHeader = styled.span`
-  font-size: 2.5rem;
+  font-size: 1.7rem;
+  top: 85px;
+  left: 4.9%;
+  padding: 0.7%;
+  position: absolute;
 `;
 
 const TurnHolder = styled.div`
 width: 100%;
 display: flex;
 justify-content: center;
+
 `
 const TurnText = styled.div`
-font-size: 4rem;
-display: flex;`
+font-size: 2rem;
+display: flex;
+`
 
 const Flash = styled.h1`
-font-size: 4rem;
-animation: 2s ${flashAnimation};
+font-size: 2rem;
+animation: 6s ${flashAnimation};
 animation-iteration-count: infinite;
 `

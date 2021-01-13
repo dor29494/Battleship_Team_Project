@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
-
 const Sockets = () => {
 
     const {
@@ -20,21 +19,26 @@ const Sockets = () => {
         set_game_status,
         set_show_modal,
         winning,
-        set_winning
+        set_winning,
+        set_show_host_button,
+        set_show_join_button,
+        set_show_ready_box,
+        set_player_room,
+        set_game_over_msg,
+
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
 
     const play = "play";
     const ready = "ready";
-
     // ----------------------------------------emiting---------------------------------------
 
     //--------------------joining room-------------------------
 
     useEffect(() => {
-        console.log("room:", player_room);
         socket.emit("data", { room: player_room, action: play });
+localStorage.setItem('battleship_room', player_room);
     }, [player_room]);
 
     //--------------------ready to play-------------------------
@@ -87,9 +91,9 @@ const Sockets = () => {
 
     useEffect(() => {
         socket.on("data", (data = {}) => {
+            console.log("@@@ ", data)
             const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, is_winning, leave } = data;
-
-            if (other_player_connected){
+            if (other_player_connected) {
                 set_both_players_connected(true)
             }
             else if (to_player === "2") {
@@ -105,7 +109,7 @@ const Sockets = () => {
                 console.log("does player1 starts?: " + turn);
             } else if (ready_to_start) {
                 set_both_players_ready(true);
-                set_game_status("Lets Go!!!"); 
+                set_game_status("Lets Go!!!");
             } else if (guess) {
                 console.log("Player has recived the opponents guess", guess);
                 set_other_player_guess(guess);
@@ -113,11 +117,16 @@ const Sockets = () => {
                 console.log("The other player won!");
                 set_winning(!is_winning);
             } else if (leave) {
+                // set_show_host_button(false);
+                // set_show_join_button(false);
+                // set_both_players_connected(false);
+                // set_show_ready_box(false);
                 set_show_modal(true);
-            }
-        });
-    }, [])
 
+            }
+        }
+        );
+    }, [])
     return (
         <div></div>
     )

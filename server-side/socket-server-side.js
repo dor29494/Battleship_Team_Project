@@ -32,17 +32,17 @@ io.sockets.on('connection', socket => {
 
   // player disconnected.
   socket.on('disconnect', function () {
-    console.log('===============================================')
+    console.log('===============================================');
     console.log("disconnect", socket.id)
     if (clients.hasOwnProperty(socket.id)) {
+      console.log(`${socket.id} has leaves this room: ${clients[socket.id]}`)
       socket.to(clients[socket.id]).emit("data", { leave: leave })
       clients[socket.id] = '';
     }
   })
   socket.on('data', (data = {}) => {
-
+console.log("@@@ ", data)
     const { room, action, guess, board, turn, message, to_player, ships, is_winning } = data;
-
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
