@@ -1,5 +1,5 @@
 const app = require('express')();
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const log = require('@ajar/marker');
 const cors = require('cors');
 const { Server } = require('socket.io');
@@ -9,19 +9,10 @@ app.use(cors());
 app.use('*', (req, res) => res.send('hello from express'));
 const http = require('http').createServer(app);
 
-// *** needs to be dynamic
-const PORT = 3000;
-const HOST = "localhost";
-const CLIENT_URL = "http://localhost:3001";
-
-let Clients = {
-  
-};
-
-
+const { PORT, HOST, CLIENT_URL } = process.env;
 
 (async () => {
-  await http.listen(PORT, HOST)
+  await http.listen(PORT, HOST);
   log.magenta(`server is live on`, `  ✨ ⚡  http://${HOST}:${PORT} ✨ ⚡`)
 })().catch(error => log.error(error));
 
@@ -32,33 +23,36 @@ const io = new Server(http, {
   }
 });
 
-
+let clients = {};
+const play = 'play';
+const ready = 'ready';
+const leave = 'leave';
 
 io.sockets.on('connection', socket => {
 
+  // player disconnected.
   socket.on('disconnect', function () {
-    console.log('===============================================')
+    console.log('===============================================');
     console.log("disconnect", socket.id)
-    if (Clients.hasOwnProperty(socket.id)) {
-      socket.to(Clients[socket.id]).emit("data", { leave: 'leave' })
-      Clients[socket.id] = '';
+    if (clients.hasOwnProperty(socket.id)) {
+      console.log(`${socket.id} has leaves this room: ${clients[socket.id]}`)
+      socket.to(clients[socket.id]).emit("data", { leave: leave })
+      clients[socket.id] = '';
     }
   })
   socket.on('data', (data = {}) => {
-
-    const { room, action, guess, board, turn, message, to_player, ships, is_winning, join } = data;
-
-    const play = 'play';
-    const ready = 'ready';
-    console.log("action: ", action)
+console.log("@@@ ", data)
+    const { room, action, guess, board, turn, message, to_player, ships, is_winning } = data;
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
       console.log("inside room " + room);
-      Clients[socket.id] = room;
-
-      // tell the client that another player is in (and the show the 'ready' button)
-      socket.to(room).emit("data", { join: 'join' });
+      clients[socket.id] = room;
+      // tell the client that another player is in (and then show the 'ready' button)
+      if(Object.values(clients).filter(r => r === room).length === 2){
+        console.log("both players are inside!");
+        io.in(room).emit("data", { other_player_connected: true });
+      }
     }
 
     // ready - sends the players board to the other player.
@@ -84,7 +78,6 @@ io.sockets.on('connection', socket => {
 
     // is_winning - if one of the players won, notify the players.
     if (is_winning) {
-      // io.in(room).emit("data",{ is_winning });
       socket.to(room).emit("data", { is_winning });
       console.log("the server emiting victory to the other player");
     }

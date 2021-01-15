@@ -1,4 +1,4 @@
-import {VERTICAL, HORIZONTAL, RUSSIAN, FRENCH, SEA, MISS, HIT, AROUND_SINK, SHIP_PART, AROUND_SHIP } from "../stateManager/stateManager";
+import { VERTICAL, HORIZONTAL, RUSSIAN, FRENCH, SEA, MISS, HIT, AROUND_SINK, SHIP_PART, AROUND_SHIP } from "../stateManager/stateManager";
 
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 const random_boolean = () => Math.random() < 0.5;
@@ -282,23 +282,24 @@ const update_board_around_a_ship = (board, ship, new_value) => {
     return new_board
 }
 
-export const update_board_hit = (x, y, ship_index, board, ships) => {
+
+export const update_board_hit = (x, y, ship_index, board, ships,sounds_status) => {
+    let sunk = false;
     let new_ships = [...ships];
     let new_board = [...board];
-    const part_index = new_ships[ship_index].ship_parts.findIndex((part)=> part.x === x && part.y === y);
+    const part_index = new_ships[ship_index].ship_parts.findIndex((part) => part.x === x && part.y === y);
     new_ships[ship_index].ship_parts[part_index].is_hit = true;
     new_board[x][y].is_hit = true;
-
+    
     let is_ship_sunk = true;
     for (const ship_part of new_ships[ship_index].ship_parts) {
         if (!ship_part.is_hit)
-            is_ship_sunk = false;
+        is_ship_sunk = false;
     }
-
+    
     if (is_ship_sunk) {
         new_ships[ship_index].is_sunk = is_ship_sunk;
         new_board = update_board_around_a_ship(new_board, new_ships[ship_index], AROUND_SINK);
-
     }
     let is_win = true;
     new_ships.forEach((ship) => {
@@ -377,7 +378,7 @@ export const update_board_hit = (x, y, ship_index, board, ships) => {
         // win the game
         return { board: new_board, ships: new_ships, is_win: true };
     else
-        return { board: new_board, ships: new_ships };
+        return { board: new_board, ships: new_ships, sunk: sunk };
 
 
 }

@@ -2,13 +2,9 @@ import React, { createContext, useState, useEffect } from "react";
 import { place_ships, initial_game_board, initial_ships } from "../logic/logic";
 import io from 'socket.io-client';
 
-// *** we still need to make the url dynamic.
-// import { SOCKET_URL } from "dotenv";
+const { REACT_APP_SERVER_URL } = process.env;
 
-const BsContext = createContext(socket);
-const { Provider } = BsContext;
-
-export const socket = io('ws://localhost:3000');
+export const socket = io(REACT_APP_SERVER_URL);
 export const HORIZONTAL = 'horizontal'
 export const VERTICAL = 'vertical';
 export const RUSSIAN = 'RUSSIAN';
@@ -21,45 +17,55 @@ export const SHIP_PART = 'SHIP_PART';
 export const AROUND_SHIP = 'AROUND_SHIP';
 export const AROUND_SINK = 'AROUND_SINK';
 
+const BsContext = createContext(socket);
+const { Provider } = BsContext;
+
 const StateManager = ({ children }) => {
 
   const [player_room, set_player_room] = useState(null);
+  const [both_players_connected, set_both_players_connected] = useState(null);
   const [player_board, set_player_board] = useState([]);
   const [other_player_board, set_other_player_board] = useState(initial_game_board());
-  const [player_ships, set_player_ships] = useState(initial_ships());
+  const [player_ships, set_player_ships] = useState(null);
   const [other_player_ships,set_other_player_ships] = useState();
   const [first_turn, set_first_turn] = useState(null);
-  const [player_guess, set_player_guess] = useState(null);
-  const [other_player_guess,set_other_player_guess] = useState(null);
   const [player_is_ready, set_player_is_ready] = useState(false);
   const [both_players_ready, set_both_players_ready] = useState(false);
+  const [player_guess, set_player_guess] = useState(null);
+  const [other_player_guess,set_other_player_guess] = useState(null);
   const [player_message, set_player_message] = useState([]);
   const [other_player_message, set_other_player_message] = useState([]);
   const [chat_array_message, set_chat_array_message] = useState([]);
   const [player_id, set_player_id] = useState('User name');
-
-
-  const [winning, set_winning] = useState(null);
-  const [random_board, set_random_board] = useState(0);
   const [lock_other_player_board, set_lock_other_player_board] = useState(true);
+  const [random_board, set_random_board] = useState(false);
+  const [game_status, set_game_status] = useState('Welcome');
   const [show_modal, set_show_modal] = useState(false);
-  const [help, set_help] = useState(false);
-  // *** check with guy if we can make this better.
+  const [winning, set_winning] = useState(null);
+  const [game_over_msg, set_game_over_msg] = useState(null);
+
+  const [note_status, set_note_status] = useState(null);
+  const [connected, set_connected] = useState(false);
+  const [opponent_precents, set_opponent_precents] = useState(0);
+  const [user_precents, set_user_precents] = useState(0);
+  const [show_host_button, set_show_host_button] = useState(true);
+  const [show_host_url, set_show_host_url] = useState(false);
+  const [show_join_button, set_show_join_button] = useState(true);
+
   useEffect(() => {
-    let { board, ships  } = place_ships(initial_game_board(),player_ships);
+    let { board, ships } = place_ships(initial_game_board(), initial_ships());
     set_player_ships(ships);
     set_player_board(board);
   }, [random_board]);
 
   const state = {
     player_room,
+    both_players_connected,
     player_board,
     other_player_board,
     player_ships,
     other_player_ships,
     first_turn,
-    player_guess,
-    other_player_guess,
     player_is_ready,
     both_players_ready,
     winning,
@@ -68,20 +74,31 @@ const StateManager = ({ children }) => {
     chat_array_message,
     player_id,
     random_board,
+    player_guess,
+    other_player_guess,
     lock_other_player_board,
+    random_board,
+    game_status,
+    winning,
     show_modal,
-    help
+    show_host_button,
+    note_status,
+    connected,
+    opponent_precents,
+    user_precents,
+    show_join_button,
+    show_host_url,
+    game_over_msg,
   };
 
   const action = {
     set_player_room,
+    set_both_players_connected,
     set_player_board,
     set_other_player_board,
     set_player_ships,
     set_other_player_ships,
     set_first_turn,
-    set_player_guess,
-    set_other_player_guess,
     set_player_is_ready,
     set_both_players_ready,
     set_winning,
@@ -90,9 +107,21 @@ const StateManager = ({ children }) => {
     set_chat_array_message,
     set_player_id,
     set_random_board,
+    set_player_guess,
+    set_other_player_guess,
     set_lock_other_player_board,
+    set_random_board,
+    set_game_status,
+    set_winning,
     set_show_modal,
-    set_help
+    set_note_status,
+    set_connected,
+    set_opponent_precents,
+    set_user_precents,
+    set_show_join_button,
+    set_show_host_url,
+    set_game_over_msg,
+    set_show_host_button,
   };
 
   const ws_connection = {

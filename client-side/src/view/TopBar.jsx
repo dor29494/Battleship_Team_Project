@@ -1,24 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
-import styled from "styled-components";
-import battleship_logo from "../logo/battleship_logo.jpg"
-import { IoIosHelpCircleOutline, IoIosHelpCircle } from 'react-icons/io'
 import { BsContext } from "../stateManager/stateManager";
+import battleship_logo from "../logo/battleship_logo.jpg";
+import styled, { keyframes } from "styled-components";
+import { flash } from 'react-animations';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from 'react-loader-spinner';
+import Modal from './MsgModal'
 
-const Help = () => {
-    const { help, set_help } = useContext(BsContext);
-    return (
-    <h1 onClick={() => set_help(!help)}>{ help ? <IoIosHelpCircle /> : <IoIosHelpCircleOutline /> }</h1>
-    
-    )
-}
+const flashAnimation = keyframes`${flash}`;
+
 const TopBar = () => {
+
+    const { connected, both_players_ready, lock_other_player_board, show_modal, game_over_msg } = useContext(BsContext);
+
 
     // regenerate false (dynamic) number of players (lol).
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
     let initiate_num = randomize(0, 19432542);
 
     const [num, set_num] = useState(initiate_num);
-
     useEffect(() => {
         setInterval(() => {
             set_num(num => {
@@ -29,13 +29,15 @@ const TopBar = () => {
 
     return (
         <TopBarWrapper>
-            <div>
+            <div style={{ width: '100%', height: '100%' }}>
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} />
-                    <Help />
                 </LogoWrapper>
                 <TopBarHeader>players online: {num}</TopBarHeader>
+                {both_players_ready && connected ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                </TurnHolder> : ' '}
             </div>
+            { show_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
 };
@@ -44,37 +46,51 @@ export default TopBar
 
 const TopBarWrapper = styled.div`
   position: absolute;
-  align-items: center;
-  top: 3rem;
-  buttom: 0;
-  right: 0;
-  left: 0;
+  top: 0;
   display: flex;
-  min-height: 10rem;
+  width: 100%;
+  height: 16%;
+  right: 0;
+  align-items: center;
+  align-content: center;
+  align-items: center;
   color: white;
-  margin-left: 10rem;
+  z-index: 100;
 `;
 
 const LogoWrapper = styled.div`
-    width: 1600px;   
-    height: 100px;
+    width: 100%;  
+    height: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 `;
 
 const Logo = styled.img`
-  height: 10rem;
+  height: 90%;
+  margin: 5%;
 `;
 
 const TopBarHeader = styled.span`
-  font-size: 2.5rem;
+  font-size: 1.7rem;
+  top: 85px;
+  left: 4.9%;
+  padding: 0.7%;
+  position: absolute;
 `;
-// const Randomgrid = styled.button`
-//   border: 1px solid;
-//   background-color: white;
-//   color: blue;
-//   min-width: 6vh;
-//   min-height: 6vh;
-//   cursor: pointer;
-// `;
+
+const TurnHolder = styled.div`
+width: 100%;
+display: flex;
+justify-content: center;
+
+`
+const TurnText = styled.div`
+font-size: 2rem;
+display: flex;
+`
+
+const Flash = styled.h1`
+font-size: 2rem;
+animation: 6s ${flashAnimation};
+animation-iteration-count: infinite;
+`

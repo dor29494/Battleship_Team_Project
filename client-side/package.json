@@ -1,11 +1,12 @@
 {
-  "name": "ticker-start",
+  "name": "battleship",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "@ajar/marker": "^1.2.3",
+    "@ramonak/react-progress-bar": "^2.0.0",
     "bootstrap": "^4.5.3",
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
@@ -18,6 +19,7 @@
     "react-confetti": "^6.0.0",
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
+    "react-loader-spinner": "^3.1.14",
     "react-scripts": "4.0.1",
     "react-use": "^15.3.8",
     "socket.io-client": "^3.0.4",
@@ -30,9 +32,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "start2": "nodemon socket-server-side.js"
+    "test": "react-scripts test --env=jsdom"
   },
   "browserslist": [
     ">0.2%",

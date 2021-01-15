@@ -1,456 +1,364 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
-import { BsContext } from "../stateManager/stateManager";
 import styled, { keyframes } from "styled-components";
+import { BsContext } from "../stateManager/stateManager";
+import { MdContentCopy } from 'react-icons/md';
+import { flash, __esModule } from 'react-animations';
+import { Button } from "../styles/GlobalStyles";
 import { nanoid } from "nanoid";
-import { MdContentCopy, MdNoEncryption, MdBorderAll } from 'react-icons/md'
-import { fadeOut, flash } from 'react-animations';
-import { Button } from "../styles/GlobalStyles"
+import FadeoutStatus from "./FadeoutStatus";
+import Modal from "./MsgModal";
 
-import useWindowSize from 'react-use/lib/useWindowSize'
-import Confetti from 'react-confetti'
-
-const fadeoutAnimation = keyframes`${fadeOut}`;
 const flashAnimation = keyframes`${flash}`;
-
-
-
-// const BigWrapper = styled.div`
-
-// height: 100%;
-// width: 100%;
-// display: flex;
-// align-items: center;
-// align-conent: center;
-// justify-items: center;
-// justify-content: center`
-
 
 const Input = () => {
 
   const {
-    socket,
-    player_room,
     set_player_room,
-    player_board,
-    set_other_player_board,
-    player_ships,
-    set_other_player_ships,
-    first_turn,
-    set_first_turn,
-    player_guess,
-    set_other_player_guess,
+    both_players_connected,
+    other_player_ships,
     player_is_ready,
     set_player_is_ready,
-    set_both_players_ready,
     both_players_ready,
-    winning,
-    set_winning,
+    lock_other_player_board,
     random_board,
     set_random_board,
-    lock_other_player_board,
-    set_lock_other_player_board,
-    set_show_modal,
-    show_modal,
+    game_status,
+    set_connected,
+    show_host_button,
+    set_show_host_button,
+    show_join_button,
+    set_show_join_button,
+    show_host_url,
+    set_show_host_url,
+    game_over_msg,
+    set_game_over_msg,
+    player_room,
     player_message,
-    other_player_message,
-    set_other_player_message,
-    set_chat_array_message,
-    chat_array_message,
-    player_id,
+    winning,
+    note_status,
+    connected,
+    set_note_status,
+    set_game_status,
   } = useContext(BsContext);
-  const [join, set_join] = useState(false);
-  const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
 
-  const play = "play";
-  const ready = "ready";
-  const chat_message = 'chat_message'
-  const inputEl = useRef();
-  const [show_ready, set_show_ready] = useState(false);
-  const [join_input, set_join_input] = useState(false);
-  const [show_buttons, set_show_buttons] = useState(true);
-  const [show_url, set_show_url] = useState(false);
-  const [status, set_status] = useState('');
-  const [static_status, set_static_status] = useState('Offline');
-  const [connected, set_connected] = useState(false);
-  const [game_over, set_game_over] = useState(null);
-  // ----------------------------------------emiting---------------------------------------
-  //--------------------Send a message-------------------------
-useEffect(()=>{
-  console.log('Inside UseEffect of player_message:' , chat_array_message[chat_array_message.length-1])
-  socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length-1]});
+  
 
-},[player_message])
   //--------------------joining room-------------------------
-  const play_button = () => {
-    if (show_url) { set_show_url(false) }
-    else {
-      set_join_input(false);
-      set_show_url(true);
-      set_player_room(nanoid());
-    }
+
+  
+  // local states:
+  const inputEl = useRef();
+
+  const [host_url, set_host_url] = useState(null);
+  const [show_join_button_input, set_show_join_button_input] = useState(false);
+  const [show_ready_box, set_show_ready_box] = useState(false);
+  const [copied_msg, set_copied_msg] = useState('');
+  const [game_started, set_game_started] = useState(false);
+
+  //
+  const [join_flash, set_join_flash] = useState(false);
+
+
+
+const host_button = () => {
+  if (!show_host_url) {
+    set_show_join_button(false);
+    set_show_host_url(true);
+    set_host_url(nanoid(4));
   }
-
-
-  const join_button = () => {
-    if (join_input && inputEl.current.value) {
-      set_player_room(inputEl.current.value);
-      set_show_ready(true);
-      set_show_buttons(false);
-      set_static_status("Connected!")
-      set_connected(true);
-    }
-    else {
-      if (show_url) { set_show_url(false) }
-      set_join_input(!join_input);
-    }
-  };
-  const copy_id = () => {
-    event.preventDefault();
-    // if (inputValue) { console.log(">>> ", inputValue) }
-    navigator.clipboard.writeText(player_room).then(function () {
-      set_status("Id copied to clipboard!")
-      set_show_url(false);
-    }, function () {
-      /* clipboard write failed */
-    });
+  else {
+    set_show_host_url(false);
+    set_show_join_button(true);
   }
-  // useEffect(() => {
-  // if (ready_to_start) { set_static_status("Starting game...") }
-  // else { set_static_status("Waiting for your opponent to be ready...") }
-  // },[player_is_ready])
-  useEffect(() => {
-    console.log("room:", player_room);
-    socket.emit("data", { room: player_room, action: play });
-  }, [player_room]);
+}
 
-  //--------------------ready to play-------------------------
-  const ready_button = () => {
-    set_player_is_ready(true);
-    set_static_status("Waiting for your opponent...");
-    set_show_ready(false);
-  };
-  useEffect(() => {
-    setTimeout(() => {
-      set_status('');
-    }, 3000);
-  }, [status])
-  useEffect(() => {
-    if (first_turn !== null) {
-      socket.emit("data", {
-        room: player_room,
-        action: ready,
-        board: player_board,
-        ships: player_ships,
-        turn: !first_turn,
-        to_player: "1",
-      });
-      console.log("this is player 2");
-      console.log("player 2 emiting...");
-    } else {
-      let local_turn;
-      const turn_generator = randomize(0, 1);
-      turn_generator === 0 ? local_turn = true : local_turn = false;
-      socket.emit("data", {
-        room: player_room,
-        action: ready,
-        board: player_board,
-        ships: player_ships,
-        turn: !local_turn,
-        to_player: "2",
-      });
-      if (player_room) { set_first_turn(local_turn) }
-      console.log("this is player 1");
-      console.log("player 1 turn is " + local_turn);
-      console.log("player 1 emiting...");
-    }
-  }, [player_is_ready]);
-
-  //--------------------guessing-------------------------
-
-  useEffect(() => {
-    socket.emit("data", { room: player_room, guess: player_guess });
-    console.log("emited guess");
-  }, [player_guess]);
-  //---------------------winning--------------------------
-
-  useEffect(() => {
-
-    if (winning === true) {
-      set_game_over('YOU WON!!!');
-      set_connected(false);
-      socket.emit("data", { room: player_room, is_winning: true });
-    }
-    else if (winning === false) {
-      set_game_over('you loose')
-      set_connected(false);
-    }
-  }, [winning]);
-  // ---------------------------------------listening---------------------------------------
-
-  useEffect(() => {
-    socket.on("data", (data = {}) => {
-      // *** winning does not reach to the other player for some reason
-      console.log(data);
-      const { turn, board, ready_to_start, to_player, ships, guess, is_winning, join, show_ready, leave, message } = data;
-      if (leave) {
-        set_show_modal(true)
-      }
-      if (is_winning) {
-        console.log("The other player won!");
-        set_game_over('you loose')
-        console.log("is_winning: ", is_winning)
-
-      }
-      if (to_player === "2") {
-        set_other_player_board(board);
-        set_other_player_ships(ships);
-        set_first_turn(turn);
-        console.log("player's 1 data recived by player 2");
-        set_static_status('Your oppnent is ready')
-        console.log("does player2 starts?: " + turn);
-      } else if (to_player === "1") {
-        set_other_player_board(board);
-        set_other_player_ships(ships);
-        console.log("player's 2 data recived by player 1");
-        console.log("does player1 starts?: " + turn);
-      } else if (ready_to_start) {
-        set_both_players_ready(true);
-        set_static_status("Lets Go!!!");
-        set_show_ready(false);
-      } else if (guess) {
-        console.log("Player has recived the opponents guess", guess);
-        set_other_player_guess(guess);
-      }
-      if (is_winning) {
-        console.log("The other player won!");
-        set_winning(!is_winning);
-      }
-      if (join) {
-        set_show_ready(true);
-        set_static_status('Connected!')
-        set_connected(true);
-        set_show_buttons(false);
-        socket.emit("data", { show_ready: true });
+const copy_id = () => {
+  event.preventDefault();
+  navigator.clipboard.writeText(host_url).then(function () {
+    set_note_status("Id copied to clipboard!");
+  });
+}
 
 
-      }
-      if(message){
-        set_other_player_message(...other_player_message, message)
-              set_chat_array_message((prev) => ([
-                ...prev,
-                {
-                  id: player_id,
-                  msg: message.msg
-                       }
-              ]));
-      }
-    });
-  }, [])
+useEffect(() => {
+  setTimeout(() => {
+    set_copied_msg('');
+  }, 3000);
+}, [copied_msg]);
 
-  const RandomBoard = () => {
-    set_random_board(random_board + 1)
+const join_button = () => {
+  if (!show_join_button_input) {
+    set_show_host_button(false);
+    set_show_join_button_input(true);
   }
-  useEffect(() => {
-
-    if (!lock_other_player_board) set_static_status("Its your turn");
-    else { set_static_status('') }
-  }, [lock_other_player_board])
-  const { width, height } = useWindowSize()
-  return (
-
-    
-    
-    <>
-    
-    <Wrapper connected={connected} game_over={game_over} game_started={both_players_ready}>
-      <MiniWrapper>
-        <StaticStatus>{static_status}</StaticStatus>
-        {/* <StatusBox status={status}>{status ? <Animated>{status}</Animated> : ' '}</StatusBox> */}
-        {show_buttons ? <PlayButton onClick={() => play_button()}>Host</PlayButton> : ' '}
-        {show_buttons && show_url ? <UrlHolder><CopyButton onClick={() => copy_id()}><MdContentCopy /></CopyButton>{player_room}</UrlHolder> : ' '}
-        {show_buttons ? <JoinButton onClick={() => join_button()}> Join</JoinButton> : ' '}
-        {show_buttons && join_input ? <InputHolder placeholder="Enter game id" join={join} ref={inputEl} /> : ' '}
-        {show_ready ? <ReadyButton onClick={() => ready_button()}>{!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}</ReadyButton> : ' '}
-        {!show_buttons && !player_is_ready ? <Random onClick={RandomBoard}>Random</Random> : ''}
-        {show_modal ? <Modal /> : ' '}
-      </MiniWrapper>
-      {/* { game_over ? <GameOver onClick={ ()=> location.reload() </Wrapper>}>{ game_over }</GameOver> : ' '} */}
-    </Wrapper>
-    </>
-  );
+  else if (show_join_button_input) {
+    set_show_join_button_input(false);
+    set_show_host_button(true);
+  }
 };
 
-export default Input;
-const Wrapper = styled.div`
-background-color: ${props => props.connected === false ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0)'};
-display: ${props => props.game_started && !props.game_over ? 'none' : 'flex'};
-justify-content: center;
-align-items: center;
-height: 80%;
-top: 200px;
-width: 96%;
-// right: 60px;
-right: ${props => props.connected ? '-400px' : '60px'};
-position: fixed;
-z-index: 100;
+const start_button = () => {
+  if (show_host_button) {
+    set_show_host_button(false);
+    set_player_room(host_url);
+  }
+  else if (show_join_button) {
+    set_player_room(inputEl.current.value);
+    set_show_join_button(false);
+  }
+  set_show_ready_box(true);
+  set_connected(true);
+}
 
-`
+const ready_button = () => {
+  set_player_is_ready(true);
+  set_show_ready_box(false);
+};
+
+const RandomBoard = () => {
+  set_random_board(!random_board)
+}
+
+useEffect(() => {
+  if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to the other player. Then press start.") }
+  else if (!show_host_button && show_join_button) { set_game_status("Please past the room ID. Then press start.") }
+  else if (show_ready_box && !both_players_connected) { set_game_status("You are connected! Waiting for another player to connect...") }
+  else if (other_player_ships && !both_players_ready) { set_game_status('Your oppnent is ready.') }
+  else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
+  else if (player_is_ready && !both_players_ready) { set_game_status("Waiting for your opponent to be ready...") }
+  else if (both_players_ready) {
+    set_game_status("You are good to go! Good luck!");
+    setTimeout(() => set_game_started(true), 2000);
+  }
+  if (!lock_other_player_board && game_started) { set_game_status("Its your turn") }
+  else if (lock_other_player_board && game_started) { set_game_status('') }
+}, [show_host_button, show_join_button, show_ready_box, both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
+
+useEffect(() => {
+  if (winning === true) {
+    set_game_over_msg('YOU WON!!!');
+    // set_connected(false);
+  }
+  else if (winning === false) {
+    set_game_over_msg('you loose')
+    // set_connected(false);
+  }
+}, [winning]);
+
+
+  
+  
+  
+const changeHandler = (event) => {
+  if (event.target.value.length == 4) {
+    set_note_status("Click JOIN to start!")
+    set_join_flash(true);
+  }
+  else {
+    set_join_flash(false);
+  }
+};
+const newGame = () => {
+  location.reload();
+}
+useEffect(() => {
+  setTimeout(() => set_note_status(''), 3000);
+}, [note_status])
+
+const renderDecideder = () => {
+  if (show_host_button && show_join_button) {
+    return (
+      <>
+        <HostButton onClick={() => host_button()}>Host</HostButton>
+        <JoinButton onClick={() => join_button()}>Join</JoinButton>
+      </>
+    );
+  }
+
+  else if (show_host_button && !show_join_button) {
+    return (
+      <>
+        <HostButton onClick={() => host_button()}>Back</HostButton>
+        <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{host_url}</UrlHolder>
+        <StartButton onClick={() => start_button()}>Start</StartButton>
+      </>
+    )
+  }
+  else if (!show_host_button && show_join_button) {
+    return (
+      <>
+        <JoinButton onClick={() => join_button()}>Back</JoinButton>
+        <InputHolder placeholder="Enter game id" ref={inputEl} onChange={changeHandler} />
+        <StartButton onClick={() => start_button()}>Start</StartButton>
+      </>
+    )
+  }
+  else if (show_ready_box && both_players_connected) {
+    return (
+      <>
+        <ReadyButton onClick={() => ready_button()}>{!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}</ReadyButton>
+        <Random onClick={RandomBoard}>Random</Random>
+      </>
+    )
+  }
+}
+
+return (
+  <>
+    <FadeoutStatus />
+    <InputWrapper connected={connected} game_over_msg={game_over_msg} game_started={game_started}>
+      {!game_over_msg ?
+        <MiniWrapper>
+          <StaticStatus>{game_status}</StaticStatus>
+          {renderDecideder()}
+        </MiniWrapper>
+        : <GameOver>{game_over_msg}<br /><Button onClick={() => newGame()}>New Game!</Button></GameOver>}
+    </InputWrapper>
+  </>
+);
+}
+export default Input;
+
+const InputWrapper = styled.div`
+    // border: 1px solid white;
+    background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
+    display: ${({ game_started, game_over_msg }) => game_started && !game_over_msg ? 'none' : 'flex'};
+    justify-content: ${({ connected }) => connected ? ' ' : 'center'};
+    padding-left: ${({ connected }) => connected ? '7.7%' : '1.5%'};
+    align-items: center;
+    height: 80%;
+    top: 16%;
+    width: 100%;
+    right: ${({ connected }) => connected ? '-49%' : '0%'};
+    position: absolute;
+    z-index: 100;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  `;
+
 const MiniWrapper = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
-  height: 30%;
-  width: 20%;
+  padding-bottom: 2%;
+  // height: 35%;
+  // width: 20%;
+  height: 50%;
+  width: 35%;
   background: black;
   border: 3px solid #00ff3c;
-  -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.81); 
-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.81);
-border-radius: 50px;
+  // -webkit-box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.81); 
+  // box-shadow: 0px 0px 21px 2px rgba(0,0,0,0.81);
+  -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
+box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
+  border-radius: 50px;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+`;
 
+const HostButton = styled(Button)``;
 
+const JoinButton = styled(Button)``;
 
+const StartButton = styled(Button)``;
 
+const ReadyButton = styled(Button)``;
 
+const Random = styled(Button)``;
 
-  
+const CopyButton = styled.button`
+font-size: 90%;
+  position: relative;
+  left: 85%;
+  &:hover {
+    background: #1aff1a;
+    color: black;
+    -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
+box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
+  }
 `;
 
 const UrlHolder = styled.div`
-padding: 0.5rem;
-margin: 0.5rem;
+  padding: 0.5rem;
+  margin: 0.5rem;
   height: 4rem;
   width: 20rem;
-    outline: none;
+  outline: none; 
   border-radius: 4rem;
   border: white 1px solid;
   transition: border 0.5s;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   z-index: 1;
   align-items: center;
-
-
-display: flex;
+  display: flex;
 `;
 
-const PlayButton = styled(Button)``;
-
 const InputHolder = styled.input`
-margin: 0.5rem;
-padding: 0.5rem;
+  margin: 0.5rem;
+  padding: 0.5rem;
   height: 4rem;
   width: 20rem;
   border-radius: 4rem;
-  background: none;
-  border: white 2px solid;
+  border: white 1px solid;
   transition: border 0.5s;
   font-size: 1.5rem;
   z-index: 1;
   outline: none;
   align-items: center;
-color: #00ff41;
+  display: flex;
+  background: none; 
+  color: #00ff41;
+  caret-color: white;
+
     &:focus {
       border: white 1px dashed;
     }
-display: flex;
-caret-color: white;
-::placeholder {
-  color: white;
-}
-`
-const StatusBox = styled.div`
-width: 50rem;
-height: 4rem;
-position: relative;
-top: -100px;
-left: 800px;
-display: flex;
-align-items: center;
-justify-content: center;
-`
-const Animated = styled.h1`
-font-size: 2rem;
-animation: 3s ${fadeoutAnimation};
-display: flex;
-align-content: center;
-`
-const JoinButton = styled(Button)``;
-const CopyButton = styled.button`
 
-  // height: 30px;
-  // width: 30px;
-  position: relative;
-  left: 23vh;
-`
-const ReadyButton = styled(Button)``
-  ;
+    ::placeholder {
+    color: white;
+    }
+`;
+
 const Flash = styled.h1`
 font-size: 2rem;
 animation: 1s ${flashAnimation};
 animation-iteration-count: infinite;
-`
+`;
+
 const StaticStatus = styled.h1`
-font-size: 3rem;
-color: white`
-const Random = styled(Button)``;
+// border: 1px solid white;
+font-size: 100%;
+text-align: center;
+color: white;
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+margin: 5%;
+`;
 
-
-
-
-
-
-const Modal = () => {
-  const ok = () => {
-    set_show_modal(false)
-    // location.reload();
-  }
-  const {
-    show_modal,
-    set_show_modal
-  } = useContext(BsContext);
-  return (
-    <ModalWrapper>
-      <Dialog>
-        <span>Your opponent just leaved the game.</span>
-        <br />
-        <Button onClick={() => ok()}>OK</Button>
-      </Dialog>
-
-    </ModalWrapper>
-  )
-}
 const GameOver = styled.div`
 cursor: pointer;
 width: 100%;
-height: 70%;
+height: 90%;
 position: fixed;
-top: 200px;
-display: flex;
-justify-content: center;
-align-items: center;
-font-size: 20rem;
-font-weight: bold;
-background: rgba(0,0,0,0.8);
-`
-
-const ModalWrapper = styled.div`
-width: 100%;
-height: 100%;
-position: absolute;
-top: 0;
+top: 13%;
 right: 0;
 display: flex;
-align-items: center;
 justify-content: center;
-`
-const Dialog = styled.div`
-background: grey;
-width: 60rem;
-height: 30rem;
-display: flex;
 align-items: center;
-justify-content: center;
+font-weight: bold;
+background: rgba(0,0,0,0.8);
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+font-size: 10rem;
 flex-direction: column;
-z-index: 100;
-`
+margin: 0;
+`;
+
+
+
+
