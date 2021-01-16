@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import styled, { keyframes } from "styled-components";
 import { flash } from "react-animations";
+import { Button } from "../styles/GlobalStyles";
 
 const flashAnimation = keyframes`${flash}`;
 
@@ -65,7 +66,7 @@ const Chat = () => {
 
   return show_chat ? (
     <>
-      <ShowChatButton msg_alert={msg_alert} conClick={chatShower}>
+      <ShowChatButton msg_alert={msg_alert} onClick={chatShower}>
         Close chat
       </ShowChatButton>
       <Wrapper>
@@ -112,7 +113,7 @@ const Wrapper = styled.div`
   align-items: flex-end;
   color: white;
   border-radius: 0.8rem;
-  border: 0.1rem solid lightgrey;
+  border: 0.1rem solid lightblue;
 `;
 const ChatWrapper = styled.div`
   border-radius: 0.5rem;
@@ -190,9 +191,11 @@ const UserNameHolder = styled.div`
   text-decoration: underline;
   font-family: sans-serif;
 `;
-const ShowChatButton = styled.button`
-font-size: 2rem;
+const ShowChatButton = styled(Button)`
+max-width: 8rem;
+font-size: 1.6rem;
+`
 // animation: ${({ msg_alert }) => msg_alert ? '1s ${flashAnimation}' : 'none'}
 // animation-iteration-count: ${({ msg_alert }) => msg_alert ? 'infinite' : 'none'} ;
 
-`
+
