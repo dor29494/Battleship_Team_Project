@@ -18,7 +18,7 @@ function App() {
   
   return (
     <>
-      {winning ? <Confetti width='2000px' height='2000px' style={{ zIndex: 1000 }} /> : ' '}
+      {winning ? <Confetti width='2000px' height='2000px'/> : null}
       <Sockets />
       <TopBar />
       <Input />
@@ -35,5 +35,5 @@ export default App;
 
 const GameWrapper = styled.div`
   ${flex()};
-  ${position('absolute', '5%', false, "50%", "50%" )};
+  ${position('absolute', '-5%', false, "50%", "50%" )};
 `;

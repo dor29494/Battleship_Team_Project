@@ -12,21 +12,7 @@ const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg } = useContext(BsContext);
-
-
-    // regenerate false (dynamic) number of players (lol).
-    const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
-    let initiate_num = randomize(0, 19432542);
-
-    const [num, set_num] = useState(initiate_num);
-    useEffect(() => {
-        setInterval(() => {
-            set_num(num => {
-                return randomize(0, 1) ? num + randomize(1, 3) : num - randomize(0, 2);
-            });
-        }, randomize(0, 5000));
-    }, []);
+    const { both_players_ready, lock_other_player_board, game_over_msg, show_dc_modal } = useContext(BsContext);
 
     return (
         <TopBarWrapper>
@@ -34,10 +20,9 @@ const TopBar = () => {
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} />
                 </LogoWrapper>
-                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                {both_players_ready && !game_over_msg ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
                 </TurnHolder> : ' '}
             </div>
-                <TopBarHeader>players online: {num}</TopBarHeader>
             { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
@@ -49,7 +34,7 @@ const TopBarWrapper = styled.div`
   ${flex('center', false)};
   align-content: center;
   ${position('absolute', '0', false, '0', false )};
-  height: 16%;
+  height: 14%;
   width: 100%;
   color: white;
 `;
@@ -62,7 +47,7 @@ const LogoWrapper = styled.div`
 
 const Logo = styled.img`
   height: 90%;
-  margin: 5%;
+  margin: 1%;
 `;
 
 const TopBarHeader = styled.span`

@@ -18,10 +18,10 @@ const UserGrid = () => {
     lock_other_player_board
   } = useContext(BsContext)
 
-  // *** for reordering ships functionality
+  // *** for reordering ships functionality (Not implemented yet)
   const [lock_ship_position, set_lock_ship_position] = useState(false);
 
-  // *** lock the user's ship when ready after reordering
+  // *** lock the user's ship when ready after reordering (Not implemented yet)
   useEffect(() => {
     set_lock_ship_position(true)
   }, [player_is_ready])
@@ -36,7 +36,7 @@ const UserGrid = () => {
     return pixel.value;
   }
 
-  // updating the player's board and lock it.
+  // updating the player's board according to the other player's guess
   useEffect(() => {
     if (other_player_guess) {
       const { result, x, y } = other_player_guess;
@@ -66,7 +66,7 @@ const UserGrid = () => {
         {player_board.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) =>
             <UserPixel
-              lock={lock_ship_position} // *** for the ship reordering function.
+              lock={lock_ship_position} // *** for the ship reordering function (Not implemented yet)
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex, board, player_ships)}
             ></UserPixel>))}

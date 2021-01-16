@@ -3,7 +3,7 @@ import { BsContext } from "../stateManager/stateManager";
 import FadeoutStatus from "./FadeoutStatus";
 import styled, { keyframes } from "styled-components";
 import { Button } from "../styles/GlobalStyles";
-import { flex, position, cool_shinig_green } from "../styles/Mixins";
+import { flex, position, cool_shining_green } from "../styles/Mixins";
 import { MdContentCopy } from 'react-icons/md';
 import { flash, __esModule } from 'react-animations';
 import { nanoid } from "nanoid";
@@ -13,6 +13,7 @@ const flashAnimation = keyframes`${flash}`;
 const Input = () => {
 
   const {
+    player_room,
     set_player_room,
     both_players_connected,
     other_player_ships,
@@ -39,14 +40,11 @@ const Input = () => {
   const [copied_msg, set_copied_msg] = useState('');
   const [show_join_button, set_show_join_button] = useState(true);
   const [show_join_button_input, set_show_join_button_input] = useState(false);
+  const [join_flash, set_join_flash] = useState(false);
   const [show_ready_box, set_show_ready_box] = useState(false);
   const [game_started, set_game_started] = useState(false);
 
-  //
-  const [join_flash, set_join_flash] = useState(false);
-  const [connected, set_connected] = useState(false);
-
-
+  // display the room ID
   const host_button = () => {
     if (!show_host_url) {
       set_show_join_button(false);
@@ -59,33 +57,37 @@ const Input = () => {
     }
   }
 
+  // copy the room ID so the player wont need to do in manually
   const copy_id = () => {
     event.preventDefault();
     navigator.clipboard.writeText(host_url).then(function () {
       set_note_status("Id copied to clipboard!");
+      set_join_flash(true);
     });
   }
 
+  // confirms that the "join" button input has 4 characters
   const changeHandler = (event) => {
     if (event.target.value.length == 4) {
-      set_note_status("Click JOIN to start!")
+      set_note_status("Perfect!")
       set_join_flash(true);
-    }
-    else {
-      set_join_flash(false);
     }
   };
 
+  // nullify the note after every use
   useEffect(() => {
     setTimeout(() => set_note_status(''), 3000);
   }, [note_status]);
 
+
+  // nullify the copied message after every use
   useEffect(() => {
     setTimeout(() => {
       set_copied_msg('');
     }, 3000);
   }, [copied_msg]);
 
+  // display the "join" input
   const join_button = () => {
     if (!show_join_button_input) {
       set_show_host_button(false);
@@ -97,6 +99,7 @@ const Input = () => {
     }
   };
 
+  // connect the player to the room
   const start_button = () => {
     if (show_host_button) {
       set_show_host_button(false);
@@ -107,18 +110,21 @@ const Input = () => {
       set_show_join_button(false);
     }
     set_show_ready_box(true);
-    set_connected(true);
+    set_join_flash(false);
   }
 
+  // ready to play
   const ready_button = () => {
     set_player_is_ready(true);
     set_show_ready_box(false);
   };
 
+  // set the board randomly
   const RandomBoard = () => {
     set_random_board(!random_board)
   }
 
+  // set the game status message
   useEffect(() => {
     if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to the other player. Then press start.") }
     else if (!show_host_button && show_join_button) { set_game_status("Please past the room ID. Then press start.") }
@@ -134,21 +140,22 @@ const Input = () => {
     else if (lock_other_player_board && game_started) { set_game_status('') }
   }, [show_host_button, show_join_button, show_ready_box, both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
 
+  // set the game over message according to the player status (winning / losing)
   useEffect(() => {
     if (winning === true) {
       set_game_over_msg('YOU WON!!!');
-      // set_connected(false);
     }
     else if (winning === false) {
-      set_game_over_msg('you loose')
-      // set_connected(false);
+      set_game_over_msg('you lose')
     }
   }, [winning]);
 
+  // reload the page 
   const newGame = () => {
     location.reload();
   }
 
+  // render the suitable buttons and inputs according to the player choices
   const renderDecideder = () => {
     if (show_host_button && show_join_button) {
       return (
@@ -163,7 +170,7 @@ const Input = () => {
         <>
           <HostButton onClick={() => host_button()}>Back</HostButton>
           <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{host_url}</UrlHolder>
-          <StartButton onClick={() => start_button()}>Start</StartButton>
+          <StartButton onClick={() => start_button()}>{join_flash ? <Flash>Start</Flash> : 'Start'}</StartButton>
         </>
       )
     }
@@ -172,14 +179,14 @@ const Input = () => {
         <>
           <JoinButton onClick={() => join_button()}>Back</JoinButton>
           <InputHolder placeholder="Enter game id" ref={inputEl} onChange={changeHandler} />
-          <StartButton onClick={() => start_button()}>Start</StartButton>
+          <StartButton onClick={() => start_button()}>{join_flash ? <Flash>Start</Flash> : 'Start'}</StartButton>
         </>
       )
     }
     else if (show_ready_box && both_players_connected) {
       return (
         <>
-          <ReadyButton onClick={() => ready_button()}>{!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}</ReadyButton>
+          <ReadyButton onClick={() => ready_button()}><Flash>Ready</Flash></ReadyButton>
           <Random onClick={RandomBoard}>Random</Random>
         </>
       )
@@ -189,9 +196,9 @@ const Input = () => {
   return (
     <>
       <FadeoutStatus />
-      <InputWrapper connected={connected} game_over_msg={game_over_msg} game_started={game_started}>
+      <InputWrapper connected={player_room} game_over_msg={game_over_msg} game_started={game_started}>
         {!game_over_msg ?
-          <MiniWrapper>
+          <MiniWrapper connected={player_room}>
             <StaticStatus>{game_status}</StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
@@ -205,21 +212,18 @@ export default Input;
 
 const InputWrapper = styled.div`
   ${({ game_started, game_over_msg, connected }) => game_started && !game_over_msg ? 'display: none' : connected ? flex('center', false) : flex()};
-  ${position('absolute', '30%')}
-  right: ${({ connected }) => connected ? '-49%' : '0%'};
-  height: 85%;
-  width: 100%;
+  ${position('absolute', '15%')}
+  ${({ connected }) => connected ? `right: 9.2%; width: 30%;`: `right: -0.5%; width: 100%;`};
+  height: 95%;
   background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
-  padding-left: ${({ connected }) => connected ? '11.5%' : '1.5%'};
   z-index: 1;
 `;
 
 const MiniWrapper = styled.form`
   ${flex()}
   flex-direction: column;
-  ${cool_shinig_green};
-  height: 50%;
-  width: 35%;
+  ${cool_shining_green};
+  ${({ connected }) => connected ? `height: 50%; width: 100%;`: `height: 50%; width: 35%;`};
   border: 3px solid #00ff3c;
   border-radius: 50px;
   background: black;
@@ -241,7 +245,7 @@ const CopyButton = styled.button`
   ${position('relative', false, false, false, '85%')};
 
     &:hover {
-      ${cool_shinig_green};
+      ${cool_shining_green};
       background: #1aff1a;
       color: black;
     }

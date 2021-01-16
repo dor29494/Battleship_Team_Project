@@ -23,11 +23,13 @@ const Chat = () => {
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
   
+  // display the chat (or not)
   const chatShower = () => {
     console.log('toggle')
     set_show_chat(!show_chat);
   };
 
+  // set what is shown in the chat input
   const messageHandler = (e) => {
     if (e.target.value) {
       set_input_msg(e.target.value);
@@ -37,6 +39,7 @@ const Chat = () => {
     }
   };
 
+  // add the new message to the chat
   const submitMessage = (e) => {
     e.preventDefault();
     console.log("message Submiting");
@@ -50,6 +53,7 @@ const Chat = () => {
     ]);
   };
 
+  // keep the chat scrolling down all the time
   useEffect(() => {
     set_msg_alert(true);
     if (chat_array_message.length >= 1) {
@@ -110,14 +114,14 @@ const Chat = () => {
 export default Chat;
 
 const ShowChatButton = styled(Button)`
-  ${position('absolute', '110%', false, false, '10%')};
+  ${position('absolute', '100%', false, false, '10%')};
   max-height: 2.5rem;
   max-width: 8rem;
   font-size: 1.6rem;
 `;
 
 const Wrapper = styled.div`
-  ${position('absolute', '83%', false, false, '20%')};
+  ${position('absolute', '73%', false, false, '20%')};
   ${flex('flex-end')};
   flex-direction: row;
   min-height: 15rem;
