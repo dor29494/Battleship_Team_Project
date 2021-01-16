@@ -11,18 +11,16 @@ const OpponentGrid = () => {
     other_player_board,
     set_other_player_board,
     other_player_ships,
-    set_player_guess,
-    other_player_guess,
-    both_players_ready,
     first_turn,
-    set_winning,
-    lock_other_player_board,
-    set_lock_other_player_board,
-
+    both_players_ready,
     set_note_status,
     opponent_precents,
-    set_opponent_precents
-
+    set_opponent_precents,
+    set_player_guess,
+    other_player_guess,
+    lock_other_player_board,
+    set_lock_other_player_board,
+    set_winning
   } = useContext(BsContext);
 
   const [lockArray, set_lockArray] = useState([]);
@@ -40,8 +38,6 @@ const OpponentGrid = () => {
       const { result } = other_player_guess;
       if (result === MISS) {
         set_lock_other_player_board(false);
-        // alert("maybe my turn");
-
       }
     }
   }, [other_player_guess]);

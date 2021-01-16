@@ -1,5 +1,6 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import styled from "styled-components";
+import { flex, position } from "../styles/Mixins";
 
 const Footer = () => {
 
@@ -13,14 +14,9 @@ const Footer = () => {
 export default Footer;
 
 const FooterWrapper = styled.div`
-    position: absolute;
-    top: 85rem;
-    buttom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    color: white;
-    border: 3px solid white;
-    `;
+  ${flex('center', false)};
+  flex-direction: row;
+  ${position('absolute', '115%', '0', '0', '0')};
+  color: white;
+  margin-left: 10px;
+`;

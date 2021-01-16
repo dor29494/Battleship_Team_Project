@@ -11,13 +11,11 @@ const UserGrid = () => {
     player_board,
     set_player_board,
     player_ships,
-    other_player_guess,
     player_is_ready,
-    lock_other_player_board,
-    game_started,
-
     user_precents,
-    set_user_precents
+    set_user_precents,
+    other_player_guess,
+    lock_other_player_board
   } = useContext(BsContext)
 
   // *** for reordering ships functionality
@@ -57,11 +55,10 @@ const UserGrid = () => {
   }, [other_player_guess])
 
   return (
-    <GridWrapper lock={lock_other_player_board} game={game_started} type="user">
+    <GridWrapper>
       <GridHeaders>Your Grid</GridHeaders>
       <LittleWrapper>
         <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'300px'} height={'22px'} />
-
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>

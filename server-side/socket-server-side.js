@@ -41,8 +41,7 @@ io.sockets.on('connection', socket => {
     }
   })
   socket.on('data', (data = {}) => {
-console.log("@@@ ", data)
-    const { room, action, guess, board, turn, message, to_player, ships, is_winning } = data;
+    const { room, action, guess, board, turn, to_player, ships, is_winning } = data;
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);

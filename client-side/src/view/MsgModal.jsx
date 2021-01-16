@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { Button } from "../styles/GlobalStyles";
 import styled from "styled-components";
+import { flex, position } from "../styles/Mixins";
 
 const Modal = () => {
-    const { set_show_modal } = useContext(BsContext);
+    const { set_show_dc_modal } = useContext(BsContext);
     
     const ok_button = () => {
-      set_show_modal(false)
+      set_show_dc_modal(false)
       location.reload();
     }
   
@@ -25,31 +26,18 @@ const Modal = () => {
   export default Modal;
   
   const ModalWrapper = styled.div`
-    width: 100%;
+    ${flex()};
+    ${position('fixed', '0', false, '0', false)};
     height: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    width: 100%;
     background-color: rgba(0,0,0,0.8);
-    z-index: 100;
+    z-index: 1;
   `;
   
   const Dialog = styled.div`
-    background: grey;
-    width: 60rem;
-    height: 30rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    ${flex()};
     flex-direction: column;
-    z-index: 100;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    height: 30rem;
+    width: 60rem;
+    background: grey;
   `;

@@ -6,12 +6,13 @@ import { flash } from 'react-animations';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import Modal from './MsgModal'
+import { flex, position } from "../styles/Mixins";
 
 const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { connected, both_players_ready, lock_other_player_board, show_modal, game_over_msg } = useContext(BsContext);
+    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg } = useContext(BsContext);
 
 
     // regenerate false (dynamic) number of players (lol).
@@ -33,11 +34,11 @@ const TopBar = () => {
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} />
                 </LogoWrapper>
-                <TopBarHeader>players online: {num}</TopBarHeader>
-                {both_players_ready && connected ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
                 </TurnHolder> : ' '}
             </div>
-            { show_modal && !game_over_msg ? <Modal /> : ' '}
+                <TopBarHeader>players online: {num}</TopBarHeader>
+            { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
 };
@@ -45,24 +46,18 @@ const TopBar = () => {
 export default TopBar
 
 const TopBarWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  display: flex;
-  width: 100%;
-  height: 16%;
-  right: 0;
-  align-items: center;
+  ${flex('center', false)};
   align-content: center;
-  align-items: center;
+  ${position('absolute', '0', false, '0', false )};
+  height: 16%;
+  width: 100%;
   color: white;
-  z-index: 100;
 `;
 
 const LogoWrapper = styled.div`
-    width: 100%;  
-    height: 100%;
-    display: flex;
-    align-items: center;
+  ${flex('center', false)};
+  height: 100%;
+  width: 100%;  
 `;
 
 const Logo = styled.img`
@@ -71,26 +66,23 @@ const Logo = styled.img`
 `;
 
 const TopBarHeader = styled.span`
+  ${position('absolute', '105px', false, false, '4.9%' )};
   font-size: 1.7rem;
-  top: 85px;
-  left: 4.9%;
   padding: 0.7%;
-  position: absolute;
 `;
 
 const TurnHolder = styled.div`
-width: 100%;
-display: flex;
-justify-content: center;
+  ${flex(false, 'center')};
+  width: 100%;
+`;
 
-`
 const TurnText = styled.div`
-font-size: 2rem;
-display: flex;
-`
+  ${flex(false, false)};
+  font-size: 2rem;
+`;
 
 const Flash = styled.h1`
-font-size: 2rem;
-animation: 6s ${flashAnimation};
-animation-iteration-count: infinite;
-`
+  animation: 6s ${flashAnimation};
+  animation-iteration-count: infinite;
+  font-size: 2rem;
+`;

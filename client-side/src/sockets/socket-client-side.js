@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { BsContext } from "../stateManager/stateManager";
 const Sockets = () => {
 
@@ -12,20 +12,13 @@ const Sockets = () => {
         set_other_player_ships,
         first_turn,
         set_first_turn,
-        player_guess,
-        set_other_player_guess,
         player_is_ready,
         set_both_players_ready,
-        set_game_status,
-        set_show_modal,
+        player_guess,
+        set_other_player_guess,
         winning,
         set_winning,
-        set_show_host_button,
-        set_show_join_button,
-        set_show_ready_box,
-        set_player_room,
-        set_game_over_msg,
-
+        set_show_dc_modal
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -91,7 +84,6 @@ localStorage.setItem('battleship_room', player_room);
 
     useEffect(() => {
         socket.on("data", (data = {}) => {
-            console.log("@@@ ", data)
             const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, is_winning, leave } = data;
             if (other_player_connected) {
                 set_both_players_connected(true)
@@ -109,7 +101,6 @@ localStorage.setItem('battleship_room', player_room);
                 console.log("does player1 starts?: " + turn);
             } else if (ready_to_start) {
                 set_both_players_ready(true);
-                set_game_status("Lets Go!!!");
             } else if (guess) {
                 console.log("Player has recived the opponents guess", guess);
                 set_other_player_guess(guess);
@@ -117,12 +108,7 @@ localStorage.setItem('battleship_room', player_room);
                 console.log("The other player won!");
                 set_winning(!is_winning);
             } else if (leave) {
-                // set_show_host_button(false);
-                // set_show_join_button(false);
-                // set_both_players_connected(false);
-                // set_show_ready_box(false);
-                set_show_modal(true);
-
+                set_show_dc_modal(true);
             }
         }
         );
