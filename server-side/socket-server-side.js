@@ -26,6 +26,7 @@ const io = new Server(http, {
 let clients = {};
 const play = 'play';
 const ready = 'ready';
+const chat_message = 'chat_message';
 const leave = 'leave';
 
 io.sockets.on('connection', socket => {
@@ -35,20 +36,22 @@ io.sockets.on('connection', socket => {
     console.log('===============================================');
     console.log("disconnect", socket.id)
     if (clients.hasOwnProperty(socket.id)) {
-      console.log(`${socket.id} has leaves this room: ${clients[socket.id]}`)
-      socket.to(clients[socket.id]).emit("data", { leave: leave })
+      console.log(`${socket.id} has leaves this room: ${clients[socket.id]}`);
+      socket.to(clients[socket.id]).emit("data", { leave: leave });
       clients[socket.id] = '';
     }
-  })
+  });
+  
   socket.on('data', (data = {}) => {
-    const { room, action, guess, board, turn, to_player, ships, is_winning } = data;
+    const { room, action, board, turn, to_player, ships, guess, message,  is_winning } = data;
+
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
       console.log("inside room " + room);
       clients[socket.id] = room;
       // tell the client that another player is in (and then show the 'ready' button)
-      if(Object.values(clients).filter(r => r === room).length === 2){
+      if (Object.values(clients).filter(r => r === room).length === 2) {
         console.log("both players are inside!");
         io.in(room).emit("data", { other_player_connected: true });
       }
@@ -75,11 +78,18 @@ io.sockets.on('connection', socket => {
       console.log('The server emited the guess:', guess)
     }
 
+    // chat_message - send a message. 
+    if (action === chat_message) {
+      console.log("message recived:", message);
+      socket.to(room).emit("data", { message });
+    }
+
     // is_winning - if one of the players won, notify the players.
     if (is_winning) {
       socket.to(room).emit("data", { is_winning });
       console.log("the server emiting victory to the other player");
     }
+
   })
 });
 

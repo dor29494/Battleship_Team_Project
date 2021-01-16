@@ -2,8 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import { GridWrapper, PlayerGrid, GridHeaders, LittleWrapper, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import UserPixel from "./UserPixel";
+import { GridWrapper, PlayerGrid, GridHeaders, LittleWrapper, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import ProgressBar from '@ramonak/react-progress-bar';
 
 const UserGrid = () => {

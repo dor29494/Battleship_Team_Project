@@ -1,12 +1,12 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { flex, position, cool_shinig_green } from "../styles/Mixins";
 import { BsContext } from "../stateManager/stateManager";
+import FadeoutStatus from "./FadeoutStatus";
+import styled, { keyframes } from "styled-components";
+import { Button } from "../styles/GlobalStyles";
+import { flex, position, cool_shinig_green } from "../styles/Mixins";
 import { MdContentCopy } from 'react-icons/md';
 import { flash, __esModule } from 'react-animations';
-import { Button } from "../styles/GlobalStyles";
 import { nanoid } from "nanoid";
-import FadeoutStatus from "./FadeoutStatus";
 
 const flashAnimation = keyframes`${flash}`;
 
@@ -22,9 +22,9 @@ const Input = () => {
     set_player_is_ready,
     both_players_ready,
     note_status,
+    set_note_status,
     game_status,
     set_game_status,
-    set_note_status,
     lock_other_player_board,
     winning,
     game_over_msg,
@@ -158,7 +158,6 @@ const Input = () => {
         </>
       );
     }
-
     else if (show_host_button && !show_join_button) {
       return (
         <>

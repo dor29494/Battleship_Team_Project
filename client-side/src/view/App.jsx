@@ -1,24 +1,21 @@
 import React, { useContext } from "react";
 import { BsContext } from "../stateManager/stateManager";
+import Sockets from "../sockets/socket-client-side";
 import TopBar from "./TopBar";
+import Input from "./Input";
 import UserGrid from "./UserGrid";
 import OpponentGrid from "./OpponentGrid";
+import Chat from "./Chat"
 import Footer from "./Footer";
-import Input from "./Input";
-import Sockets from "../sockets/socket-client-side";
-import Confetti from 'react-confetti';
 import styled from "styled-components";
 import { flex, position } from "../styles/Mixins";
+import Confetti from 'react-confetti';
 
 
 function App() {
 
   const { winning } = useContext(BsContext);
-
-  // document.addEventListener("mouseover", function () {
-  //   console.log(event.target.ref)
-  // });
-
+  
   return (
     <>
       {winning ? <Confetti width='2000px' height='2000px' style={{ zIndex: 1000 }} /> : ' '}
@@ -29,6 +26,7 @@ function App() {
         <UserGrid />
         <OpponentGrid />
       </GameWrapper>
+      <Chat/>
       <Footer />
     </>
   );

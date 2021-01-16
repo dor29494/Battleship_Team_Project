@@ -38,6 +38,10 @@ const StateManager = ({ children }) => {
   const [opponent_precents, set_opponent_precents] = useState(0);
   const [player_guess, set_player_guess] = useState(null);
   const [other_player_guess,set_other_player_guess] = useState(null);
+  const [player_message, set_player_message] = useState([]);
+  const [other_player_message, set_other_player_message] = useState([]);
+  const [chat_array_message, set_chat_array_message] = useState([]);
+  const [player_id, set_player_id] = useState('User name');
   const [lock_other_player_board, set_lock_other_player_board] = useState(true);
   const [winning, set_winning] = useState(null);
   const [game_over_msg, set_game_over_msg] = useState(null);
@@ -66,6 +70,10 @@ const StateManager = ({ children }) => {
     opponent_precents,
     player_guess,
     other_player_guess,
+    player_message,
+    other_player_message,
+    chat_array_message,
+    player_id,
     lock_other_player_board,
     winning,
     game_over_msg,
@@ -89,6 +97,10 @@ const StateManager = ({ children }) => {
     set_opponent_precents,
     set_player_guess,
     set_other_player_guess,
+    set_player_message,
+    set_other_player_message,
+    set_chat_array_message,
+    set_player_id,
     set_lock_other_player_board,
     set_winning,
     set_game_over_msg,

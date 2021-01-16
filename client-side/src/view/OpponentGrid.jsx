@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
-import { GridWrapper, OtherPlayerGrid, GridHeaders, LittleWrapper, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import OpponentPixel from "./OpponentPixel";
+import { GridWrapper, OtherPlayerGrid, GridHeaders, LittleWrapper, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import ProgressBar from '@ramonak/react-progress-bar';
 
 const OpponentGrid = () => {

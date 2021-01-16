@@ -1,7 +1,7 @@
 export const flex = (align_dir = `center`, justify_dir = `center`) => {
     return `display: flex;
-            ${align_dir = false ? `` : `align-items: ${align_dir}`};
-            ${justify_dir = false ? `` : `justify-content: ${justify_dir}`};`;
+            ${align_dir ? `align-items: ${align_dir}` : `` };
+            ${justify_dir ? `justify-content: ${justify_dir}` : `` };`;
 }
 
 export const position = (pos , top, buttom, right, left) => {

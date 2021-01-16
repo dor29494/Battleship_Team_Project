@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
 import { BsContext } from "../stateManager/stateManager";
+import Modal from './MsgModal'
 import battleship_logo from "../logo/battleship_logo.jpg";
 import styled, { keyframes } from "styled-components";
-import { flash } from 'react-animations';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from 'react-loader-spinner';
-import Modal from './MsgModal'
 import { flex, position } from "../styles/Mixins";
+import { flash } from 'react-animations';
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 const flashAnimation = keyframes`${flash}`;
 

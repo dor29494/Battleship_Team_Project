@@ -16,6 +16,12 @@ const Sockets = () => {
         set_both_players_ready,
         player_guess,
         set_other_player_guess,
+        player_message,
+        other_player_message,
+        set_other_player_message,
+        chat_array_message,
+        set_chat_array_message,
+        player_id,
         winning,
         set_winning,
         set_show_dc_modal
@@ -23,6 +29,7 @@ const Sockets = () => {
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
 
+    const chat_message = 'chat_message'
     const play = "play";
     const ready = "ready";
     // ----------------------------------------emiting---------------------------------------
@@ -31,7 +38,7 @@ const Sockets = () => {
 
     useEffect(() => {
         socket.emit("data", { room: player_room, action: play });
-localStorage.setItem('battleship_room', player_room);
+        localStorage.setItem('battleship_room', player_room);
     }, [player_room]);
 
     //--------------------ready to play-------------------------
@@ -74,6 +81,13 @@ localStorage.setItem('battleship_room', player_room);
         console.log("emited guess");
     }, [player_guess]);
 
+    //------------------Send a message----------------------
+
+    useEffect(() => {
+        console.log('Inside UseEffect of player_message:', chat_array_message[chat_array_message.length - 1])
+        socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length - 1] });
+    }, [player_message])
+
     //---------------------winning--------------------------
 
     useEffect(() => {
@@ -84,11 +98,11 @@ localStorage.setItem('battleship_room', player_room);
 
     useEffect(() => {
         socket.on("data", (data = {}) => {
-            const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, is_winning, leave } = data;
+            const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, message, is_winning, leave } = data;
+
             if (other_player_connected) {
                 set_both_players_connected(true)
-            }
-            else if (to_player === "2") {
+            } else if (to_player === "2") {
                 set_other_player_board(board);
                 set_other_player_ships(ships);
                 set_first_turn(turn);
@@ -104,6 +118,16 @@ localStorage.setItem('battleship_room', player_room);
             } else if (guess) {
                 console.log("Player has recived the opponents guess", guess);
                 set_other_player_guess(guess);
+            } else if (message) {
+                console.log('I got message!')
+                set_other_player_message(...other_player_message, message);
+                set_chat_array_message((prev) => [
+                    ...prev,
+                    {
+                        id: player_id,
+                        msg: message.msg,
+                    },
+                ]);
             } else if (is_winning) {
                 console.log("The other player won!");
                 set_winning(!is_winning);
