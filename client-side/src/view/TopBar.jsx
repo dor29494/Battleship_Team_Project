@@ -12,7 +12,7 @@ const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg } = useContext(BsContext);
+    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg, game_started } = useContext(BsContext);
 
 
     // regenerate false (dynamic) number of players (lol).
@@ -32,13 +32,13 @@ const TopBar = () => {
         <TopBarWrapper>
             <div style={{ width: '100%', height: '100%' }}>
                 <LogoWrapper>
-                    <Logo src={battleship_logo} alt={"logo"} />
+                    <Logo src={battleship_logo} alt={"logo"} onClick={() => location.href = window.location.origin} />
                 </LogoWrapper>
-                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '2px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
                 </TurnHolder> : ' '}
             </div>
                 <TopBarHeader>players online: {num}</TopBarHeader>
-            { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
+            { show_dc_modal ? <Modal /> : ' '}
         </TopBarWrapper>
     )
 };
@@ -58,11 +58,12 @@ const LogoWrapper = styled.div`
   ${flex('center', false)};
   height: 100%;
   width: 100%;  
-`;
-
-const Logo = styled.img`
+  `;
+  
+  const Logo = styled.img`
   height: 90%;
   margin: 5%;
+  cursor: pointer;
 `;
 
 const TopBarHeader = styled.span`

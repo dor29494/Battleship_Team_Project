@@ -10,6 +10,8 @@ import Footer from "./Footer";
 import styled from "styled-components";
 import { flex, position } from "../styles/Mixins";
 import Confetti from 'react-confetti';
+import { BrowserRouter } from 'react-router-dom'
+
 
 
 function App() {
@@ -17,7 +19,8 @@ function App() {
   const { winning } = useContext(BsContext);
   
   return (
-    <>
+    <BrowserRouter>
+
       {winning ? <Confetti width='2000px' height='2000px' style={{ zIndex: 1000 }} /> : ' '}
       <Sockets />
       <TopBar />
@@ -28,7 +31,8 @@ function App() {
       </GameWrapper>
       <Chat/>
       <Footer />
-    </>
+      </BrowserRouter>
+
   );
 }
 export default App;

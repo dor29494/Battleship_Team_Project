@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { Button } from "../styles/GlobalStyles";
 import styled from "styled-components";
@@ -9,15 +9,18 @@ const Modal = () => {
     
     const ok_button = () => {
       set_show_dc_modal(false)
-      location.reload();
+      location.href = window.location.origin;
     }
-  
+  const okref = useRef(null);
+  setTimeout(() => {
+    okref.current.focus();
+  }, 500);
     return (
       <ModalWrapper>
         <Dialog>
           <span>Your opponent just leaved the game.</span>
           <br />
-          <Button onClick={() => ok_button()}>OK</Button>
+          <Button ref={okref} onClick={() => ok_button()}>OK</Button>
         </Dialog>
       </ModalWrapper>
     )
@@ -31,7 +34,7 @@ const Modal = () => {
     height: 100%;
     width: 100%;
     background-color: rgba(0,0,0,0.8);
-    z-index: 1;
+    z-index: 1000;
   `;
   
   const Dialog = styled.div`

@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { BsContext } from "../stateManager/stateManager";
 import { inspect_hit, update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
 import OpponentPixel from "./OpponentPixel";
 import { GridWrapper, OtherPlayerGrid, GridHeaders, LittleWrapper, LettersBar, NumbersBar, BarPixel } from "../styles/GlobalStyles";
 import ProgressBar from '@ramonak/react-progress-bar';
+
 
 const OpponentGrid = () => {
   const {
@@ -29,6 +30,9 @@ const OpponentGrid = () => {
   useEffect(() => {
     if (first_turn) {
       set_lock_other_player_board(false);
+    }
+    else {
+      set_lock_other_player_board(true);
     }
   }, [both_players_ready]);
 
@@ -73,7 +77,7 @@ const OpponentGrid = () => {
         } else if (result === HIT) {
           // console.log(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
           updated = update_board_hit(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
-          console.log(updated)
+          // console.log(updated)
           if (updated.sunk) {
             set_note_status('SINK!')
             // NOT WORKING!!
@@ -107,7 +111,7 @@ const OpponentGrid = () => {
     }
     return false;
   };
-
+  const fooRef = useRef();
 
   return (
     <GridWrapper>
@@ -129,8 +133,8 @@ const OpponentGrid = () => {
               status={pixelStatus(Xindex, Yindex, board, other_player_ships)}
               x={Xindex}
               y={Yindex}
-              clickhandler={onClick}
-            ></OpponentPixel>
+              clickhandler={onClick}>
+            </OpponentPixel>
           ))
         )}
       </OtherPlayerGrid>

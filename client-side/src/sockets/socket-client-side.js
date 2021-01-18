@@ -24,7 +24,10 @@ const Sockets = () => {
         player_id,
         winning,
         set_winning,
-        set_show_dc_modal
+        set_show_dc_modal,
+        set_other_player_ready,
+        other_player_ready,
+        set_player_is_ready
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -78,13 +81,13 @@ const Sockets = () => {
 
     useEffect(() => {
         socket.emit("data", { room: player_room, guess: player_guess });
-        console.log("emited guess");
+        // console.log("emited guess");
     }, [player_guess]);
 
     //------------------Send a message----------------------
 
     useEffect(() => {
-        console.log('Inside UseEffect of player_message:', chat_array_message[chat_array_message.length - 1])
+        // console.log('Inside UseEffect of player_message:', chat_array_message[chat_array_message.length - 1])
         socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length - 1] });
     }, [player_message])
 
@@ -99,27 +102,42 @@ const Sockets = () => {
     useEffect(() => {
         socket.on("data", (data = {}) => {
             const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, message, is_winning, leave } = data;
-
+            // console.log("@@@ ", data)
             if (other_player_connected) {
-                set_both_players_connected(true)
+                set_both_players_connected(true);
             } else if (to_player === "2") {
+                // alert("IM HERE1")
                 set_other_player_board(board);
                 set_other_player_ships(ships);
                 set_first_turn(turn);
-                console.log("player's 1 data recived by player 2");
+                // console.log("player's 1 data recived by player 2");
                 console.log("does player2 starts?: " + turn);
+                console.log("TOPLAYER2: ", data)
             } else if (to_player === "1") {
+                set_other_player_ready(true);
                 set_other_player_board(board);
                 set_other_player_ships(ships);
+                set_first_turn(turn);
                 console.log("player's 2 data recived by player 1");
                 console.log("does player1 starts?: " + turn);
-            } else if (ready_to_start) {
-                set_both_players_ready(true);
-            } else if (guess) {
-                console.log("Player has recived the opponents guess", guess);
+                //~~~~~~~~~~~~~~~
+            }
+            // else if (ready_to_start) {
+            //     if (player_is_ready && other_player_ready) {
+            //         set_both_players_ready(true);
+            //         console.log("======================================");
+            //         console.log("READY TO START: ", ready_to_start);
+            //         console.log("DATA: ", data)
+            //         // alert("READY!")
+            //     }
+            //     // set_game_status("Lets Go!!!");
+            //     // ############
+            // }
+            else if (guess) {
+                // console.log("Player has recived the opponents guess", guess);
                 set_other_player_guess(guess);
             } else if (message) {
-                console.log('I got message!')
+                // console.log('I got message!')
                 set_other_player_message(...other_player_message, message);
                 set_chat_array_message((prev) => [
                     ...prev,
@@ -129,7 +147,7 @@ const Sockets = () => {
                     },
                 ]);
             } else if (is_winning) {
-                console.log("The other player won!");
+                // console.log("The other player won!");
                 set_winning(!is_winning);
             } else if (leave) {
                 set_show_dc_modal(true);

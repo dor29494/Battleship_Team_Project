@@ -1,50 +1,91 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
-import { BsContext } from "../stateManager/stateManager";
-import FadeoutStatus from "./FadeoutStatus";
 import styled, { keyframes } from "styled-components";
-import { Button } from "../styles/GlobalStyles";
-import { flex, position, cool_shinig_green } from "../styles/Mixins";
-import { MdContentCopy } from 'react-icons/md';
+import { BsContext } from "../stateManager/stateManager";
+import { MdContentCopy, MdDesktopWindows } from 'react-icons/md';
 import { flash, __esModule } from 'react-animations';
-import { nanoid } from "nanoid";
+import { Button } from "../styles/GlobalStyles";
+import { nanoid, random } from "nanoid";
+import FadeoutStatus from "./FadeoutStatus";
+import Modal from "./MsgModal";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import {
+
+  FacebookShareButton,
+  FacebookMessengerShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import {
+
+  FacebookIcon,
+  FacebookMessengerIcon,
+  WhatsappIcon,
+} from "react-share";
 
 const flashAnimation = keyframes`${flash}`;
+const startGame = (props) => {
+  const { set_connected, set_player_room, set_show_join_button, set_show_ready_box, set_show_host_button } = useContext(BsContext);
+  let game_id = props.match.params.id;
+  set_show_ready_box(true);
+  set_connected(true);
+  set_player_room(game_id);
+  set_show_join_button(false);
+  set_show_host_button(false);
 
+  return <h1></h1>
+}
 const Input = () => {
 
   const {
     set_player_room,
     both_players_connected,
     other_player_ships,
-    random_board,
-    set_random_board,
     player_is_ready,
     set_player_is_ready,
     both_players_ready,
-    note_status,
-    set_note_status,
+    lock_other_player_board,
+    random_board,
+    set_random_board,
     game_status,
     set_game_status,
-    lock_other_player_board,
+    show_modal,
     winning,
+    note_status,
+    set_note_status,
+    connected,
+    set_connected,
+    show_host_button,
+    set_show_host_button,
+    show_join_button,
+    set_show_join_button,
+    show_host_url,
+    set_show_host_url,
     game_over_msg,
     set_game_over_msg,
+    player_room,
+    show_ready_box,
+    set_show_ready_box,
+    set_other_player_board,
+    other_player_board,
+    set_both_players_ready,
+    first_turn
   } = useContext(BsContext);
-
   // local states:
   const inputEl = useRef();
-  const [show_host_button, set_show_host_button] = useState(true);
-  const [show_host_url, set_show_host_url] = useState(false);
   const [host_url, set_host_url] = useState(null);
   const [copied_msg, set_copied_msg] = useState('');
-  const [show_join_button, set_show_join_button] = useState(true);
-  const [show_join_button_input, set_show_join_button_input] = useState(false);
-  const [show_ready_box, set_show_ready_box] = useState(false);
   const [game_started, set_game_started] = useState(false);
+  const [room_id, set_room_id] = useState(null);
 
   //
   const [join_flash, set_join_flash] = useState(false);
-  const [connected, set_connected] = useState(false);
+  const [waiting, set_waiting] = useState(false);
 
 
   const host_button = () => {
@@ -61,25 +102,15 @@ const Input = () => {
 
   const copy_id = () => {
     event.preventDefault();
-    navigator.clipboard.writeText(host_url).then(function () {
+
+    navigator.clipboard.writeText(window.location.origin + "/" + room_id).then(function () {
       set_note_status("Id copied to clipboard!");
     });
   }
 
-  const changeHandler = (event) => {
-    if (event.target.value.length == 4) {
-      set_note_status("Click JOIN to start!")
-      set_join_flash(true);
-    }
-    else {
-      set_join_flash(false);
-    }
-  };
-
   useEffect(() => {
-    setTimeout(() => set_note_status(''), 3000);
-  }, [note_status]);
-
+    set_room_id(nanoid(4));
+  }, [])
   useEffect(() => {
     setTimeout(() => {
       set_copied_msg('');
@@ -98,16 +129,7 @@ const Input = () => {
   };
 
   const start_button = () => {
-    if (show_host_button) {
-      set_show_host_button(false);
-      set_player_room(host_url);
-    }
-    else if (show_join_button) {
-      set_player_room(inputEl.current.value);
-      set_show_join_button(false);
-    }
-    set_show_ready_box(true);
-    set_connected(true);
+    location.href = window.location.origin + "/" + room_id;
   }
 
   const ready_button = () => {
@@ -120,34 +142,61 @@ const Input = () => {
   }
 
   useEffect(() => {
-    if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to the other player. Then press start.") }
-    else if (!show_host_button && show_join_button) { set_game_status("Please past the room ID. Then press start.") }
-    else if (show_ready_box && !both_players_connected) { set_game_status("You are connected! Waiting for another player to connect...") }
-    else if (other_player_ships && !both_players_ready) { set_game_status('Your oppnent is ready.') }
-    else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
-    else if (player_is_ready && !both_players_ready) { set_game_status("Waiting for your opponent to be ready...") }
-    else if (both_players_ready) {
+    if (other_player_ships && !player_is_ready) {
+      set_game_status('Your opponent is ready.');
+      return false;
+    }
+    if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to your friend, Then press start.") }
+    if (player_is_ready && !other_player_ships) {
+      set_game_status("Waiting for your opponent to be ready...");
+      set_show_ready_box(false);
+      set_waiting(true);
+      return false;
+    }
+    if (!show_host_button && show_join_button) { set_game_status("Please past the room ID, Then press start.") }
+    if (show_ready_box && !both_players_connected) {
+      set_game_status("You are connected! Waiting for another player to connect...");
+      set_waiting(true);
+  }
+    if (player_is_ready && other_player_ships) {
+      set_waiting(false);
       set_game_status("You are good to go! Good luck!");
-      setTimeout(() => set_game_started(true), 2000);
+      set_show_ready_box(false);
+      setTimeout(() => {
+        set_game_started(true)
+        set_both_players_ready(true);
+      }
+        , 2000);
+      return false;
     }
     if (!lock_other_player_board && game_started) { set_game_status("Its your turn") }
     else if (lock_other_player_board && game_started) { set_game_status('') }
+    else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
   }, [show_host_button, show_join_button, show_ready_box, both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
 
   useEffect(() => {
     if (winning === true) {
       set_game_over_msg('YOU WON!!!');
-      // set_connected(false);
+      set_game_started(false);
     }
     else if (winning === false) {
-      set_game_over_msg('you loose')
-      // set_connected(false);
+      set_game_over_msg('you lose')
+      set_game_started(false);
     }
   }, [winning]);
 
-  const newGame = () => {
-    location.reload();
-  }
+  const changeHandler = (event) => {
+    if (event.target.value.length == 4) {
+      set_note_status("Click JOIN to start!")
+      set_join_flash(true);
+    }
+    else {
+      set_join_flash(false);
+    }
+  };
+  useEffect(() => {
+    setTimeout(() => set_note_status(''), 3000);
+  }, [note_status])
 
   const renderDecideder = () => {
     if (show_host_button && show_join_button) {
@@ -158,12 +207,19 @@ const Input = () => {
         </>
       );
     }
+
     else if (show_host_button && !show_join_button) {
       return (
         <>
-          <HostButton onClick={() => host_button()}>Back</HostButton>
-          <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{host_url}</UrlHolder>
-          <StartButton onClick={() => start_button()}>Start</StartButton>
+          <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{window.location.origin}/{room_id}</UrlHolder>
+          <ButtonsWrapper>
+            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><FacebookShareButton url={`${window.location.origin}/${room_id}`}><FacebookIcon size={40} round={true} /></FacebookShareButton></Button>
+            &nbsp; &nbsp;
+            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><FacebookMessengerShareButton url={`${window.location.origin}/${room_id}`}><FacebookMessengerIcon size={40} round={true} /></FacebookMessengerShareButton></Button>
+            &nbsp; &nbsp;
+            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={40} round={true} /></WhatsappShareButton></Button>
+          </ButtonsWrapper>
+          <StartButton style={{width: "80%", height: "20%"}}onClick={() => start_button()}>Start</StartButton>
         </>
       )
     }
@@ -192,38 +248,56 @@ const Input = () => {
       <InputWrapper connected={connected} game_over_msg={game_over_msg} game_started={game_started}>
         {!game_over_msg ?
           <MiniWrapper>
-            <StaticStatus>{game_status}</StaticStatus>
+            <StaticStatus>{game_status}
+              {waiting ? <Loader type="Grid" color="white" height={70} width={70} style={{ marginTop: "10%"}} /> : ' '}
+            </StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
-          : <GameOver>{game_over_msg}<br /><Button onClick={() => newGame()}>New Game!</Button></GameOver>}
+          : <GameOver>{game_over_msg}<br /><Button onClick={() => location.href = window.location.origin}>New Game!</Button><Button onClick={() => location.reload()}>Play Again!</Button></GameOver>}
       </InputWrapper>
+      <Switch>
+        <Route path='/:id' component={startGame} />
+      </Switch>
     </>
   );
 }
-
 export default Input;
 
 const InputWrapper = styled.div`
-  ${({ game_started, game_over_msg, connected }) => game_started && !game_over_msg ? 'display: none' : connected ? flex('center', false) : flex()};
-  ${position('absolute', '30%')}
-  right: ${({ connected }) => connected ? '-49%' : '0%'};
-  height: 85%;
-  width: 100%;
-  background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
-  padding-left: ${({ connected }) => connected ? '11.5%' : '1.5%'};
-  z-index: 1;
-`;
+    // border: 1px solid white;
+    background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
+    display: ${({ game_started, game_over_msg }) => game_started && !game_over_msg ? 'none' : 'flex'};
+    justify-content: ${({ connected }) => connected ? ' ' : 'center'};
+    padding-left: ${({ connected }) => connected ? '9.5%' : '1.5%'};
+    align-items: center;
+    height: 95%;
+    top: 18%;
+    width: 100%;
+    right: ${({ connected }) => connected ? '-49%' : '0%'};
+    position: absolute;
+    z-index: 100;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  `;
 
 const MiniWrapper = styled.form`
-  ${flex()}
+  display: flex;
   flex-direction: column;
-  ${cool_shinig_green};
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 2%;
   height: 50%;
   width: 35%;
-  border: 3px solid #00ff3c;
-  border-radius: 50px;
   background: black;
-  padding-bottom: 2%;
+  border: 3px solid #00ff3c;
+
+  -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
+  box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
+  border-radius: 50px;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 const HostButton = styled(Button)``;
@@ -237,41 +311,45 @@ const ReadyButton = styled(Button)``;
 const Random = styled(Button)``;
 
 const CopyButton = styled.button`
-  font-size: 90%;
-  ${position('relative', false, false, false, '85%')};
-
-    &:hover {
-      ${cool_shinig_green};
-      background: #1aff1a;
-      color: black;
-    }
+font-size: 90%;
+  position: relative;
+  left: 85%;
+  &:hover {
+    background: #1aff1a;
+    color: black;
+    -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
+box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
+  }
 `;
 
 const UrlHolder = styled.div`
-  ${flex('center', false)};
-  height: 4rem;
-  width: 20rem;
-  border: white 1px solid;
-  border-radius: 4rem;
-  outline: none; 
-  transition: border 0.5s;
-  font-size: 1.5rem;
   padding: 0.5rem;
   margin: 0.5rem;
+  height: 4rem;
+  width: 25rem;
+  outline: none; 
+  border-radius: 4rem;
+  border: white 1px solid;
+  transition: border 0.5s;
+  font-size: 1.5rem;
+  z-index: 1;
+  align-items: center;
+  display: flex;
 `;
 
 const InputHolder = styled.input`
-  ${flex('center', false)};
+  margin: 0.5rem;
+  padding: 0.5rem;
   height: 4rem;
-  width: 20rem; 
-  border: white 1px solid;
+  width: 20rem;
   border-radius: 4rem;
-  outline: none;
+  border: white 1px solid;
   transition: border 0.5s;
   font-size: 1.5rem;
-  padding: 0.5rem;
-  margin: 0.5rem;
-
+  z-index: 1;
+  outline: none;
+  align-items: center;
+  display: flex;
   background: none; 
   color: #00ff41;
   caret-color: white;
@@ -286,31 +364,46 @@ const InputHolder = styled.input`
 `;
 
 const Flash = styled.h1`
-  animation: 1s ${flashAnimation};
-  animation-iteration-count: infinite;
-  font-size: 2rem;
+font-size: 2rem;
+animation: 1s ${flashAnimation};
+animation-iteration-count: infinite;
 `;
 
 const StaticStatus = styled.h1`
-  color: white;
-  text-align: center;
-  font-size: 100%;
-  margin: 5%;
+font-size: 100%;
+text-align: center;
+color: white;
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+margin: 5%;
+font-size: 2rem;
 `;
 
 const GameOver = styled.div`
-  ${flex()};
-  flex-direction: column;
-  ${position('fixed', '13%', false, '0', false)};
-  height: 90%;
-  width: 100%;
-  background: rgba(0,0,0,0.8);
-  font-weight: bold;
-  font-size: 10rem;
-  margin: 0;
-  cursor: pointer;
+cursor: pointer;
+width: 100%;
+height: 90%;
+position: fixed;
+top: 13%;
+right: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: bold;
+background: rgba(0,0,0,0.8);
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+font-size: 10rem;
+flex-direction: column;
+margin: 0;
 `;
 
-
-
-
+const ButtonsWrapper = styled.div`
+width: 100%;
+display: flex;
+flex-direction: row;
+justify-content: center;
+margin: 1%;
+`

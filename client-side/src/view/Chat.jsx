@@ -24,7 +24,7 @@ const Chat = () => {
   const refToLast = useRef(false);
   
   const chatShower = () => {
-    console.log('toggle')
+    // console.log('toggle')
     set_show_chat(!show_chat);
   };
 
@@ -39,7 +39,7 @@ const Chat = () => {
 
   const submitMessage = (e) => {
     e.preventDefault();
-    console.log("message Submiting");
+    // console.log("message Submiting");
     set_player_message([...player_message, input_msg]);
     set_chat_array_message([
       ...chat_array_message,
@@ -58,7 +58,7 @@ const Chat = () => {
         refToLast.current.focus();
       }
     }
-    console.log("inside of UseEffect with chat_array_message");
+    // console.log("inside of UseEffect with chat_array_message");
   }, [chat_array_message]);
 
 
@@ -110,7 +110,7 @@ const Chat = () => {
 export default Chat;
 
 const ShowChatButton = styled(Button)`
-  ${position('absolute', '110%', false, false, '10%')};
+  ${position('absolute', '98%', false, false, '11%')};
   max-height: 2.5rem;
   max-width: 8rem;
   font-size: 1.6rem;

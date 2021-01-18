@@ -35,6 +35,7 @@ export const StandardPixel = styled.div`
   ${flex()};
   height: 10%;
   width: 10%;
+  
 `;
 
 // input component:
@@ -54,8 +55,10 @@ export const Button = styled.div`
   cursor: pointer;
 
     &:focus {
-      outline: none;
-      box-shadow: 0px 0px yellow, -1em 0 04em white;
+      // outline: none;
+      // box-shadow: 0px 0px yellow, -1em 0 04em white;
+      // border: 1px solid red;
+      background: red;
     }
     &:hover {
       ${cool_shinig_green};
@@ -99,12 +102,14 @@ export const ShipHit = styled(StandardPixel)`
 `;
 
 export const ShipSink = styled(StandardPixel)`
-  background: grey;
+background: #008F11;
+border: 1px solid #00FF41;
+  
 `;
 
 export const ShipPart = styled(StandardPixel)`
   border: 3px solid blue;
-  background: rgba(0, 0, 255, 0.3);
+  background: rgba(0, 0, 255, 0.6);
 `;
 
 //--------------------------------------------
@@ -130,8 +135,8 @@ export const GridWrapper = styled.div`
 export const PlayerGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 500px;
-  width: 500px;
+  height: 100%;
+  width: 100%;
   color: #003B00;
 
   grid-area: grid;

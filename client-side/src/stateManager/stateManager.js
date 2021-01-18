@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { place_ships, initial_game_board, initial_ships } from "../logic/logic";
 import io from 'socket.io-client';
+import { nanoid } from "nanoid";
 
 const { REACT_APP_SERVER_URL } = process.env;
 
@@ -22,12 +23,12 @@ const { Provider } = BsContext;
 
 const StateManager = ({ children }) => {
 
-  const [player_room, set_player_room] = useState(null);
+  const [player_room, set_player_room] = useState(nanoid(4));
   const [both_players_connected, set_both_players_connected] = useState(null);
   const [player_board, set_player_board] = useState([]);
   const [other_player_board, set_other_player_board] = useState(initial_game_board());
   const [player_ships, set_player_ships] = useState(null);
-  const [other_player_ships,set_other_player_ships] = useState();
+  const [other_player_ships, set_other_player_ships] = useState();
   const [first_turn, set_first_turn] = useState(null);
   const [random_board, set_random_board] = useState(false);
   const [player_is_ready, set_player_is_ready] = useState(false);
@@ -37,7 +38,7 @@ const StateManager = ({ children }) => {
   const [user_precents, set_user_precents] = useState(0);
   const [opponent_precents, set_opponent_precents] = useState(0);
   const [player_guess, set_player_guess] = useState(null);
-  const [other_player_guess,set_other_player_guess] = useState(null);
+  const [other_player_guess, set_other_player_guess] = useState(null);
   const [player_message, set_player_message] = useState([]);
   const [other_player_message, set_other_player_message] = useState([]);
   const [chat_array_message, set_chat_array_message] = useState([]);
@@ -46,7 +47,12 @@ const StateManager = ({ children }) => {
   const [winning, set_winning] = useState(null);
   const [game_over_msg, set_game_over_msg] = useState(null);
   const [show_dc_modal, set_show_dc_modal] = useState(false);
-
+  const [other_player_ready, set_other_player_ready] = useState(false);
+  const [show_ready_box, set_show_ready_box] = useState(false);
+  const [connected, set_connected] = useState(false);
+  const [show_join_button, set_show_join_button] = useState(false);
+  const [show_host_button, set_show_host_button] = useState(true);
+  // const [show_ready_box, set_show_ready_box] = useState(false);
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
     set_player_ships(ships);
@@ -77,9 +83,15 @@ const StateManager = ({ children }) => {
     lock_other_player_board,
     winning,
     game_over_msg,
-    show_dc_modal
+    show_dc_modal,
+    other_player_ready,
+    show_ready_box,
+    connected,
+    show_host_button,
+    show_ready_box,
+    show_join_button,
   };
-  
+
   const action = {
     set_player_room,
     set_both_players_connected,
@@ -104,7 +116,14 @@ const StateManager = ({ children }) => {
     set_lock_other_player_board,
     set_winning,
     set_game_over_msg,
-    set_show_dc_modal
+    set_show_dc_modal,
+    set_other_player_ready,
+    set_show_ready_box,
+    set_connected,
+    set_show_host_button,
+    set_show_ready_box,
+    set_show_join_button,
+
   };
 
   const ws_connection = {
