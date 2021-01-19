@@ -24,12 +24,6 @@ const Chat = () => {
   const [msg_alert, set_msg_alert] = useState(false);
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
-<<<<<<< HEAD
-
-=======
-  
-  // display the chat (or not)
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
   const chatShower = () => {
     console.log("toggle");
     set_show_chat(!show_chat);
@@ -63,9 +57,6 @@ const Chat = () => {
   useEffect(() => {
     if (chat_array_message.length >= 1) {
       window.location = "#end";
-      if (show_chat) {
-        refToLast.current.focus();
-      }
     }
     console.log("inside of UseEffect with chat_array_message");
   }, [chat_array_message]);
@@ -154,14 +145,10 @@ const SendButtonStyleObj = {
   cursor: "pointer",
 };
 const ShowChatButton = styled(Button)`
-<<<<<<< HEAD
-  ${position("absolute", "110%", false, false, "10%")};
+  ${position("absolute", "80%", false, false, "10%")};
   ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
   text-align: center;
-=======
-  ${position('absolute', '100%', false, false, '10%')};
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
   max-height: 2.5rem;
   max-width: 2.5rem;
   font-size: 1.6rem;
@@ -182,13 +169,8 @@ const ShowChatButton = styled(Button)`
 `;
 
 const Wrapper = styled.div`
-<<<<<<< HEAD
-  ${position("absolute", "83%", false, false, "20%")};
-  ${flex("flex-end")};
-=======
-  ${position('absolute', '73%', false, false, '20%')};
-  ${flex('flex-end')};
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
+${position("absolute", "63%", false, false, "13%")};
+${flex("flex-end")};
   flex-direction: row;
   min-height: 15rem;
   max-width: 35rem;
