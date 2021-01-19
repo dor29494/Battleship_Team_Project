@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { place_ships, initial_game_board, initial_ships } from "../logic/logic";
 import io from 'socket.io-client';
+import {nanoid} from "nanoid"
 
 const { REACT_APP_SERVER_URL } = process.env;
 
@@ -41,7 +42,7 @@ const StateManager = ({ children }) => {
   const [player_message, set_player_message] = useState([]);
   const [other_player_message, set_other_player_message] = useState([]);
   const [chat_array_message, set_chat_array_message] = useState([]);
-  const [player_id, set_player_id] = useState('User name');
+  const [player_id, set_player_id] = useState(nanoid(5));
   const [lock_other_player_board, set_lock_other_player_board] = useState(true);
   const [winning, set_winning] = useState(null);
   const [game_over_msg, set_game_over_msg] = useState(null);

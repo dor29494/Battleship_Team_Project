@@ -120,11 +120,14 @@ const Sockets = () => {
                 set_other_player_guess(guess);
             } else if (message) {
                 console.log('I got message!')
-                set_other_player_message(...other_player_message, message);
+                set_other_player_message((prev)=> [
+                    ...prev,
+                    message.msg
+                ]);
                 set_chat_array_message((prev) => [
                     ...prev,
                     {
-                        id: player_id,
+                        id: message.id,
                         msg: message.msg,
                     },
                 ]);

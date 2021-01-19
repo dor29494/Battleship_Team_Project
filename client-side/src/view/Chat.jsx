@@ -4,8 +4,9 @@ import styled, { keyframes } from "styled-components";
 import { Button } from "../styles/GlobalStyles";
 import { flex, position } from "../styles/Mixins";
 import { flash } from "react-animations"; //
+import { FaCommentDots, FaPaperPlane } from "react-icons/fa";
 
-const flashAnimation = keyframes`${flash}`; // 
+const flashAnimation = keyframes`${flash}`; //
 
 const Chat = () => {
   const {
@@ -14,6 +15,7 @@ const Chat = () => {
     chat_array_message,
     set_chat_array_message,
     player_id,
+    other_player_message,
   } = useContext(BsContext);
 
   // local states:
@@ -22,9 +24,9 @@ const Chat = () => {
   const [msg_alert, set_msg_alert] = useState(false);
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
-  
+
   const chatShower = () => {
-    console.log('toggle')
+    console.log("toggle");
     set_show_chat(!show_chat);
   };
 
@@ -51,7 +53,6 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    set_msg_alert(true);
     if (chat_array_message.length >= 1) {
       window.location = "#end";
       if (show_chat) {
@@ -61,64 +62,116 @@ const Chat = () => {
     console.log("inside of UseEffect with chat_array_message");
   }, [chat_array_message]);
 
+  useEffect(() => {
+    console.log("other_player_message useeffect");
+    if (other_player_message.length >= 1) {
+      if (!show_chat) {
+        set_msg_alert(true);
+      } else {
+        set_msg_alert(false);
+      }
+    }
+  }, [other_player_message]);
 
-  // useEffect(() => {
-  //   console.log('show chat useeffect')
-  //   if (show_chat) {
-  //     set_msg_alert(false);
-  //   }
-  // }, [show_chat]);
+  useEffect(() => {
+    if (show_chat) {
+      set_msg_alert(false);
+      refToLast.current.focus();
+    }
+  }, [show_chat]);
 
   return show_chat ? (
     <>
-      <ShowChatButton msg_alert={msg_alert} onClick={chatShower}>Close chat</ShowChatButton>
+      <ShowChatButton msg_alert={msg_alert} onClick={chatShower}>
+        <FaCommentDots />
+      </ShowChatButton>
       <Wrapper>
         <form style={{ width: "100%" }} onSubmit={submitMessage}>
           <label>
             <ChatWrapper>
               {chat_array_message.length > 0
                 ? chat_array_message.map((message, i) => (
-                  <MessageHolder
-                    key={i}
-                    ref={chatWrapperRef}
-                    id={chat_array_message.length}
-                  >
-                    <UserNameHolder>{message.id}: </UserNameHolder>{" "}
-                    {message.msg}
-                  </MessageHolder>
-                ))
+                    <MessageHolder
+                      key={i}
+                      ref={chatWrapperRef}
+                      id={chat_array_message.length}
+                    >
+                      <UserNameHolder message={message} player_id={player_id}>{(message.id === player_id) ? 'You' : 'Oppnent'}: </UserNameHolder>{" "}
+                      {message.msg}
+                    </MessageHolder>
+                  ))
                 : ""}
               <h1 id={"end"}></h1>
-              <InputHolder
-                type="text"
-                onChange={messageHandler}
-                onKeyPress={messageHandler}
-                ref={refToLast}
-                placeholder={"Write your message here..."}
-              ></InputHolder>
+              <InputWrapper>
+                <InputHolder
+                  type="text"
+                  onChange={messageHandler}
+                  onKeyPress={messageHandler}
+                  ref={refToLast}
+                  placeholder={"Write your message here..."}
+                ></InputHolder>
+                <FaPaperPlane
+                  style={SendButtonStyleObj}
+                  onClick={submitMessage}
+                />
+              </InputWrapper>
             </ChatWrapper>
           </label>
         </form>
       </Wrapper>
     </>
   ) : (
-      <ShowChatButton onClick={chatShower}>Show chat</ShowChatButton>
-
-    );
+    <>
+      <ShowChatButton onClick={chatShower}>
+        {msg_alert && !show_chat ? (
+          <Flash>
+            {" "}
+            <FaCommentDots style={{ color: "#FA3E3E", marginTop: "20%" }} />
+          </Flash>
+        ) : (
+          <FaCommentDots />
+        )}
+      </ShowChatButton>
+    </>
+  );
 };
 
 export default Chat;
 
+const SendButtonStyleObj = {
+  order: "1",
+  alignSelf: "center",
+  marginBottom: "0.6rem",
+  transform: "rotate(15deg)",
+  cursor: "pointer",
+};
 const ShowChatButton = styled(Button)`
-  ${position('absolute', '110%', false, false, '10%')};
+  ${position("absolute", "110%", false, false, "10%")};
+  ${({ msg_alert, show_chat }) =>
+    msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
+  text-align: center;
   max-height: 2.5rem;
-  max-width: 8rem;
+  max-width: 2.5rem;
   font-size: 1.6rem;
+  background: rgba(0, 0, 255, 0.3);
+  border: 1px solid #c0c0c0;
+  box-shadow: ${({ msg_alert, show_chat }) =>
+    msg_alert && !show_chat ? "none" : "inset 0 0.2rem 1.5rem #5880CE"};
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px black, -1em 0 04em white;
+  }
+  &:hover {
+    -webkit-box-shadow: 2px 3px 16px 5px rgba(0, 128, 128, 128);
+    // box-shadow: 2px 3px 16px 5px rgba(0,128,128,128);
+    background: #696969;
+    color: white;
+  }
 `;
 
 const Wrapper = styled.div`
-  ${position('absolute', '83%', false, false, '20%')};
-  ${flex('flex-end')};
+  ${position("absolute", "83%", false, false, "20%")};
+  ${flex("flex-end")};
   flex-direction: row;
   min-height: 15rem;
   max-width: 35rem;
@@ -157,23 +210,29 @@ const ChatWrapper = styled.div`
     background: green;
   }
 `;
+const InputWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+`;
 
 const InputHolder = styled.input`
   align-self: flex-end;
   max-height: 1.7rem;
+  flex-basis: 80%;
   width: 30rem;
   border-radius: 0.2rem;
   font-size: 1rem;
+  margin-left: 0.3rem;
   margin-top: 0.3rem;
   margin-bottom: 0.6rem;
-  margin-right: 1.2rem;
+  margin-right: 0.8rem;
   padding: 1rem;
   outline: none;
   transition: border 0.5s;
 
-    &:focus {
-      border: white 2px solid;
-    }
+  &:focus {
+    border: white 2px solid;
+  }
 `;
 
 const MessageHolder = styled.div`
@@ -202,14 +261,14 @@ const MessageHolder = styled.div`
 `;
 
 const UserNameHolder = styled.div`
-  color: #0175f7;
+color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
   font-family: sans-serif;
   font-size: 1.2rem;
   text-decoration: underline;
   margin-right: 0.4rem;
 `;
-
-// animation: ${({ msg_alert }) => msg_alert ? '1s ${flashAnimation}' : 'none'}
-// animation-iteration-count: ${({ msg_alert }) => msg_alert ? 'infinite' : 'none'} ;
-
-
+const Flash = styled.h1`
+  animation: 2s ${flashAnimation};
+  animation-iteration-count: infinite;
+  font-size: 1.8rem;
+`;
