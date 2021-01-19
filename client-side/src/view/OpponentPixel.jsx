@@ -4,7 +4,8 @@ import { SEA, MISS, HIT, SINK, AROUND_SINK, SHIP_PART } from "../stateManager/st
 
 const dev = true // necessary only for dev - let you see the opponent ship
 
-const OpponentPixel = ({ status, x, y, lock, clickhandler, myturn }) => {
+// checking the pixel status when clicking and render a new one (depends on the pixel status) 
+const OpponentPixel = ({ status, x, y, lock, clickhandler }) => {
 
   if (status === SEA) {
     return <OpponentSquare onClick={() => clickhandler(x, y, lock)} ></OpponentSquare>
@@ -22,9 +23,11 @@ const OpponentPixel = ({ status, x, y, lock, clickhandler, myturn }) => {
     return <AroundSink>•</AroundSink>
   }
   else if (status === SHIP_PART) {
+    //
     if (dev)
       return <ShipPart onClick={() => clickhandler(x, y, lock)} ></ShipPart> // dev tool
     else
+    //
       return <OpponentSquare onClick={() => clickhandler(x, y, lock)} ></OpponentSquare>
   }
 };

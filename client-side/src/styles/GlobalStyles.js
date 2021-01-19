@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
-import { flex, cool_shinig_green } from "../styles/Mixins";
+import { flex, cool_shining_green } from "../styles/Mixins";
 
 const GlobalStyles = createGlobalStyle`
   html,
@@ -58,11 +58,10 @@ export const Button = styled.div`
       box-shadow: 0px 0px yellow, -1em 0 04em white;
     }
     &:hover {
-      ${cool_shinig_green};
+      ${cool_shining_green};
       background: #1aff1a;
       color: black;
     }
-    
 `;
 
 // UserPixel + OpponentPixel components:
@@ -106,8 +105,6 @@ export const ShipPart = styled(StandardPixel)`
   border: 3px solid blue;
   background: rgba(0, 0, 255, 0.3);
 `;
-
-//--------------------------------------------
 
 // UserGrid + OpponentGrid components:
 
@@ -179,6 +176,4 @@ export const BarPixel = styled(StandardPixel)`
 export const PlaceFiller = styled(StandardPixel)`
   grid-area: emptyPixel;
 `;
-
-//--------------------------------------------
 
