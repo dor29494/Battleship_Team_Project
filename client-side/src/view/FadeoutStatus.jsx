@@ -4,7 +4,6 @@ import styled, { keyframes } from "styled-components";
 import { fadeOut } from 'react-animations';
 import { flex, position } from "../styles/Mixins";
 
-
 const fadeoutAnimation = keyframes`${fadeOut}`;
 
 const FadeoutStatus = () => {
@@ -12,7 +11,7 @@ const FadeoutStatus = () => {
     const { note_status } = useContext(BsContext);
 
     return (
-        <StatusBox>{note_status ? <Animated>{note_status}</Animated> : ' '}</StatusBox>
+        <StatusBox>{note_status ? <Animated>{note_status}</Animated> : null}</StatusBox>
     )
 }
 
@@ -22,7 +21,7 @@ export default FadeoutStatus;
 const StatusBox = styled.div`
   ${flex()};
   align-self: start;
-  ${position('absolute', '40%', false, false, '40.5%')};
+  ${position('absolute', '30%', false, false, '40.5%')};
   height: 4rem;
   min-width: 20rem;
   font-size: 2rem;

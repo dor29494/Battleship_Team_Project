@@ -1,7 +1,9 @@
 import React, { useContext, useRef, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
+
 import { BsContext } from "../stateManager/stateManager";
 import { MdContentCopy, MdDesktopWindows } from 'react-icons/md';
+import { flex, position, cool_shining_green } from "../styles/Mixins";
 import { flash, __esModule } from 'react-animations';
 import { Button } from "../styles/GlobalStyles";
 import { nanoid, random } from "nanoid";
@@ -44,6 +46,7 @@ const startGame = (props) => {
 const Input = () => {
 
   const {
+    player_room,
     set_player_room,
     both_players_connected,
     other_player_ships,
@@ -69,7 +72,6 @@ const Input = () => {
     set_show_host_url,
     game_over_msg,
     set_game_over_msg,
-    player_room,
     show_ready_box,
     set_show_ready_box,
     set_other_player_board,
@@ -123,24 +125,42 @@ const Input = () => {
       set_show_join_button(true);
     }
   }
+  useEffect(() => {
+    set_room_id(nanoid(4));
+  },[])
 
+  // copy the room ID so the player wont need to do in manually
   const copy_id = () => {
     event.preventDefault();
 
     navigator.clipboard.writeText(window.location.origin + "/" + room_id).then(function () {
       set_note_status("Id copied to clipboard!");
+      set_join_flash(true);
     });
   }
 
+  // confirms that the "join" button input has 4 characters
+  const changeHandler = (event) => {
+    if (event.target.value.length == 4) {
+      set_note_status("Perfect!")
+      set_join_flash(true);
+    }
+  };
+
+  // nullify the note after every use
   useEffect(() => {
-    set_room_id(nanoid(4));
-  }, []);
+    setTimeout(() => set_note_status(''), 3000);
+  }, [note_status]);
+
+
+  // nullify the copied message after every use
   useEffect(() => {
     setTimeout(() => {
       set_copied_msg('');
     }, 3000);
   }, [copied_msg]);
 
+  // display the "join" input
   const join_button = () => {
     if (!show_join_button_input) {
       set_show_host_button(false);
@@ -152,19 +172,23 @@ const Input = () => {
     }
   };
 
+  // connect the player to the room
   const start_button = () => {
     location.href = window.location.origin + "/" + room_id;
   }
 
+  // ready to play
   const ready_button = () => {
     set_player_is_ready(true);
     set_show_ready_box(false);
   };
 
+  // set the board randomly
   const RandomBoard = () => {
     set_random_board(!random_board)
   }
 
+  // set the game status message
   useEffect(() => {
     // if (play_again) return false;
     if (other_player_ships && !player_is_ready) {
@@ -200,30 +224,22 @@ const Input = () => {
     else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
   }, [show_host_button, show_join_button, show_ready_box, both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
 
+  // set the game over message according to the player status (winning / losing)
   useEffect(() => {
     if (winning === true) {
       set_game_over_msg('YOU WON!!!');
-      set_game_started(false);
     }
     else if (winning === false) {
       set_game_over_msg('you lose')
-      set_game_started(false);
     }
   }, [winning]);
 
-  const changeHandler = (event) => {
-    if (event.target.value.length == 4) {
-      set_note_status("Click JOIN to start!")
-      set_join_flash(true);
-    }
-    else {
-      set_join_flash(false);
-    }
-  };
-  useEffect(() => {
-    setTimeout(() => set_note_status(''), 3000);
-  }, [note_status])
+  // reload the page 
+  const newGame = () => {
+    location.reload();
+  }
 
+  // render the suitable buttons and inputs according to the player choices
   const renderDecideder = () => {
     if (show_host_button && show_join_button) {
       return (
@@ -239,13 +255,13 @@ const Input = () => {
         <>
           <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{window.location.origin}/{room_id}</UrlHolder>
           <ButtonsWrapper>
-            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><FacebookShareButton url={`${window.location.origin}/${room_id}`}><FacebookIcon size={40} round={true} /></FacebookShareButton></Button>
+            <Button style={{ width: "4.5vw", height: "4.5vw"}}><FacebookShareButton url={`${window.location.origin}/${room_id}`}><FacebookIcon size={"5vw"} round={true} style={{marginTop: "0.7vw"}} /></FacebookShareButton></Button>
             &nbsp; &nbsp;
-            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><FacebookMessengerShareButton url={`${window.location.origin}/${room_id}`}><FacebookMessengerIcon size={40} round={true} /></FacebookMessengerShareButton></Button>
+            <Button style={{ width: "4.5vw", height: "4.5vw"}}><FacebookMessengerShareButton url={`${window.location.origin}/${room_id}`}><FacebookMessengerIcon size={"5vw"} round={true} style={{marginTop: "0.7vw"}} /></FacebookMessengerShareButton></Button>
             &nbsp; &nbsp;
-            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={40} round={true} /></WhatsappShareButton></Button>
+            <Button style={{ width: "4.5vw", height: "4.5vw"}}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={"5vw"} round={true} style={{marginTop: "0.7vw"}} /></WhatsappShareButton></Button>
           </ButtonsWrapper>
-          <StartButton style={{ width: "80%", height: "20%" }} onClick={() => start_button()}>Start</StartButton>
+          <Button style={{ width: "50%", height: "20%" }} onClick={() => start_button()}>Start</Button>
         </>
       )
     }
@@ -254,17 +270,15 @@ const Input = () => {
         <>
           <JoinButton onClick={() => join_button()}>Back</JoinButton>
           <InputHolder placeholder="Enter game id" ref={inputEl} onChange={changeHandler} />
-          <StartButton onClick={() => start_button()}>Start</StartButton>
+          <StartButton onClick={() => start_button()}>{join_flash ? <Flash>Start</Flash> : 'Start'}</StartButton>
         </>
       )
     }
     else if (show_ready_box && both_players_connected) {
       return (
         <>
-          <ReadyButton onClick={() => ready_button()}>
-            {!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}
-          </ReadyButton>
-          <Random onClick={RandomBoard}>Random</Random>
+          <Button onClick={() => ready_button()}><Flash>Ready</Flash></Button>
+          <Button onClick={RandomBoard}>Random</Button>
         </>
       )
     }
@@ -279,11 +293,11 @@ const Input = () => {
   return (
     <>
       <FadeoutStatus />
-      <InputWrapper connected={connected} game_over_msg={game_over_msg} game_started={game_started}>
+      <InputWrapper connected={player_room} game_over_msg={game_over_msg} game_started={game_started}>
         {!game_over_msg ?
           <MiniWrapper>
             <StaticStatus>{game_status}
-              {waiting ? <Loader type="Grid" color="white" height={70} width={70} style={{ marginTop: "10%" }} /> : ' '}
+              {waiting ? <Loader type="Grid" color="white" height={70} width={70} style={{ margin: "1vw" }} />  : ' '}
             </StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
@@ -299,109 +313,71 @@ const Input = () => {
 export default Input;
 
 const InputWrapper = styled.div`
-    // border: 1px solid white;
-    background-color: ${({ connected }) => connected ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.6)'};
-    display: ${({ game_started, game_over_msg }) => game_started && !game_over_msg ? 'none' : 'flex'};
-    justify-content: ${({ connected }) => connected ? ' ' : 'center'};
-    padding-left: ${({ connected }) => connected ? '9.5%' : '1.5%'};
-    align-items: center;
-    height: 95%;
-    top: 14.5%;
-    width: 100%;
-    right: ${({ connected }) => connected ? '-49%' : '0%'};
-    position: absolute;
-    z-index: 100;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  `;
+  ${({ game_started, game_over_msg, connected }) => game_started && !game_over_msg ? 'display: none' : connected ? flex('center', false) : flex()};
+position: absolute;
+top: 10vw;
+left: 0;
+  z-index: 100;
+  height: 70vw;
+  width: 123vw;
+  justify-content: center;
+  background: rgba(0,0,0,0.8);
+
+`;
 
 const MiniWrapper = styled.form`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 2%;
-  height: 50%;
-  width: 35%;
-  background: black;
+  ${cool_shining_green};
+  // ${({ connected }) => connected ? `height: 50%; width: 100%;`: `height: 50%; width: 35%;`};
   border: 3px solid #00ff3c;
-
   -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
   box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
   border-radius: 50px;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  // width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // position: relative;
+  z-index: 100;
+  background: black;
+  align-content: center;
+  padding: 2%;
 `;
 
-const HostButton = styled(Button)``;
-
-const JoinButton = styled(Button)``;
-
-const StartButton = styled(Button)``;
-
-const ReadyButton = styled(Button)``;
-
-const Random = styled(Button)``;
 
 const CopyButton = styled.button`
-font-size: 90%;
-  position: relative;
-  left: 85%;
-  &:hover {
-    background: #1aff1a;
-    color: black;
-    -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
-  }
+  font-size: 80%;
+  ${position('relative', false, false, false, '85%')};
+
+    &:hover {
+      ${cool_shining_green};
+      background: #1aff1a;
+      color: black;
+    }
 `;
 
 const UrlHolder = styled.div`
-  padding: 0.5rem;
-  margin: 0.5rem;
-  height: 4rem;
-  width: 25rem;
+  padding: 1vw;
+  margin: 1vw;
+  height: 4vw;
+  width: 25vw;
   outline: none; 
   border-radius: 4rem;
   border: white 1px solid;
   transition: border 0.5s;
-  font-size: 1.5rem;
+  font-size: 1.5vw;
   z-index: 1;
   align-items: center;
   display: flex;
 `;
-
-const InputHolder = styled.input`
-  margin: 0.5rem;
-  padding: 0.5rem;
-  height: 4rem;
-  width: 20rem;
-  border-radius: 4rem;
-  border: white 1px solid;
-  transition: border 0.5s;
-  font-size: 1.5rem;
-  z-index: 1;
-  outline: none;
-  align-items: center;
-  display: flex;
-  background: none; 
-  color: #00ff41;
-  caret-color: white;
-
-    &:focus {
-      border: white 1px dashed;
-    }
-
-    ::placeholder {
-    color: white;
-    }
-`;
-
 const Flash = styled.h1`
-font-size: 2rem;
 animation: 1s ${flashAnimation};
 animation-iteration-count: infinite;
+font-size: 2vw;
 `;
 
 const StaticStatus = styled.h1`
@@ -411,15 +387,16 @@ color: white;
 -webkit-user-select: none;
 -ms-user-select: none;
 user-select: none;
-margin: 5%;
-font-size: 2rem;
+// padding-top: 2vw;
+font-size: 2vw;
+width: 40vw;
 `;
 
 const GameOver = styled.div`
 width: 100%;
 height: 90%;
 position: fixed;
-top: 13%;
+// top: 20%;
 right: 0;
 display: flex;
 justify-content: center;
@@ -429,7 +406,7 @@ background: rgba(0,0,0,0.8);
 -webkit-user-select: none;
 -ms-user-select: none;
 user-select: none;
-font-size: 10rem;
+font-size: 10vw;
 flex-direction: column;
 margin: 0;
 `;
@@ -439,7 +416,7 @@ width: 100%;
 display: flex;
 flex-direction: row;
 justify-content: center;
-margin: 1%;
+// margin: 1%;
 `
 const PlayAgainButton = styled(Button)`
 background: ${props => props.error ? 'grey' : ' ' };

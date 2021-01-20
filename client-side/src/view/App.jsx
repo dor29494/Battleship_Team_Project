@@ -19,7 +19,7 @@ function App() {
   return (
     <BrowserRouter>
 
-      {winning ? <Confetti width='2000px' height='2000px' style={{ zIndex: 1000 }} /> : ' '}
+      {winning ? <Confetti width='1800vw' height='980vw' style={{ zIndex: 1000 }} /> : ' '}
       <Sockets />
       <TopBar />
       <Input />
@@ -37,8 +37,10 @@ function App() {
 export default App;
 
 const GameWrapper = styled.div`
-  ${flex()};
-  ${position('absolute', '5%', false, "50%", "50%")};
+  // ${flex()};
+  display: flex;
+  // ${position('absolute', '-5%', false, "50%", "50%" )};
+
 `;
 
 

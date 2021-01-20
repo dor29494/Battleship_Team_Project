@@ -44,15 +44,13 @@ const Sockets = () => {
     const ready = "ready";
     // ----------------------------------------emiting---------------------------------------
 
-    //--------------------joining room-------------------------
-
+    // joining a room (clicking "start" button)
     useEffect(() => {
         socket.emit("data", { room: player_room, action: play });
         // localStorage.setItem('battleship_room', player_room);
     }, [player_room]);
 
-    //--------------------ready to play-------------------------
-
+    // ready to play (clicking "ready" button)
     useEffect(() => {
         if (first_turn !== null) {
             socket.emit("data", {
@@ -84,22 +82,19 @@ const Sockets = () => {
         }
     }, [player_is_ready]);
 
-    //--------------------guessing-------------------------
-
+    // guessing (clicking on the opponents board)
     useEffect(() => {
         socket.emit("data", { room: player_room, guess: player_guess });
         // console.log("emited guess");
     }, [player_guess]);
 
-    //------------------Send a message----------------------
-
+    // send a message (using the chat)
     useEffect(() => {
         // console.log('Inside UseEffect of player_message:', chat_array_message[chat_array_message.length - 1])
         socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length - 1] });
     }, [player_message])
 
-    //---------------------winning--------------------------
-
+    // winning
     useEffect(() => {
         if (winning === true) { socket.emit("data", { room: player_room, is_winning: true }) }
     }, [winning]);
@@ -145,12 +140,15 @@ const Sockets = () => {
                 // console.log("Player has recived the opponents guess", guess);
                 set_other_player_guess(guess);
             } else if (message) {
-                // console.log('I got message!')
-                set_other_player_message(...other_player_message, message);
+                console.log('I got message!')
+                set_other_player_message((prev)=> [
+                    ...prev,
+                    message.msg
+                ]);
                 set_chat_array_message((prev) => [
                     ...prev,
                     {
-                        id: player_id,
+                        id: message.id,
                         msg: message.msg,
                     },
                 ]);

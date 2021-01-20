@@ -56,17 +56,17 @@ const OpponentGrid = () => {
     return pixel.value;
   }
 
-  // lock the used pixels.
+  // checking the guess's result and emit it to the other player
+  // in the same time updating the player's opponent board and lock it
+  // afterwards lock the used pixel
   const onClick = (x, y, lock) => {
     let updated;
     if (lock) {
       set_note_status("Its not your turn!");
     } else {
       if (!locked_pixels_arr(x, y)) {
-        // checking the guess's result and emit it to the other player.
         const result = inspect_hit(other_player_board, x, y);
         set_player_guess({ x, y, result });
-        // in the same time updating the player's opponent board and lock it.
         if (result === MISS) {
           updated = update_board_miss(other_player_board, x, y);
           set_other_player_board(updated)
@@ -100,34 +100,32 @@ const OpponentGrid = () => {
     }
   }
 
+  // lock a specific pixel
   const lock_Pixel = (x, y) => {
     let itemLocked = { x, y };
     set_lockArray([...lockArray, itemLocked]);
   };
 
+  // save all the locked pixels in an array for later checking
   const locked_pixels_arr = (x, y) => {
     for (let item of lockArray) {
       if (item.x === x && item.y === y) { return true };
     }
     return false;
   };
-  const fooRef = useRef();
 
   return (
     <GridWrapper>
       <GridHeaders>Opponents Grid</GridHeaders>
       <LittleWrapper>
-        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponent_precents * 5 || 0} width={'300px'} height={'22px'} />
+        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponent_precents * 5 || 0} width={'30vw'} height={'2vw'} />
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
-      <OtherPlayerGrid lock={lock_other_player_board}
-        lock_other_player_board={lock_other_player_board}
-        lock={lock_other_player_board}>
+      <OtherPlayerGrid lock_other_player_board={lock_other_player_board}>
         {other_player_board.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) => (
             <OpponentPixel
-              myturn={!lock_other_player_board}
               lock={lock_other_player_board}
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex, board, other_player_ships)}

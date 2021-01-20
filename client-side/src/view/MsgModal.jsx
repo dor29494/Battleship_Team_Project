@@ -7,6 +7,7 @@ import { flex, position } from "../styles/Mixins";
 const Modal = () => {
     const { set_show_dc_modal } = useContext(BsContext);
     
+    // hide the modal and reload the page
     const ok_button = () => {
       set_show_dc_modal(false)
       location.href = window.location.origin;

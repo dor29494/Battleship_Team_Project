@@ -1,16 +1,13 @@
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
-import { flex, cool_shinig_green } from "../styles/Mixins";
+import { flex, cool_shining_green } from "../styles/Mixins";
 
 const GlobalStyles = createGlobalStyle`
   html,
   body {
-    height: 100%;
+    // height: 100%;
     background: #000000;
     zoom: 90%;
-    @media (max-width: 800px) {
-      background: red;
-  }
   
   body {
     ${flex()};
@@ -35,8 +32,12 @@ export default GlobalStyles
 
 export const StandardPixel = styled.div`
   ${flex()};
-  height: 10%;
+  // min-height: 10%;
+  // min-width: 10%;
+  // max-height: 50px;
+  // max-width: 50px;
   width: 10%;
+  height: 10%;
   
 `;
 
@@ -44,15 +45,19 @@ export const StandardPixel = styled.div`
 
 export const Button = styled.div`
   ${flex()};
-  height: 13%;
-  width: 30%;
+  // height: 20%;
+  // height: ;
+  width: 15vw;
+  padding: 0.5vw;
+  height: 4vw;
+  // width: 55%;
   border: 1px solid #00FF41;
   border-radius: 3rem;
   color: white;
   background: #003B00;
-  font-size: 2.2rem;
+  font-size: 2vw;
   font-weight: 400;
-  margin: 1%;
+  margin: 0.5vw;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
 
@@ -63,17 +68,16 @@ export const Button = styled.div`
       background: red;
     }
     &:hover {
-      ${cool_shinig_green};
+      ${cool_shining_green};
       background: #1aff1a;
       color: black;
     }
-    
 `;
 
 // UserPixel + OpponentPixel components:
 
 export const RegularSquare = styled(StandardPixel)`
-  border: 1px solid #00FF41;
+  border: 0.1vw solid #00FF41;
 `;
 
 export const OpponentSquare = styled(RegularSquare)`
@@ -85,19 +89,19 @@ export const OpponentSquare = styled(RegularSquare)`
 `;
 
 export const MissHit = styled(StandardPixel)`
-  border: 3px solid #00FF41;
+  border: 0.1vw solid #00FF41;
   background: #00FF41;
   opacity: 0.3;
 `;
 
 export const AroundSink = styled(StandardPixel)`
-  border: 3px solid #00FF41;
+  border: 0.1vw solid #00FF41;
   background: red;
   opacity: 0.3;
 `;
 
 export const ShipHit = styled(StandardPixel)`
-  border: 1px solid lightblue;
+  border: 0.1vw solid lightblue;
   background: rgba(255, 153, 153, 0.5);
   color: red;
   font-size: 5vh;
@@ -105,40 +109,40 @@ export const ShipHit = styled(StandardPixel)`
 
 export const ShipSink = styled(StandardPixel)`
 background: #008F11;
-border: 1px solid #00FF41;
+border: 0.1vw solid #00FF41;
   
 `;
 
 export const ShipPart = styled(StandardPixel)`
-  border: 3px solid blue;
+  border: 0.1vw solid blue;
   background: rgba(0, 0, 255, 0.6);
 `;
-
-//--------------------------------------------
 
 // UserGrid + OpponentGrid components:
 
 export const GridWrapper = styled.div`
   border: none;
   height: 100%;
-  width: 800px;
+  width: 100%;
+  // width: 800px;
   color: white;
-  margin: 10rem;
+  margin-top: 12vw;
   display: grid;
   justify-content: center;
-
   grid-template-areas:
   'header header'
   'progressBar progressBar'
   'emptyPixel lettersBar'
   'numbersBar grid';
+  margin: 0;
+  // margin-top: 15vw;
 `;
 
 export const PlayerGrid = styled.div`
   display: flex;
   flex-wrap: wrap;
-  height: 100%;
-  width: 100%;
+  height: 40vw;
+  width: 40vw;
   color: #003B00;
 
   grid-area: grid;
@@ -151,7 +155,7 @@ export const OtherPlayerGrid = styled(PlayerGrid)`
 
 export const GridHeaders = styled.span`
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.5vw;
 
   grid-area: header;
 `;
@@ -167,7 +171,8 @@ export const LittleWrapper = styled.div`
 
 export const LettersBar = styled.div`
   ${flex(false,false)};
-  width: 500px;
+  width: 40vw;
+  margin-bottom: -1vw;
 
   grid-area: lettersBar;
 `;
@@ -175,7 +180,8 @@ export const LettersBar = styled.div`
 export const NumbersBar = styled.div`
   ${flex('center', false)};
   flex-direction: column;
-  height: 500px;
+  height: 40vw;
+  margin-right: 0.5vw;
 
   grid-area: numbersBar;
 `;
@@ -186,6 +192,4 @@ export const BarPixel = styled(StandardPixel)`
 export const PlaceFiller = styled(StandardPixel)`
   grid-area: emptyPixel;
 `;
-
-//--------------------------------------------
 

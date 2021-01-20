@@ -5,11 +5,11 @@ const cors = require('cors');
 const { Server } = require('socket.io');
 
 dotenv.config();
+const { PORT, HOST, CLIENT_URL } = process.env;
+
 app.use(cors());
 app.use('*', (req, res) => res.send('hello from express'));
 const http = require('http').createServer(app);
-
-const { PORT, HOST, CLIENT_URL } = process.env;
 
 (async () => {
   await http.listen(PORT, HOST);
@@ -92,13 +92,13 @@ io.sockets.on('connection', socket => {
       }
     }
 
-    // ready - sends the players board to the other player.
+    // ready - sends the players board and turn to the other player
     if (action === ready) {
       if (to_player === "1") {
         socket.to(room).emit("data", { board, ships, turn, to_player });
         console.log(">>>emiting from server to: player " + to_player + " ,player2 board: " + "board2" + " ,does player2 starts?: " + turn);
 
-        // if both players are ready - start the game.
+        // if both players are ready - start the game
         io.in(room).emit("data", { ready_to_start: true });
         console.log(">>>emiting to both players: both players are ready to start");
       }
@@ -107,25 +107,25 @@ io.sockets.on('connection', socket => {
         console.log(">>>emiting from server to: player " + to_player + " ,player1 board: " + "board1" + " ,does player2 starts?: " + turn);
       }
     }
-    // guess - passing guesses between the players.
+
+    // guess - sending a guess to the other player
     if (guess) {
       socket.to(room).emit("data", { guess });
       console.log('The server emited the guess:', guess)
     }
 
-    // chat_message - send a message. 
+    // chat_message - sending a message to the other player
     if (action === chat_message) {
       console.log("message recived:", message);
       socket.to(room).emit("data", { message });
     }
 
-    // is_winning - if one of the players won, notify the players.
+    // is_winning - if one of the players won, notify the players
     if (is_winning) {
       socket.to(room).emit("data", { is_winning });
       rooms[room] = [];
 
       console.log("the server emiting victory to the other player");
-
     }
   })
 });

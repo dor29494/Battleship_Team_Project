@@ -28,7 +28,7 @@ const UserPixel = ({ status, lock }) => {
 export default UserPixel;
 
 
-// *** when adding the reordering of the player ships before ready, switch "ShipPart" with "PlayerShipPart"
+// *** when adding the reordering of the player ships before ready, switch "ShipPart" with "PlayerShipPart" (Not implemented yet)
 const PlayerShipPart = styled(ShipPart)`
 cursor: ${({ lock }) => (lock ? 'none' : 'move')};
 `;

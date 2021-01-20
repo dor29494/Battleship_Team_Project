@@ -30,14 +30,14 @@ const TopBar = () => {
 
     return (
         <TopBarWrapper>
-            <div style={{ width: '100%', height: '100%' }}>
+            {/* <div style={{ width: '100%', height: '100%' }}> */}
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} onClick={() => location.href = window.location.origin} />
                 </LogoWrapper>
-                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '2px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
-                </TurnHolder> : ' '}
-            </div>
                 <TopBarHeader>{users_counter} {users_counter > 1 ? 'Players' : 'Player' } Online</TopBarHeader>
+                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '0.4vw', position: 'relative', top: '0.7vw' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                </TurnHolder> : ' '}
+            {/* </div> */}
             { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
@@ -46,30 +46,31 @@ const TopBar = () => {
 export default TopBar
 
 const TopBarWrapper = styled.div`
-  ${flex('center', false)};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   align-content: center;
-  ${position('absolute', '0', false, '0', false )};
-  height: 16%;
-  width: 100%;
+  width: 100vw;
   color: white;
+  // background: red;
+  height: 13vw;
 `;
-
 const LogoWrapper = styled.div`
-  ${flex('center', false)};
-  height: 100%;
-  width: 100%;  
+width: 100%;
   `;
   
   const Logo = styled.img`
-  height: 90%;
-  margin: 5%;
+  height: 10vw;
   cursor: pointer;
 `;
 
 const TopBarHeader = styled.span`
-  ${position('absolute', '105px', false, false, '4.9%' )};
-  font-size: 1.7rem;
-  padding: 0.7%;
+  // ${position('absolute', '105vw', false, false, '4.9%' )};
+  font-size: 2.5vw;
+  width: 100%;
+  margin-top: -4vw;
+  margin-left: 1.5vw;
+
 `;
 
 const TurnHolder = styled.div`
@@ -79,11 +80,11 @@ const TurnHolder = styled.div`
 
 const TurnText = styled.div`
   ${flex(false, false)};
-  font-size: 2rem;
+  font-size: 3vw;
 `;
 
 const Flash = styled.h1`
   animation: 6s ${flashAnimation};
   animation-iteration-count: infinite;
-  font-size: 2rem;
+  font-size: 3vw;
 `;
