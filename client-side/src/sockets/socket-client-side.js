@@ -27,7 +27,14 @@ const Sockets = () => {
         set_show_dc_modal,
         set_other_player_ready,
         other_player_ready,
-        set_player_is_ready
+        set_player_is_ready,
+        users_counter,
+        set_users_counter,
+        play_again,
+        set_play_again,
+        set_leave,
+        set_play_again_msg,
+        play_again_msg
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -41,7 +48,7 @@ const Sockets = () => {
 
     useEffect(() => {
         socket.emit("data", { room: player_room, action: play });
-        localStorage.setItem('battleship_room', player_room);
+        // localStorage.setItem('battleship_room', player_room);
     }, [player_room]);
 
     //--------------------ready to play-------------------------
@@ -101,12 +108,13 @@ const Sockets = () => {
 
     useEffect(() => {
         socket.on("data", (data = {}) => {
-            const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, message, is_winning, leave } = data;
-            // console.log("@@@ ", data)
+            console.log(data)
+            const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, message, is_winning, leave, users_count, wanna_play_again } = data;
+            if (users_count) set_users_counter(users_count);
+            if (wanna_play_again) set_play_again_msg(true);
             if (other_player_connected) {
                 set_both_players_connected(true);
             } else if (to_player === "2") {
-                // alert("IM HERE1")
                 set_other_player_board(board);
                 set_other_player_ships(ships);
                 set_first_turn(turn);
@@ -150,11 +158,19 @@ const Sockets = () => {
                 // console.log("The other player won!");
                 set_winning(!is_winning);
             } else if (leave) {
+                set_leave(true);
                 set_show_dc_modal(true);
             }
         }
         );
     }, [])
+    //--------------- Play again ------------------------
+    useEffect(() => {
+        if (play_again) {
+            socket.emit("data", { play_again_emit: true, room: player_room });
+            set_play_again(false);
+        }
+    }, [play_again])
     return (
         <div></div>
     )

@@ -8,6 +8,8 @@ const GlobalStyles = createGlobalStyle`
     height: 100%;
     background: #000000;
     zoom: 90%;
+    @media (max-width: 800px) {
+      background: red;
   }
   
   body {

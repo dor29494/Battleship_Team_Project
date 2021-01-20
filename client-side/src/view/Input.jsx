@@ -7,6 +7,7 @@ import { Button } from "../styles/GlobalStyles";
 import { nanoid, random } from "nanoid";
 import FadeoutStatus from "./FadeoutStatus";
 import Modal from "./MsgModal";
+import { place_ships, initial_game_board, initial_ships } from "../logic/logic";
 import {
   BrowserRouter as Router,
   Switch,
@@ -74,13 +75,36 @@ const Input = () => {
     set_other_player_board,
     other_player_board,
     set_both_players_ready,
-    first_turn
+    first_turn,
+    set_winning,
+    set_other_player_ships,
+    set_lock_other_player_board,
+    set_both_players_connected,
+    set_player_board,
+    set_player_ships,
+    set_first_turn,
+    set_user_precents,
+    set_opponent_precents,
+    set_player_guess,
+    set_other_player_guess,
+    set_player_message,
+    set_chat_array_message,
+    set_other_player_message,
+    set_player_id,
+    set_show_dc_modal,
+    set_other_player_ready,
+    set_game_started,
+    game_started,
+    set_play_again,
+    play_again,
+    leave,
+    play_again_msg,
+    set_play_again_msg
   } = useContext(BsContext);
   // local states:
   const inputEl = useRef();
   const [host_url, set_host_url] = useState(null);
   const [copied_msg, set_copied_msg] = useState('');
-  const [game_started, set_game_started] = useState(false);
   const [room_id, set_room_id] = useState(null);
 
   //
@@ -110,7 +134,7 @@ const Input = () => {
 
   useEffect(() => {
     set_room_id(nanoid(4));
-  }, [])
+  }, []);
   useEffect(() => {
     setTimeout(() => {
       set_copied_msg('');
@@ -142,8 +166,10 @@ const Input = () => {
   }
 
   useEffect(() => {
+    // if (play_again) return false;
     if (other_player_ships && !player_is_ready) {
-      set_game_status('Your opponent is ready.');
+      set_game_status('Your opponent is ready!');
+      set_waiting(false);
       return false;
     }
     if (show_host_button && !show_join_button) { set_game_status("Please copy the room ID and send it to your friend, Then press start.") }
@@ -157,13 +183,13 @@ const Input = () => {
     if (show_ready_box && !both_players_connected) {
       set_game_status("You are connected! Waiting for another player to connect...");
       set_waiting(true);
-  }
+    }
     if (player_is_ready && other_player_ships) {
       set_waiting(false);
       set_game_status("You are good to go! Good luck!");
       set_show_ready_box(false);
       setTimeout(() => {
-        set_game_started(true)
+        set_game_started(true);
         set_both_players_ready(true);
       }
         , 2000);
@@ -213,13 +239,13 @@ const Input = () => {
         <>
           <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{window.location.origin}/{room_id}</UrlHolder>
           <ButtonsWrapper>
-            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><FacebookShareButton url={`${window.location.origin}/${room_id}`}><FacebookIcon size={40} round={true} /></FacebookShareButton></Button>
+            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><FacebookShareButton url={`${window.location.origin}/${room_id}`}><FacebookIcon size={40} round={true} /></FacebookShareButton></Button>
             &nbsp; &nbsp;
-            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><FacebookMessengerShareButton url={`${window.location.origin}/${room_id}`}><FacebookMessengerIcon size={40} round={true} /></FacebookMessengerShareButton></Button>
+            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><FacebookMessengerShareButton url={`${window.location.origin}/${room_id}`}><FacebookMessengerIcon size={40} round={true} /></FacebookMessengerShareButton></Button>
             &nbsp; &nbsp;
-            <Button style={{width: "45px", height: "45px", paddingTop: "13px"}}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={40} round={true} /></WhatsappShareButton></Button>
+            <Button style={{ width: "45px", height: "45px", paddingTop: "13px" }}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={40} round={true} /></WhatsappShareButton></Button>
           </ButtonsWrapper>
-          <StartButton style={{width: "80%", height: "20%"}}onClick={() => start_button()}>Start</StartButton>
+          <StartButton style={{ width: "80%", height: "20%" }} onClick={() => start_button()}>Start</StartButton>
         </>
       )
     }
@@ -235,10 +261,18 @@ const Input = () => {
     else if (show_ready_box && both_players_connected) {
       return (
         <>
-          <ReadyButton onClick={() => ready_button()}>{!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}</ReadyButton>
+          <ReadyButton onClick={() => ready_button()}>
+            {!player_is_ready ? <Flash>Ready</Flash> : 'Ready!'}
+          </ReadyButton>
           <Random onClick={RandomBoard}>Random</Random>
         </>
       )
+    }
+  }
+  const PlayAgain = () => {
+    if (!leave) {
+    set_play_again(true);
+    location.reload();
     }
   }
 
@@ -249,11 +283,12 @@ const Input = () => {
         {!game_over_msg ?
           <MiniWrapper>
             <StaticStatus>{game_status}
-              {waiting ? <Loader type="Grid" color="white" height={70} width={70} style={{ marginTop: "10%"}} /> : ' '}
+              {waiting ? <Loader type="Grid" color="white" height={70} width={70} style={{ marginTop: "10%" }} /> : ' '}
             </StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
-          : <GameOver>{game_over_msg}<br /><Button onClick={() => location.href = window.location.origin}>New Game!</Button><Button onClick={() => location.reload()}>Play Again!</Button></GameOver>}
+          : <GameOver>{game_over_msg}<br /><Button onClick={() => location.href = window.location.origin}>New Game!</Button><PlayAgainButton error={leave} onClick={() => PlayAgain()}>{ play_again_msg ? <Flash>Play Again!</Flash> : 'Play Again!' }</PlayAgainButton></GameOver>}
+
       </InputWrapper>
       <Switch>
         <Route path='/:id' component={startGame} />
@@ -271,7 +306,7 @@ const InputWrapper = styled.div`
     padding-left: ${({ connected }) => connected ? '9.5%' : '1.5%'};
     align-items: center;
     height: 95%;
-    top: 18%;
+    top: 14.5%;
     width: 100%;
     right: ${({ connected }) => connected ? '-49%' : '0%'};
     position: absolute;
@@ -381,7 +416,6 @@ font-size: 2rem;
 `;
 
 const GameOver = styled.div`
-cursor: pointer;
 width: 100%;
 height: 90%;
 position: fixed;
@@ -406,4 +440,15 @@ display: flex;
 flex-direction: row;
 justify-content: center;
 margin: 1%;
+`
+const PlayAgainButton = styled(Button)`
+background: ${props => props.error ? 'grey' : ' ' };
+cursor: ${props => props.error ? 'not-allowed' : 'pointer'};
+border: ${props => props.error ? 'none' : ' ' };
+&:hover {
+  color: ${props => props.error ? 'white' : 'black'};
+  background: ${props => props.error ? 'grey' : ' '};
+  border: ${props => props.error ? 'none' : ' ' };
+  box-shadow: ${props => props.error ? 'inset 0 0.1rem 1.5rem lightgrey' : ' ' };
+}
 `

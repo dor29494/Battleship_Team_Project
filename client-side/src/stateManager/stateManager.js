@@ -52,6 +52,11 @@ const StateManager = ({ children }) => {
   const [connected, set_connected] = useState(false);
   const [show_join_button, set_show_join_button] = useState(false);
   const [show_host_button, set_show_host_button] = useState(true);
+  const [game_started, set_game_started] = useState(false);
+  const [play_again, set_play_again] = useState(false);
+  const [users_counter, set_users_counter] = useState(1);
+  const [leave, set_leave] = useState(false);
+  const [play_again_msg, set_play_again_msg] = useState(false);
   // const [show_ready_box, set_show_ready_box] = useState(false);
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
@@ -90,8 +95,13 @@ const StateManager = ({ children }) => {
     show_host_button,
     show_ready_box,
     show_join_button,
+    game_started,
+    play_again,
+    users_counter,
+    leave,
+    play_again_msg
   };
-
+  
   const action = {
     set_player_room,
     set_both_players_connected,
@@ -123,13 +133,17 @@ const StateManager = ({ children }) => {
     set_show_host_button,
     set_show_ready_box,
     set_show_join_button,
-
+    set_game_started,
+    set_play_again,
+    set_users_counter,
+    set_leave,
+    set_play_again_msg
   };
-
+  
   const ws_connection = {
     socket
   };
-
+  
   return <Provider value={{ ...state, ...action, ...ws_connection }}>{children}</Provider>;
 };
 

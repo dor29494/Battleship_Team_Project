@@ -12,21 +12,21 @@ const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg, game_started } = useContext(BsContext);
+    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg, game_started, users_counter, set_users_counter } = useContext(BsContext);
 
 
     // regenerate false (dynamic) number of players (lol).
-    const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
-    let initiate_num = randomize(0, 19432542);
+    // const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
+    // let initiate_num = randomize(0, 19432542);
 
-    const [num, set_num] = useState(initiate_num);
-    useEffect(() => {
-        setInterval(() => {
-            set_num(num => {
-                return randomize(0, 1) ? num + randomize(1, 3) : num - randomize(0, 2);
-            });
-        }, randomize(0, 5000));
-    }, []);
+    // const [num, set_num] = useState(initiate_num);
+    // useEffect(() => {
+    //     setInterval(() => {
+    //         set_num(num => {
+    //             return randomize(0, 1) ? num + randomize(1, 3) : num - randomize(0, 2);
+    //         });
+    //     }, randomize(0, 5000));
+    // }, []);
 
     return (
         <TopBarWrapper>
@@ -37,8 +37,8 @@ const TopBar = () => {
                 {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '2px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
                 </TurnHolder> : ' '}
             </div>
-                <TopBarHeader>players online: {num}</TopBarHeader>
-            { show_dc_modal ? <Modal /> : ' '}
+                <TopBarHeader>{users_counter} {users_counter > 1 ? 'Players' : 'Player' } Online</TopBarHeader>
+            { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
 };

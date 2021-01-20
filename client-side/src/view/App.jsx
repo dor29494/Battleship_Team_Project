@@ -10,14 +10,12 @@ import Footer from "./Footer";
 import styled from "styled-components";
 import { flex, position } from "../styles/Mixins";
 import Confetti from 'react-confetti';
-import { BrowserRouter } from 'react-router-dom'
-
-
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
 
   const { winning } = useContext(BsContext);
-  
+
   return (
     <BrowserRouter>
 
@@ -29,9 +27,10 @@ function App() {
         <UserGrid />
         <OpponentGrid />
       </GameWrapper>
-      <Chat/>
+      <Chat />
       <Footer />
-      </BrowserRouter>
+
+    </BrowserRouter>
 
   );
 }
@@ -39,5 +38,16 @@ export default App;
 
 const GameWrapper = styled.div`
   ${flex()};
-  ${position('absolute', '5%', false, "50%", "50%" )};
+  ${position('absolute', '5%', false, "50%", "50%")};
 `;
+
+
+
+
+
+
+
+
+
+
+
