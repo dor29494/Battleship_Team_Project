@@ -261,7 +261,7 @@ const Input = () => {
             &nbsp; &nbsp;
             <Button style={{ width: "4.5vw", height: "4.5vw"}}><WhatsappShareButton url={`${window.location.origin}/${room_id}`}><WhatsappIcon size={"5vw"} round={true} style={{marginTop: "0.7vw"}} /></WhatsappShareButton></Button>
           </ButtonsWrapper>
-          <Button style={{ width: "50%", height: "20%" }} onClick={() => start_button()}>Start</Button>
+          <Button onClick={() => start_button()}>Start</Button>
         </>
       )
     }
@@ -301,7 +301,7 @@ const Input = () => {
             </StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
-          : <GameOver>{game_over_msg}<br /><Button onClick={() => location.href = window.location.origin}>New Game!</Button><PlayAgainButton error={leave} onClick={() => PlayAgain()}>{ play_again_msg ? <Flash>Play Again!</Flash> : 'Play Again!' }</PlayAgainButton></GameOver>}
+          : <GameOver>{game_over_msg}<Button onClick={() => location.href = window.location.origin}>New Game!</Button><PlayAgainButton error={leave} onClick={() => PlayAgain()}>{ play_again_msg ? <Flash>Play Again!</Flash> : 'Play Again!' }</PlayAgainButton></GameOver>}
 
       </InputWrapper>
       <Switch>
@@ -377,7 +377,7 @@ const UrlHolder = styled.div`
 const Flash = styled.h1`
 animation: 1s ${flashAnimation};
 animation-iteration-count: infinite;
-font-size: 2vw;
+font-size: 2.5vw;
 `;
 
 const StaticStatus = styled.h1`
@@ -387,16 +387,15 @@ color: white;
 -webkit-user-select: none;
 -ms-user-select: none;
 user-select: none;
-// padding-top: 2vw;
-font-size: 2vw;
+font-size: 3vw;
 width: 40vw;
 `;
 
 const GameOver = styled.div`
-width: 100%;
-height: 90%;
-position: fixed;
-// top: 20%;
+width: 125vw;
+height: 55vw;
+position: absolute;
+top: 0;
 right: 0;
 display: flex;
 justify-content: center;
@@ -406,7 +405,7 @@ background: rgba(0,0,0,0.8);
 -webkit-user-select: none;
 -ms-user-select: none;
 user-select: none;
-font-size: 10vw;
+font-size: 20vw;
 flex-direction: column;
 margin: 0;
 `;
@@ -419,6 +418,7 @@ justify-content: center;
 // margin: 1%;
 `
 const PlayAgainButton = styled(Button)`
+margin-top: -1vw;
 background: ${props => props.error ? 'grey' : ' ' };
 cursor: ${props => props.error ? 'not-allowed' : 'pointer'};
 border: ${props => props.error ? 'none' : ' ' };

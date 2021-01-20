@@ -49,15 +49,15 @@ export const Button = styled.div`
   // height: ;
   width: 15vw;
   padding: 0.5vw;
-  height: 4vw;
+  height: 4.5vw;
   // width: 55%;
   border: 1px solid #00FF41;
   border-radius: 3rem;
   color: white;
   background: #003B00;
-  font-size: 2vw;
+  font-size: 2.5vw;
   font-weight: 400;
-  margin: 0.5vw;
+  margin: 2%;
   box-shadow: inset 0 0.1rem 1.5rem lightgrey;
   cursor: pointer;
 
@@ -104,7 +104,7 @@ export const ShipHit = styled(StandardPixel)`
   border: 0.1vw solid lightblue;
   background: rgba(255, 153, 153, 0.5);
   color: red;
-  font-size: 5vh;
+  font-size: 5vw;
 `;
 
 export const ShipSink = styled(StandardPixel)`
