@@ -6,278 +6,45 @@ const random_boolean = () => Math.random() < 0.5;
 const update_board_square_around_sink = (board, x, y) => {
     // console.log('trying to update around sink',x,y)
     const new_board = [...board];
-    if (new_board[x][y].value !== MISS && new_board[x][y].value !== SHIP_PART) {
-        new_board[x][y].value = AROUND_SINK;
+    if(x >= 0 && y >= 0 && x <=9 && y <=9 ){//!= undefined
+        if (new_board[x][y].value !== MISS && new_board[x][y].value !== SHIP_PART) { //we want to keep miss visual, also not to change a sunken ship to a aroung sink bc of how loop works
+            new_board[x][y].value = AROUND_SINK;
+        }        
     }
     return new_board;
 };
 
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-    if ('around_ship' in new_board[x][y]) {
-        new_board[x][y].around_ship = true;
+    console.log(x,y);
+    if(x >= 0 && y >= 0 && x <=9 && y <=9 ){//!= undefined
+        if ('around_ship' in new_board[x][y] && new_board[x][y].value !== SHIP_PART) { //making sure we aren't changing the value of a ship part to be an around ship bc of how loop works
+            console.log('got in');
+            new_board[x][y].around_ship = true;
+        }
     }
     return new_board;
 }
 
 const update_board_around_a_ship = (board, ship, new_value) => {
     let new_board = [...board];
-    const updater = (what_to_update, x, y) => {
-        if (what_to_update === AROUND_SINK) {
+    const updater = ( x, y) => {
+        if (new_value === AROUND_SINK) {
             new_board = update_board_square_around_sink(board, x, y);
         }
-        else if (what_to_update === AROUND_SHIP) {
+        else if (new_value === AROUND_SHIP) {
             new_board = update_board_square_around_ship(board, x, y);
         }
     }
     // updater(new_value, x, y)
-    if (ship.direction = HORIZONTAL) {
-        switch (ship.ship_parts[0].x) {
-            case 0:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                        }
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                        }
-                        break;
-
-                    default:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                        }
-                        break;
-                }
-                break;
-
-            case 9:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-
-                        break;
-
-                    default:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-                        break;
-                }
-                break;
-
-            default:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-                        break;
-
-                    default: {
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                            }
-                            updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                        }
-                        break;
-                    }
-                }
-                break;
-        }
-    }
-    if (ship.direction = VERTICAL) {
-        switch (ship.ship_parts[0].x) {
-            case 0:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                        }
-                        break;
-
-                    default:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-                        break;
-                }
-                break;
-
-            case 9:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                        }
-
-                        break;
-
-                    default:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-                        break;
-                }
-                break;
-
-            default:
-                switch (ship.ship_parts[0].y) {
-                    case 0:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-                        break;
-                    case 9:
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                        }
-                        break;
-
-                    default: {
-                        for (let i = 0; i < ship.length; i++) {
-                            if (i === 0) {
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x - 1, ship.ship_parts[i].y);
-                            }
-                            if (i === ship.length - 1) {
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y + 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y - 1);
-                                updater(new_value, ship.ship_parts[i].x + 1, ship.ship_parts[i].y);
-                            }
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y - 1);
-                            updater(new_value, ship.ship_parts[i].x, ship.ship_parts[i].y + 1);
-                        }
-                        break;
-                    }
-                }
-                break;
-        }
+    const startX = ship.ship_parts[0].x - 1;
+    const startY = ship.ship_parts[0].y - 1;
+    const endX = ship.ship_parts[ship.length-1].x + 1;
+    const endY = ship.ship_parts[ship.length-1].y + 1;
+    for (let i = startX ; i <= endX; i++) {
+        for (let j = startY; j <= endY; j++) {
+            updater(i,j);            
+        }        
     }
     return new_board
 }
