@@ -16,10 +16,8 @@ const update_board_square_around_sink = (board, x, y) => {
 
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-    console.log(x, y);
-    if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
+        if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
         if ('around_ship' in new_board[x][y] && new_board[x][y].value !== SHIP_PART) { //making sure we aren't changing the value of a ship part to be an around ship bc of how loop works
-            console.log('got in');
             new_board[x][y].around_ship = true;
         }
     }
@@ -59,21 +57,19 @@ export const update_board_hit = (x, y, ship_index, board, ships, sounds_status) 
     new_board[x][y].is_hit = true;
 
     let is_ship_sunk = new_ships[ship_index].ship_parts.every((ship_part) => ship_part.is_hit);
-    
+
     if (is_ship_sunk) {
         new_ships[ship_index].is_sunk = is_ship_sunk;
         new_board = update_board_around_a_ship(new_board, new_ships[ship_index], AROUND_SINK);
     }
     let is_win = new_ships.every((ship) => ship.is_sunk);
-    
+
     new_board = update_board_square_around_sink(new_board, (x + 1), (y + 1));
     new_board = update_board_square_around_sink(new_board, (x - 1), (y + 1));
     new_board = update_board_square_around_sink(new_board, (x + 1), (y - 1));
     new_board = update_board_square_around_sink(new_board, (x - 1), (y - 1));
-    
-    if (is_win)
-        // if (false)
-        // win the game
+
+    if (is_win) //  win the game
         return { board: new_board, ships: new_ships, is_win: true };
     else
         return { board: new_board, ships: new_ships, sunk: sunk };
@@ -98,8 +94,6 @@ export const update_board_miss = (board, x, y) => {
 }
 
 export const place_ships = (board, ships) => {
-
-
     let new_board = [...board];
     let new_ships = [...ships];
     new_ships.forEach((ship, index_of_ship) => {
@@ -190,122 +184,36 @@ export const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], 
 
 
 export const initial_ships = (game_type = RUSSIAN) => {
-
-    if (game_type === RUSSIAN) {
-        return [{
-            name: 'S1',
-            length: 4,
+    const ship_names = ['S10', 'S9', 'S8', 'S7', 'S6', 'S5', 'S4', 'S3', 'S2', 'S1'];//names of the ships in reverse order of giving them
+    const ships = [];//the soon to be returned ships array
+    const make_ship = (length, name = ship_names.pop()) => { // default name is the last object of the mane array
+        return {
+            name,
+            length,
             ship_parts: [],
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S2',
-            ship_parts: [],
-            length: 3,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S3',
-            ship_parts: [],
-            length: 3,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S4',
-            ship_parts: [],
-            length: 2,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S5',
-            ship_parts: [],
-            length: 2,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S6',
-            ship_parts: [],
-            length: 2,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S7',
-            ship_parts: [],
-            length: 1,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S8',
-            ship_parts: [],
-            length: 1,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S9',
-            ship_parts: [],
-            length: 1,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S10',
-            ship_parts: [],
-            length: 1,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        ];
-    }
-
-    if (game_type === FRENCH) {
-        return [{
-            name: 'S1',
-            length: 5,
-            ship_parts: [],
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S2',
-            ship_parts: [],
-            length: 4,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S3',
-            ship_parts: [],
-            length: 3,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S4',
-            ship_parts: [],
-            length: 3,
-            direction: random_boolean() ? VERTICAL : HORIZONTAL,
-            is_sunk: false
-        },
-        {
-            name: 'S5',
-            ship_parts: [],
-            length: 2,
             direction: random_boolean() ? VERTICAL : HORIZONTAL,
             is_sunk: false
         }
-        ];
     }
+    if (game_type === FRENCH) {
+        ships.push(make_ship(5)); // the ships unique to french var
+    }
+    ships.push(make_ship(4)); // the ships that are overlapping with both variations
+    ships.push(make_ship(3));
+    ships.push(make_ship(3));
+    ships.push(make_ship(2));
 
-    else
+    if (game_type === RUSSIAN) { // the ships unique to russian var
+        ships.push(make_ship(2));
+        ships.push(make_ship(2));
+        for (let i = 0; i < 4; i++) {
+            ships.push(make_ship(1));
+        }
+    }
+    if (game_type !== RUSSIAN && game_type !== FRENCH) { // would indicate a wrong string given
         return 'err, game type is non existing/unsuported'
+    }
+    return ships;    
 }
 
 // console.log(place_ships(initial_game_board(), initial_ships()));
