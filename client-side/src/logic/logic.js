@@ -1,5 +1,4 @@
 import { VERTICAL, HORIZONTAL, RUSSIAN, FRENCH, SEA, MISS, HIT, AROUND_SINK, SHIP_PART, AROUND_SHIP } from "../stateManager/stateManager";
-// deprecated: HIT
 const random = (max, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 const random_boolean = () => Math.random() < 0.5;
 //updates a square on the board after a ship part was hit or sunk
@@ -15,8 +14,8 @@ const update_board_square_around_sink = (board, x, y) => {
 //updates a square as one that is on the border of a ship, for placement purposes
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-        if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
-        if ( new_board[x][y].value !== SHIP_PART) { //making sure we aren't changing the value of a ship part to be an around ship bc of how loop works
+    if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
+        if (new_board[x][y].value !== SHIP_PART) { //making sure we aren't changing the value of a ship part to be an around ship bc of how loop works
             new_board[x][y].around_ship = true;
         }
     }
@@ -59,22 +58,22 @@ export const update_board_hit = (x, y, ship_index, board, ships) => {
         new_board = update_board_around_a_ship(new_board, new_ships[ship_index], AROUND_SINK);
     }
     const is_win = new_ships.every((ship) => ship.is_sunk);
-    
-    for (let loopX = (x-1); loopX <= x + 1; loopX++) {
-        for (let loopY = (y - 1) ; loopY <= y + 1; loopY++) {
-            if ( (loopX + loopY) % 2 === (x + y) % 2) {
+
+    for (let loopX = (x - 1); loopX <= x + 1; loopX++) {
+        for (let loopY = (y - 1); loopY <= y + 1; loopY++) {
+            if ((loopX + loopY) % 2 === (x + y) % 2) {
                 new_board = update_board_square_around_sink(new_board, (loopX), (loopY));
-            }            
+            }
         }
     }
-    return { board: new_board, ships: new_ships, is_win };    
+    return { board: new_board, ships: new_ships, is_win };
 }
 
 export const inspect_hit = (board, x, y) => {
     if (board[x][y].value === SHIP_PART) {
         return HIT;
-    }    
-    return MISS;    
+    }
+    return MISS;
 }
 
 export const update_board_miss = (board, x, y) => {
@@ -88,70 +87,47 @@ export const place_ships = (board, ships) => {
     let new_ships = [...ships];
     new_ships.forEach((ship, index_of_ship) => {
         let needs_placing = true;
-        let ship_head_x = null;
-        let ship_head_y = null;
-
-        re_place_ship: while (needs_placing) {
-
-            if (ship.direction === HORIZONTAL) {
-                ship_head_x = random(9);
-                ship_head_y = random(9 - ship.length);
-
-                for (let i = 0; i < ship.length; i++) {
-
-                    if (new_board[ship_head_x][ship_head_y + i].around_ship !== false) {
-                        continue re_place_ship;
-                    }
-                }
-                for (let i = 0; i < ship.length; i++) {
-                    const new_ship_part = {
-                        ship_index: index_of_ship,
-                        x: ship_head_x,
-                        y: ship_head_y + i,
-                        is_hit: false,
-                        value: SHIP_PART
-                    }                    
-                    ship.ship_parts.push(new_ship_part);
-
-                    new_board[ship_head_x][ship_head_y + i] = new_ship_part;
-                }
-                // console.log(index_of_ship);
-            }
-
+        const directional_adder = (limited, unlimited , num) => {
             if (ship.direction === VERTICAL) {
-                ship_head_x = random(9 - ship.length);
-                ship_head_y = random(9);
-                for (let i = 0; i < ship.length; i++) {
-                    if (new_board[ship_head_x + i][ship_head_y].around_ship !== false) {
-                        continue re_place_ship;
-                    }
-
-                }
-                for (let i = 0; i < ship.length; i++) {
-                    const new_ship_part = {
-                        ship_index: index_of_ship,
-                        x: ship_head_x + i,
-                        y: ship_head_y,
-                        is_hit: false,
-                        value: SHIP_PART
-                    }
-                    ship.ship_parts.push(new_ship_part);
-
-                    new_board[ship_head_x + i][ship_head_y] = new_ship_part;
-
-                }
-                // console.log(index_of_ship);
+                return {ship_head_x: limited + num ,ship_head_y: unlimited}
             }
-            // console.log(new_board);
+            if (ship.direction === HORIZONTAL) {
+                return { ship_head_x: unlimited, ship_head_y: limited + num}
+            }
+        }
+        
+        re_place_ship: while (needs_placing) {            
+            let unlimited = random(9);
+            let limited = random(9 - ship.length);
+
+            for (let i = 0; i < ship.length; i++) {
+                let {ship_head_x} = directional_adder(limited, unlimited, i);
+                let {ship_head_y} = directional_adder(limited, unlimited, i);
+                if (new_board[ship_head_x][ship_head_y].around_ship !== false) {
+                    continue re_place_ship;
+                }
+            }            
+            for (let i = 0; i < ship.length; i++) {
+                let {ship_head_x} = directional_adder(limited, unlimited, i);
+                let {ship_head_y} = directional_adder(limited, unlimited, i);
+                const new_ship_part = {
+                    ship_index: index_of_ship,
+                    x: ship_head_x,
+                    y: ship_head_y,
+                    is_hit: false,
+                    value: SHIP_PART
+                }
+                ship.ship_parts.push(new_ship_part);
+
+                new_board[ship_head_x][ship_head_y] = new_ship_part;
+            }            
             new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP);
             needs_placing = false;
-
         }
     });
 
     return { board: new_board, ships: new_ships };
 }
-
 
 export const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], []]) => {
     const new_board = [...board]
@@ -167,7 +143,6 @@ export const initial_game_board = (board = [[], [], [], [], [], [], [], [], [], 
     }
     return new_board;
 }
-
 
 export const initial_ships = (game_type = RUSSIAN) => {
     const ship_names = ['S10', 'S9', 'S8', 'S7', 'S6', 'S5', 'S4', 'S3', 'S2', 'S1'];//names of the ships in reverse order of giving them
@@ -196,11 +171,5 @@ export const initial_ships = (game_type = RUSSIAN) => {
             ships.push(make_ship(1));
         }
     }
-    if (game_type !== RUSSIAN && game_type !== FRENCH) { // would indicate a wrong string given
-        return 'err, game type is non existing/unsuported'
-    }
-    return ships;    
+    return ships;
 }
-
-// console.log(place_ships(initial_game_board(), initial_ships()));
-
