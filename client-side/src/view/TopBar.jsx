@@ -12,17 +12,30 @@ const flashAnimation = keyframes`${flash}`;
 
 const TopBar = () => {
 
-    const { both_players_ready, lock_other_player_board, game_over_msg, show_dc_modal } = useContext(BsContext);
+    const { both_players_ready, lock_other_player_board, show_dc_modal, game_over_msg, game_started, users_counter, set_users_counter } = useContext(BsContext);
+
+
+    // regenerate false (dynamic) number of players (lol).
+    // const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
+    // let initiate_num = randomize(0, 19432542);
+
+    // const [num, set_num] = useState(initiate_num);
+    // useEffect(() => {
+    //     setInterval(() => {
+    //         set_num(num => {
+    //             return randomize(0, 1) ? num + randomize(1, 3) : num - randomize(0, 2);
+    //         });
+    //     }, randomize(0, 5000));
+    // }, []);
 
     return (
         <TopBarWrapper>
-            <div style={{ width: '100%', height: '100%' }}>
                 <LogoWrapper>
-                    <Logo src={battleship_logo} alt={"logo"} />
+                    <Logo src={battleship_logo} alt={"logo"} onClick={() => location.href = window.location.origin} />
                 </LogoWrapper>
-                {both_players_ready && !game_over_msg ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '5px', position: 'relative', top: '9px' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                <TopBarHeader>{users_counter} {users_counter > 1 ? 'Players' : 'Player' } Online</TopBarHeader>
+                {both_players_ready && !game_over_msg ? <TurnHolder myturn={!lock_other_player_board}>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '0.5vw', position: 'relative', top: '1.1vw' }} type="ThreeDots" color="white" height={'4vw'} width={'4vw'} /> </TurnText>}
                 </TurnHolder> : ' '}
-            </div>
             { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
@@ -31,43 +44,66 @@ const TopBar = () => {
 export default TopBar
 
 const TopBarWrapper = styled.div`
-  ${flex('center', false)};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   align-content: center;
-  ${position('absolute', '0', false, '0', false )};
-  height: 14%;
-  width: 100%;
+  // width: 100vw;
   color: white;
-`;
+  height: 13vw;
+  margin-bottom: -8vw;
 
+  @media only screen and (min-width: 600px) {
+    {
+      width: 130vw;
+      margin-bottom: 0;
+    }
+  }
+  
+`;
 const LogoWrapper = styled.div`
-  ${flex('center', false)};
-  height: 100%;
-  width: 100%;  
-`;
-
-const Logo = styled.img`
-  height: 90%;
-  margin: 1%;
+width: 100%;
+  `;
+  
+  const Logo = styled.img`
+  height: 10vw;
+  cursor: pointer;
 `;
 
 const TopBarHeader = styled.span`
-  ${position('absolute', '105px', false, false, '4.9%' )};
-  font-size: 1.7rem;
-  padding: 0.7%;
+  // ${position('absolute', '105vw', false, false, '4.9%' )};
+  font-size: 2.5vw;
+  width: 100%;
+  margin-top: -4vw;
+  margin-left: 1.5vw;
+
 `;
 
 const TurnHolder = styled.div`
   ${flex(false, 'center')};
   width: 100%;
+
+  @media only screen and (max-width: 600px)
+    {
+margin: 3vw;
+padding-left: 2vw;
+background: ${props => !props.myturn ? 'red' : 'blue'};
+display: flex;
+// background: blue;
+align-items: center;
+font-size: 5vw;
+
+    }
 `;
 
 const TurnText = styled.div`
   ${flex(false, false)};
-  font-size: 2rem;
+  font-size: 3vw;
+  align-items: center;
 `;
 
 const Flash = styled.h1`
   animation: 6s ${flashAnimation};
   animation-iteration-count: infinite;
-  font-size: 2rem;
+  font-size: 3vw;
 `;

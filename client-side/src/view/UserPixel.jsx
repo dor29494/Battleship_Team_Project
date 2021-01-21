@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { RegularSquare, MissHit, ShipHit, ShipSink, AroundSink, ShipPart } from "../styles/GlobalStyles"
 import { SEA, MISS, HIT, SINK, AROUND_SINK, SHIP_PART } from "../stateManager/stateManager";
-
-// render the suitable pixel according to its status
 const UserPixel = ({ status, lock }) => {
 
   if (status === SEA) {

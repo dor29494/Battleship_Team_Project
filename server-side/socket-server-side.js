@@ -22,38 +22,71 @@ const io = new Server(http, {
     methods: ["GET", "POST"]
   }
 });
+let playagain = [];
+let rooms = {};
+
+
+
 
 let clients = {};
 const play = 'play';
 const ready = 'ready';
 const chat_message = 'chat_message';
 const leave = 'leave';
-
-// on player connection
+let users = 0;
 io.sockets.on('connection', socket => {
 
-  // on player disconnect
-  socket.on('disconnect', function () {
-    console.log('===============================================');
-    console.log("disconnect", socket.id)
-    if (clients.hasOwnProperty(socket.id)) {
-      console.log(`${socket.id} has leaves this room: ${clients[socket.id]}`);
-      socket.to(clients[socket.id]).emit("data", { leave: leave });
-      clients[socket.id] = '';
-    }
-  });
-  
-  // listening...
-  socket.on('data', (data = {}) => {
-    const { room, action, board, turn, to_player, ships, guess, message,  is_winning } = data;
+  users++;
+  io.emit("data", { users_count: users });
 
-    // play - means joining a room
+  // player disconnected.
+  socket.on('disconnect', function () {
+    if (playagain.includes(socket.id)) {
+      console.log(`${socket.id} removes from playagainarray!`);
+      playagain.splice(playagain.indexOf(socket.id), 1);
+      // let room = clients[socket.id];
+      // rooms[room].splice(rooms[room].indexOf(socket.id), 1);
+      // delete clients[socket.id];
+    }
+    else {
+      console.log('===============================================');
+      console.log("disconnect", socket.id);
+      // if (clients.hasOwnProperty(socket.id)) {
+      let room = clients[socket.id];
+      socket.to(room).emit("data", { leave: leave });
+      delete rooms[room];
+      // console.log(`${socket.id} has leaves this room: ${room}`);
+      // rooms[room].splice(rooms[room].indexOf(socket.id), 1);
+      // delete clients[socket.id];
+      // rooms[room] = [];
+    }
+
+    users--;
+    io.emit("data", { users_count: users });
+    // if (clients.hasOwnProperty(socket.id)) {
+    //   delete clients[socket.id];
+    // }
+  });
+
+  socket.on('data', (data = {}) => {
+    const { room, action, board, turn, to_player, ships, guess, message, is_winning, play_again_emit } = data;
+    if (play_again_emit) {
+      playagain.push(socket.id);
+      console.log(`${socket.id} added to playagainarray!`);
+      socket.to(room).emit("data", { wanna_play_again: 'wanna_play_again' });
+    }
+    // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
+      if (!rooms[room]) rooms[room] = [];
+      rooms[room].push(socket.id);
       console.log("inside room " + room);
       clients[socket.id] = room;
+      console.log("LENGTH: ", Object.values(clients).filter(r => r === room).length)
+      console.log("length: ", rooms[room].length);
       // tell the client that another player is in (and then show the 'ready' button)
-      if (Object.values(clients).filter(r => r === room).length === 2) {
+      if (rooms[room].length == 2) {
+        // if (Object.values(clients).filter(r => r === room).length === 2) {
         console.log("both players are inside!");
         io.in(room).emit("data", { other_player_connected: true });
       }
@@ -90,8 +123,9 @@ io.sockets.on('connection', socket => {
     // is_winning - if one of the players won, notify the players
     if (is_winning) {
       socket.to(room).emit("data", { is_winning });
+      rooms[room] = [];
+
       console.log("the server emiting victory to the other player");
     }
   })
 });
-

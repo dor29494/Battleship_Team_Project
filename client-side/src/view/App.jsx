@@ -10,30 +10,45 @@ import Footer from "./Footer";
 import styled from "styled-components";
 import { flex, position } from "../styles/Mixins";
 import Confetti from 'react-confetti';
-
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
 
-  const { winning } = useContext(BsContext);
-  
+  const { winning, lock_other_player_board } = useContext(BsContext);
+
   return (
-    <>
-      {winning ? <Confetti width='2000px' height='2000px'/> : null}
-      <Sockets />
-      <TopBar />
-      <Input />
-      <GameWrapper>
-        <UserGrid />
-        <OpponentGrid />
-      </GameWrapper>
-      <Chat/>
-      <Footer />
-    </>
+      <BrowserRouter>
+        {winning ? <Confetti width='1800vw' height='980vw' style={{ zIndex: 1000 }} /> : ' '}
+        <Sockets />
+        <TopBar />
+        <Input />
+        <GameWrapper myturn={!lock_other_player_board}>
+          <UserGrid />
+          <OpponentGrid />
+        </GameWrapper>
+        <Chat />
+        {/* <Footer /> */}
+
+    </BrowserRouter>
+
+
   );
 }
 export default App;
 
 const GameWrapper = styled.div`
-  ${flex()};
-  ${position('absolute', '-5%', false, "50%", "50%" )};
+
+  display: flex;
+  flex-direction: ${props => props.myturn ? 'column-reverse' : 'column'};
+  // flex-direction: column-reverse;
+  padding-top: 10vw;
+  @media only screen and (min-width: 600px) {
+    {
+      flex-direction: row;
+      padding-top: 0;
+
+    }
+
+  }
+
 `;
