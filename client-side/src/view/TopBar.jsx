@@ -30,14 +30,12 @@ const TopBar = () => {
 
     return (
         <TopBarWrapper>
-            {/* <div style={{ width: '100%', height: '100%' }}> */}
                 <LogoWrapper>
                     <Logo src={battleship_logo} alt={"logo"} onClick={() => location.href = window.location.origin} />
                 </LogoWrapper>
                 <TopBarHeader>{users_counter} {users_counter > 1 ? 'Players' : 'Player' } Online</TopBarHeader>
-                {both_players_ready ? <TurnHolder>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '0.4vw', position: 'relative', top: '0.7vw' }} type="ThreeDots" color="white" height={50} width={50} /> </TurnText>}
+                {both_players_ready && !game_over_msg ? <TurnHolder myturn={!lock_other_player_board}>{!lock_other_player_board ? <TurnText><Flash>Its Your Turn!</Flash></TurnText> : <TurnText>Opponent Turn<Loader style={{ paddingLeft: '0.5vw', position: 'relative', top: '1.1vw' }} type="ThreeDots" color="white" height={'4vw'} width={'4vw'} /> </TurnText>}
                 </TurnHolder> : ' '}
-            {/* </div> */}
             { show_dc_modal && !game_over_msg ? <Modal /> : ' '}
         </TopBarWrapper>
     )
@@ -50,10 +48,18 @@ const TopBarWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   align-content: center;
-  width: 100vw;
+  // width: 100vw;
   color: white;
-  // background: red;
   height: 13vw;
+  margin-bottom: -8vw;
+
+  @media only screen and (min-width: 600px) {
+    {
+      width: 130vw;
+      margin-bottom: 0;
+    }
+  }
+  
 `;
 const LogoWrapper = styled.div`
 width: 100%;
@@ -76,11 +82,24 @@ const TopBarHeader = styled.span`
 const TurnHolder = styled.div`
   ${flex(false, 'center')};
   width: 100%;
+
+  @media only screen and (max-width: 600px)
+    {
+margin: 3vw;
+padding-left: 2vw;
+background: ${props => !props.myturn ? 'red' : 'blue'};
+display: flex;
+// background: blue;
+align-items: center;
+font-size: 5vw;
+
+    }
 `;
 
 const TurnText = styled.div`
   ${flex(false, false)};
   font-size: 3vw;
+  align-items: center;
 `;
 
 const Flash = styled.h1`

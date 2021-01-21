@@ -32,7 +32,7 @@ const StateManager = ({ children }) => {
   const [random_board, set_random_board] = useState(false);
   const [player_is_ready, set_player_is_ready] = useState(false);
   const [both_players_ready, set_both_players_ready] = useState(false);
-  const [note_status, set_note_status] = useState(null);
+  const [note_status, set_note_status] = useState();
   const [game_status, set_game_status] = useState('Welcome');
   const [user_precents, set_user_precents] = useState(0);
   const [opponent_precents, set_opponent_precents] = useState(0);
@@ -56,6 +56,9 @@ const StateManager = ({ children }) => {
   const [users_counter, set_users_counter] = useState(1);
   const [leave, set_leave] = useState(false);
   const [play_again_msg, set_play_again_msg] = useState(false);
+  const [mouseX, set_mouseX] = useState(0);
+  const [mouseY, set_mouseY] = useState(0);
+  
   // const [show_ready_box, set_show_ready_box] = useState(false);
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
@@ -98,7 +101,9 @@ const StateManager = ({ children }) => {
     play_again,
     users_counter,
     leave,
-    play_again_msg
+    play_again_msg,
+    mouseX,
+    mouseY,
   };
   
   const action = {
@@ -136,7 +141,9 @@ const StateManager = ({ children }) => {
     set_play_again,
     set_users_counter,
     set_leave,
-    set_play_again_msg
+    set_play_again_msg,
+    set_mouseX,
+    set_mouseY,
   };
   
   const ws_connection = {

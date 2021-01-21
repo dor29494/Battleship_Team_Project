@@ -19,7 +19,7 @@ const Modal = () => {
     return (
       <ModalWrapper>
         <Dialog>
-          <span>Your opponent just leaved the game.</span>
+          <span style={{fontSize: "3.5vw"}}>Your opponent just leaved the game.</span>
           <br />
           <Button ref={okref} onClick={() => ok_button()}>OK</Button>
         </Dialog>
@@ -41,7 +41,8 @@ const Modal = () => {
   const Dialog = styled.div`
     ${flex()};
     flex-direction: column;
-    height: 30rem;
-    width: 60rem;
+    height: 30vw;
+    width: 60vw;
     background: grey;
+    
   `;

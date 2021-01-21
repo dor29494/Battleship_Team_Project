@@ -51,6 +51,10 @@ const Chat = () => {
         msg: input_msg,
       },
     ]);
+setTimeout(() => {
+  
+  refToLast.current.focus();
+}, 60);
   };
 
   // keep the chat scrolling down all the time
@@ -112,6 +116,7 @@ const Chat = () => {
                 <FaPaperPlane
                   style={SendButtonStyleObj}
                   onClick={submitMessage}
+                  style={{width: '1.5vw', height: '1.5vw',position: 'absolute', bottom: '2vw', right: '2vw', cursor: 'pointer' }}
                 />
               </InputWrapper>
             </ChatWrapper>
@@ -155,6 +160,8 @@ const ShowChatButton = styled(Button)`
   font-size: 2.5vw;
   background: rgba(0, 0, 255, 0.3);
   border: 0.2vh solid #c0c0c0;
+
+
   box-shadow: ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? "none" : "inset 0 0.2rem 1.5rem #5880CE"};
   &:focus {
@@ -173,13 +180,18 @@ const Wrapper = styled.div`
 ${position("absolute", "63%", false, false, "13%")};
 ${flex("flex-end")};
   flex-direction: row;
-  min-height: 15rem;
-  max-width: 35rem;
+  width: 38vw;
   border: 0.1rem solid lightblue;
+  
+
   border-radius: 0.8rem;
   color: white;
   background: #000000;
   margin-top: 2rem;
+  @media only screen and (max-width: 600px)
+    {
+      ${position("absolute", "55%", false, false, "13%")};
+    }
 `;
 
 const ChatWrapper = styled.div`
@@ -187,13 +199,14 @@ const ChatWrapper = styled.div`
   flex-direction: column;
   max-height: 15rem;
   width: 100%;
+  height: 22vw;
   border-radius: 0.5rem;
   color: white;
   overflow-y: scroll;
   overflow-x: hidden;
-
+  // background: red;
   ::-webkit-scrollbar {
-    width: 20px;
+    width: 1.5vw;
   }
 
   ::-webkit-scrollbar-track {
@@ -209,6 +222,7 @@ const ChatWrapper = styled.div`
   ::-webkit-scrollbar-thumb:hover {
     background: green;
   }
+  padding: 0vw;
 `;
 const InputWrapper = styled.div`
   display: grid;
@@ -217,58 +231,66 @@ const InputWrapper = styled.div`
 
 const InputHolder = styled.input`
   align-self: flex-end;
-  max-height: 1.7rem;
+  height: 1.7vw;
   flex-basis: 80%;
-  width: 30rem;
-  border-radius: 0.2rem;
-  font-size: 1rem;
-  margin-left: 0.3rem;
-  margin-top: 0.3rem;
-  margin-bottom: 0.6rem;
-  margin-right: 0.8rem;
-  padding: 1rem;
+  width: 33vw;
+  border-radius: 25px;
+  font-size: 1.5vw;
+  margin: 1.5vw;
+position: relative;
+right: 1vw;
+bottom: 0;
+  padding: 1vw;
   outline: none;
+  border: none;
   transition: border 0.5s;
 
   &:focus {
-    border: white 2px solid;
+    // border: white 1px solid;
+  }
+  @media only screen and (max-width: 600px)
+  {
+    height: 3vw;
   }
 `;
 
 const MessageHolder = styled.div`
-  display: flex;
+padding: 2vw;
+padding-left: 2vw;
+display: flex;
   flex-wrap: wrap;
   flex-basis: 20%;
-  height: 4rem;
-  max-width: 20rem;
   color: white;
   font-family: sans-serif;
-  font-size: 1.2rem;
-  padding: 1rem;
+  font-size: 1.8vw;
+padding-bottom: 0;
   outline: none;
   transition: border 0.5s;
   opacity: 70%;
+  margin: -1vw;
+  // word-wrap    : break-word;
+  // overflow-wrap: break-word;
+  // background: yellow;
+  @media only screen and (max-width: 600px)
+  {
+    font-size: 2.2vw;
+  }
 
-  // &:focus {
-  //   border: tomato 2px solid;
-  // }
-  // &:nth-child(even) {
-  //   background: #3B3EDB;
-  // }
-  // &:nth-child(odd) {
-  //   background: white;
-  // }
 `;
 
 const UserNameHolder = styled.div`
 color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
   font-family: sans-serif;
-  font-size: 1.2rem;
-  text-decoration: underline;
+  font-size: 1.8vw;
+  // text-decoration: underline;
   margin-right: 0.4rem;
+  @media only screen and (max-width: 600px)
+  {
+    font-size: 2.2vw;
+  }
 `;
 const Flash = styled.h1`
   animation: 2s ${flashAnimation};
   animation-iteration-count: infinite;
-  font-size: 1.8rem;
+  font-size: 2.5vw;
 `;

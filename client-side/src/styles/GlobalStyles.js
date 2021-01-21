@@ -7,7 +7,10 @@ const GlobalStyles = createGlobalStyle`
   body {
     // height: 100%;
     background: #000000;
-    zoom: 90%;
+    zoom: 120%;
+    @media only screen and (min-width: 600px) {
+      {zoom: 85%}
+    }
   
   body {
     ${flex()};
@@ -39,6 +42,7 @@ export const StandardPixel = styled.div`
   width: 10%;
   height: 10%;
   
+
 `;
 
 // input component:
@@ -71,6 +75,11 @@ export const Button = styled.div`
       ${cool_shining_green};
       background: #1aff1a;
       color: black;
+    }
+    @media only screen and (max-width: 600px)
+    {
+height: 5.5vw;
+width: 20vw;
     }
 `;
 
@@ -121,12 +130,12 @@ export const ShipPart = styled(StandardPixel)`
 // UserGrid + OpponentGrid components:
 
 export const GridWrapper = styled.div`
+
   border: none;
   height: 100%;
   width: 100%;
   // width: 800px;
   color: white;
-  margin-top: 12vw;
   display: grid;
   justify-content: center;
   grid-template-areas:
@@ -134,18 +143,31 @@ export const GridWrapper = styled.div`
   'progressBar progressBar'
   'emptyPixel lettersBar'
   'numbersBar grid';
-  margin: 0;
-  // margin-top: 15vw;
+  @media only screen and (max-width: 600px) {
+    {
+      // padding-bottom: 10vw;
+      padding-top: 5vw;
+      zoom: 125%;
+
+    }
+
+    
 `;
 
 export const PlayerGrid = styled.div`
+
   display: flex;
   flex-wrap: wrap;
   height: 40vw;
   width: 40vw;
   color: #003B00;
-
   grid-area: grid;
+  @media only screen and (max-width: 600px) {
+    {
+height: 50vw;
+width: 50vw;
+
+    }
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`
@@ -175,15 +197,26 @@ export const LettersBar = styled.div`
   margin-bottom: -1vw;
 
   grid-area: lettersBar;
+  font-size: 3vw;
+  @media only screen and (max-width: 600px) {
+    {
+width: 50vw;
+
+    }
 `;
 
 export const NumbersBar = styled.div`
   ${flex('center', false)};
   flex-direction: column;
   height: 40vw;
+  font-size: 3vw;
   margin-right: 0.5vw;
 
   grid-area: numbersBar;
+  @media only screen and (max-width: 600px) {
+    {
+height: 50vw;
+    }
 `;
 
 export const BarPixel = styled(StandardPixel)`

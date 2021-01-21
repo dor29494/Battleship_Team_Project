@@ -14,42 +14,41 @@ import { BrowserRouter } from 'react-router-dom';
 
 function App() {
 
-  const { winning } = useContext(BsContext);
+  const { winning, lock_other_player_board } = useContext(BsContext);
 
   return (
-    <BrowserRouter>
-
-      {winning ? <Confetti width='1800vw' height='980vw' style={{ zIndex: 1000 }} /> : ' '}
-      <Sockets />
-      <TopBar />
-      <Input />
-      <GameWrapper>
-        <UserGrid />
-        <OpponentGrid />
-      </GameWrapper>
-      <Chat />
-      <Footer />
+      <BrowserRouter>
+        {winning ? <Confetti width='1800vw' height='980vw' style={{ zIndex: 1000 }} /> : ' '}
+        <Sockets />
+        <TopBar />
+        <Input />
+        <GameWrapper myturn={!lock_other_player_board}>
+          <UserGrid />
+          <OpponentGrid />
+        </GameWrapper>
+        <Chat />
+        {/* <Footer /> */}
 
     </BrowserRouter>
+
 
   );
 }
 export default App;
 
 const GameWrapper = styled.div`
-  // ${flex()};
+
   display: flex;
-  // ${position('absolute', '-5%', false, "50%", "50%" )};
+  flex-direction: ${props => props.myturn ? 'column-reverse' : 'column'};
+  // flex-direction: column-reverse;
+  padding-top: 10vw;
+  @media only screen and (min-width: 600px) {
+    {
+      flex-direction: row;
+      padding-top: 0;
+
+    }
+
+  }
 
 `;
-
-
-
-
-
-
-
-
-
-
-

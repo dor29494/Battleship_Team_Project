@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "dependencies": {
     "@ramonak/react-progress-bar": "^2.0.0",
+    "@react-hook/mouse-position": "^4.1.0",
     "nanoid": "^3.1.20",
     "react": "^17.0.1",
     "react-animations": "^1.0.0",
