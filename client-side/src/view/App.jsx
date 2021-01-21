@@ -12,7 +12,7 @@ import { flex, position } from "../styles/Mixins";
 import Confetti from 'react-confetti';
 
 
-function App() {
+const App = () => {
 
   const { winning } = useContext(BsContext);
   
