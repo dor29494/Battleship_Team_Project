@@ -23,10 +23,10 @@ function App() {
         <TopBar />
         <Input />
         <GameWrapper myturn={!lock_other_player_board}>
+        <Chat />
           <UserGrid />
           <OpponentGrid />
         </GameWrapper>
-        <Chat />
         {/* <Footer /> */}
 
     </BrowserRouter>
