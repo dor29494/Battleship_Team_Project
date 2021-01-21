@@ -24,12 +24,6 @@ const Chat = () => {
   const [msg_alert, set_msg_alert] = useState(false);
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
-<<<<<<< HEAD
-
-=======
-  
-  // display the chat (or not)
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
   const chatShower = () => {
     console.log("toggle");
     set_show_chat(!show_chat);
@@ -154,14 +148,10 @@ const SendButtonStyleObj = {
   cursor: "pointer",
 };
 const ShowChatButton = styled(Button)`
-<<<<<<< HEAD
   ${position("absolute", "110%", false, false, "10%")};
   ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
   text-align: center;
-=======
-  ${position('absolute', '100%', false, false, '10%')};
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
   max-height: 2.5rem;
   max-width: 2.5rem;
   font-size: 1.6rem;
@@ -182,13 +172,8 @@ const ShowChatButton = styled(Button)`
 `;
 
 const Wrapper = styled.div`
-<<<<<<< HEAD
   ${position("absolute", "83%", false, false, "20%")};
   ${flex("flex-end")};
-=======
-  ${position('absolute', '73%', false, false, '20%')};
-  ${flex('flex-end')};
->>>>>>> ba33649e8415838d96b5019e80dff885b7c20073
   flex-direction: row;
   min-height: 15rem;
   max-width: 35rem;
