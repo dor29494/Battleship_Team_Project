@@ -4,7 +4,7 @@ const random_boolean = () => Math.random() < 0.5;
 //updates a square on the board after a ship part was hit or sunk
 const update_board_square_around_sink = (board, x, y) => {
     const new_board = [...board];
-    if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
+    if (x >= 0 && y >= 0 && x <= new_board.length-1 && y <= new_board.length-1) {//!= undefined
         if (new_board[x][y].value !== MISS && new_board[x][y].value !== SHIP_PART) { //we want to keep miss visual, also not to change a sunken ship to a aroung sink bc of how loop works
             new_board[x][y].value = AROUND_SINK;
         }
@@ -14,7 +14,7 @@ const update_board_square_around_sink = (board, x, y) => {
 //updates a square as one that is on the border of a ship, for placement purposes
 const update_board_square_around_ship = (board, x, y) => {
     const new_board = [...board];
-    if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {//!= undefined
+    if (x >= 0 && y >= 0 && x <= new_board.length-1 && y <= new_board.length-1) {//!= undefined
         if (new_board[x][y].value !== SHIP_PART) { //making sure we aren't changing the value of a ship part to be an around ship bc of how loop works
             new_board[x][y].around_ship = true;
         }
