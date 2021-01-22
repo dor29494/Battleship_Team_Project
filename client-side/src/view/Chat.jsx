@@ -150,17 +150,22 @@ const SendButtonStyleObj = {
   cursor: "pointer",
 };
 const ShowChatButton = styled(Button)`
-  ${position("relative", "-0.5vw", false, false, "vw")};
+  ${position("relative", "0%", false, false, "0%")};
   ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
+    align-self: flex-end;
   text-align: center;
-  z-index: 10;
-  max-height: 3.5vw;
-  max-width: 3.5vw;
-  font-size: 2.5vw;
-  background: rgba(0, 0, 255, 0.3);
-  border: 0.2vh solid #c0c0c0;
-
+  max-height: 2.5rem;
+  max-width: 2.5rem;
+  font-size: 1.6rem;
+  //   msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
+  // text-align: center;
+  // z-index: 10;
+  // max-height: 3.5vw;
+  // max-width: 3.5vw;
+  // font-size: 2.5vw;
+  // background: rgba(0, 0, 255, 0.3);
+  // border: 0.2vh solid #c0c0c0
 
   box-shadow: ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? "none" : "inset 0 0.2rem 1.5rem #5880CE"};
@@ -179,14 +184,17 @@ const ShowChatButton = styled(Button)`
 const Wrapper = styled.div`
 ${position("relative", "63%", false, false, "13%")};
 ${flex("flex-end")};
+  align-self: flex-end;
+  max-width: 33vw;
+  flex-wrap: wrap;
   flex-direction: row;
-  width: 38vw;
   border: 0.1rem solid lightblue;
-  
-
+  min-height: 15vw;
+  max-height: 16vw;
   border-radius: 0.8rem;
   color: white;
   background: #000000;
+  opacity: 80%;
   margin-top: 2rem;
   @media only screen and (max-width: 600px)
     {
@@ -197,9 +205,9 @@ ${flex("flex-end")};
 const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 15rem;
-  width: 100%;
-  height: 22vw;
+  border: 2px solid red;
+  max-width: 30vw
+  max-height: 10vw;
   border-radius: 0.5rem;
   color: white;
   overflow-y: scroll;
@@ -227,18 +235,17 @@ const ChatWrapper = styled.div`
 const InputWrapper = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
-  margin: 2.5vw;
-  `;
-  
-  const InputHolder = styled.input`
-  margin-bottom: 1vw;
+`;
+
+const InputHolder = styled.input`
+  align-self: flex-end;
+  height: 1.7vw;
+  flex-basis: 80%;
+  max-width: 33vw;
   border-radius: 25px;
   font-size: 1.5vw;
-position: absolute;
-left: 0vw;
-width: 80%;
-  height: 3vw;
-
+  margin: 1.5vw;
+  position: relative;
   right: 1vw;
   bottom: 0;
   padding: 1vw;
@@ -256,15 +263,16 @@ width: 80%;
 `;
 
 const MessageHolder = styled.div`
-padding: 2vw;
-padding-left: 2vw;
-display: flex;
-  flex-wrap: wrap;
+  padding: 2vw;
+  max-height: 4vw;
+  border: 2px solid green;
+  padding-left: 2vw;
+  display: flex;
   flex-basis: 20%;
   color: white;
   font-family: sans-serif;
-  font-size: 1.8vw;
-padding-bottom: 0;
+  font-size: 1.1vw;
+  padding-bottom: 0;
   outline: none;
   transition: border 0.5s;
   opacity: 70%;
@@ -281,9 +289,9 @@ padding-bottom: 0;
 `;
 
 const UserNameHolder = styled.div`
-color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
+  color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
   font-family: sans-serif;
-  font-size: 1.8vw;
+  font-size: 1.2vw;
   // text-decoration: underline;
   margin-right: 0.4rem;
   @media only screen and (max-width: 600px)
