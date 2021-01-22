@@ -13,28 +13,21 @@ const Sockets = () => {
         first_turn,
         set_first_turn,
         player_is_ready,
-        set_both_players_ready,
         player_guess,
         set_other_player_guess,
         player_message,
-        other_player_message,
         set_other_player_message,
         chat_array_message,
         set_chat_array_message,
-        player_id,
         winning,
         set_winning,
         set_show_dc_modal,
         set_other_player_ready,
-        other_player_ready,
-        set_player_is_ready,
-        users_counter,
         set_users_counter,
         play_again,
         set_play_again,
         set_leave,
-        set_play_again_msg,
-        play_again_msg
+        set_play_again_msg
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));

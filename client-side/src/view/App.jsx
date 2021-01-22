@@ -12,7 +12,7 @@ import { flex, position } from "../styles/Mixins";
 import Confetti from 'react-confetti';
 import { BrowserRouter } from 'react-router-dom';
 
-function App() {
+const App = () => {
 
   const { winning, lock_other_player_board, both_players_connected, show_ready_box } = useContext(BsContext);
 

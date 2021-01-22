@@ -22,18 +22,16 @@ const io = new Server(http, {
     methods: ["GET", "POST"]
   }
 });
+
 let playagain = [];
 let rooms = {};
-
-
-
-
 let clients = {};
 const play = 'play';
 const ready = 'ready';
 const chat_message = 'chat_message';
 const leave = 'leave';
 let users = 0;
+
 io.sockets.on('connection', socket => {
 
   users++;
@@ -44,9 +42,6 @@ io.sockets.on('connection', socket => {
     if (playagain.includes(socket.id)) {
       console.log(`${socket.id} removes from playagainarray!`);
       playagain.splice(playagain.indexOf(socket.id), 1);
-      // let room = clients[socket.id];
-      // rooms[room].splice(rooms[room].indexOf(socket.id), 1);
-      // delete clients[socket.id];
     }
     else {
       console.log('===============================================');
@@ -55,17 +50,9 @@ io.sockets.on('connection', socket => {
       let room = clients[socket.id];
       socket.to(room).emit("data", { leave: leave });
       delete rooms[room];
-      // console.log(`${socket.id} has leaves this room: ${room}`);
-      // rooms[room].splice(rooms[room].indexOf(socket.id), 1);
-      // delete clients[socket.id];
-      // rooms[room] = [];
     }
-
     users--;
     io.emit("data", { users_count: users });
-    // if (clients.hasOwnProperty(socket.id)) {
-    //   delete clients[socket.id];
-    // }
   });
 
   socket.on('data', (data = {}) => {
@@ -75,6 +62,7 @@ io.sockets.on('connection', socket => {
       console.log(`${socket.id} added to playagainarray!`);
       socket.to(room).emit("data", { wanna_play_again: 'wanna_play_again' });
     }
+
     // play - means joining a room.
     if (action === play && room !== null) {
       socket.join(room);
