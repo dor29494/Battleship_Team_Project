@@ -24,7 +24,8 @@ const OpponentGrid = () => {
     set_lock_other_player_board,
     set_winning,
     set_mouseX,
-    set_mouseY
+    set_mouseY,
+    game_started
   } = useContext(BsContext);
 
   const [lockArray, set_lockArray] = useState([]);
@@ -121,7 +122,7 @@ const OpponentGrid = () => {
   };
 
   return (
-    <OpponentGridWrapper myturn={!lock_other_player_board}>
+    <OpponentGridWrapper myturn={!lock_other_player_board} game_started={game_started}>
       <GridHeaders>Opponents Grid</GridHeaders>
       <LittleWrapper>
         <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponent_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
@@ -153,6 +154,8 @@ export default OpponentGrid;
 const OpponentGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
-// display: ${props => props.myturn ? 'grid' : 'none'}
-
-  }`
+    display: ${props => props.myturn ? 'grid' : 'none'}
+    
+  }
+  display: ${props => props.game_started ? 'grid' : 'none' };
+  `

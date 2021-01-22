@@ -240,12 +240,15 @@ const InputWrapper = styled.div`
   justify-content: center;
   background: rgba(0,0,0,0.8);
   @media only screen and (max-width: 600px)
-    {
-  width: 100%;
-  height: 100%;
-  ${({both_players_connected }) => both_players_connected ? `width: 60vw; top: 32vw` : ' ' };
-    }
-
+  {
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    opacity: 1;
+    height: 90%;
+    margin-top: 6vw;
+    left: 0;
+    ${({both_players_connected }) => both_players_connected ? `width: 80vw; top: 7vw; margin-left: -19vw;` : ' ' };
+  }
 `;
 
 const MiniWrapper = styled.form`
@@ -273,7 +276,7 @@ const MiniWrapper = styled.form`
   {
 width: 50vw;
 height: 50vw;
-${({both_players_connected }) => both_players_connected ? `position: absolute; left: 24vw; top: -18vw;` : ' ' };
+${({both_players_connected }) => both_players_connected ? `position: absolute; left: 8vw; top: 8vw;` : ' ' };
   }
 `;
 
@@ -355,9 +358,9 @@ margin: 0;
     align-items: center;
     justify-content: center;
     width: 68vw;
-    left: -4vw;
-    height: 80%;
-    top: -10vw;
+    left: 18vw;
+    height: 90%;
+    top: 10vw;
     background: black;
   }
 `;

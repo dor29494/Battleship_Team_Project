@@ -16,6 +16,7 @@ const Chat = () => {
     set_chat_array_message,
     player_id,
     other_player_message,
+    game_started
   } = useContext(BsContext);
 
   // local states:
@@ -51,10 +52,10 @@ const Chat = () => {
         msg: input_msg,
       },
     ]);
-setTimeout(() => {
-  
-  refToLast.current.focus();
-}, 60);
+    setTimeout(() => {
+
+      refToLast.current.focus();
+    }, 60);
   };
 
   // keep the chat scrolling down all the time
@@ -94,15 +95,15 @@ setTimeout(() => {
             <ChatWrapper>
               {chat_array_message.length > 0
                 ? chat_array_message.map((message, i) => (
-                    <MessageHolder
-                      key={i}
-                      ref={chatWrapperRef}
-                      id={chat_array_message.length}
-                    >
-                      <UserNameHolder message={message} player_id={player_id}>{(message.id === player_id) ? 'You' : 'Oppnent'}: </UserNameHolder>{" "}
-                      {message.msg}
-                    </MessageHolder>
-                  ))
+                  <MessageHolder
+                    key={i}
+                    ref={chatWrapperRef}
+                    id={chat_array_message.length}
+                  >
+                    <UserNameHolder message={message} player_id={player_id}>{(message.id === player_id) ? 'You' : 'Oppnent'}: </UserNameHolder>{" "}
+                    {message.msg}
+                  </MessageHolder>
+                ))
                 : ""}
               <h1 id={"end"}></h1>
               <InputWrapper>
@@ -124,19 +125,19 @@ setTimeout(() => {
       </Wrapper>
     </>
   ) : (
-    <>
-      <ShowChatButton onClick={chatShower}>
-        {msg_alert && !show_chat ? (
-          <Flash>
-            {" "}
-            <FaCommentDots style={{ color: "#FA3E3E", marginTop: "20%" }} />
-          </Flash>
-        ) : (
-          <FaCommentDots />
-        )}
-      </ShowChatButton>
-    </>
-  );
+      <>
+        <ShowChatButton onClick={chatShower}>
+          {msg_alert && !show_chat ? (
+            <Flash>
+              {" "}
+              <FaCommentDots style={{ color: "#FA3E3E", marginTop: "20%" }} />
+            </Flash>
+          ) : (
+              <FaCommentDots />
+            )}
+        </ShowChatButton>
+      </>
+    );
 };
 
 export default Chat;
@@ -302,7 +303,7 @@ const MessageHolder = styled.div`
 `;
 
 const UserNameHolder = styled.div`
-  color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
+  color: ${({ message, player_id }) => message.id === player_id ? '#0175f7' : '#ff1515'}  ;
   font-family: sans-serif;
   font-size: 1.7vw;
   // text-decoration: underline;

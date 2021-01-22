@@ -36,6 +36,12 @@ const Modal = () => {
     width: 100%;
     background-color: rgba(0,0,0,0.8);
     z-index: 1000;
+    @media only screen and (max-width: 600px) {
+      right: 12vw;
+      width: 85%;
+      top: -16vw;
+      height: 120%;
+            }
   `;
   
   const Dialog = styled.div`
@@ -44,5 +50,4 @@ const Modal = () => {
     height: 30vw;
     width: 60vw;
     background: grey;
-    
   `;
