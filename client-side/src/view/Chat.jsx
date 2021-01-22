@@ -116,7 +116,7 @@ setTimeout(() => {
                 <FaPaperPlane
                   style={SendButtonStyleObj}
                   onClick={submitMessage}
-                  style={{width: '1.5vw', height: '1.5vw',position: 'absolute', bottom: '2vw', right: '2vw', cursor: 'pointer' }}
+                  style={{width: '1.5vw', height: '1.5vw',position: 'absolute', bottom: '2vw', right: '4vw', cursor: 'pointer' }}
                 />
               </InputWrapper>
             </ChatWrapper>
@@ -177,7 +177,7 @@ const ShowChatButton = styled(Button)`
 `;
 
 const Wrapper = styled.div`
-${position("absolute", "63%", false, false, "13%")};
+${position("relative", "63%", false, false, "13%")};
 ${flex("flex-end")};
   flex-direction: row;
   width: 38vw;
@@ -227,19 +227,20 @@ const ChatWrapper = styled.div`
 const InputWrapper = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
-`;
-
-const InputHolder = styled.input`
-  align-self: flex-end;
-  height: 1.7vw;
-  flex-basis: 80%;
-  width: 33vw;
+  margin: 2.5vw;
+  `;
+  
+  const InputHolder = styled.input`
+  margin-bottom: 1vw;
   border-radius: 25px;
   font-size: 1.5vw;
-  margin: 1.5vw;
-position: relative;
-right: 1vw;
-bottom: 0;
+position: absolute;
+left: 0vw;
+width: 80%;
+  height: 3vw;
+
+  right: 1vw;
+  bottom: 0;
   padding: 1vw;
   outline: none;
   border: none;
@@ -275,6 +276,7 @@ padding-bottom: 0;
   {
     font-size: 2.2vw;
   }
+
 
 `;
 
