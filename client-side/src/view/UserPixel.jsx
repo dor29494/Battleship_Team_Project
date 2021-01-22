@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { RegularSquare, MissHit, ShipHit, ShipSink, AroundSink, ShipPart } from "../styles/GlobalStyles"
 import { SEA, MISS, HIT, SINK, AROUND_SINK, SHIP_PART } from "../stateManager/stateManager";
-
 const UserPixel = ({ status, lock }) => {
 
   if (status === SEA) {
@@ -29,7 +28,7 @@ const UserPixel = ({ status, lock }) => {
 export default UserPixel;
 
 
-// *** when adding the reordering of the player ships before ready, switch "ShipPart" with "PlayerShipPart"
+// *** when adding the reordering of the player ships before ready, switch "ShipPart" with "PlayerShipPart" (Not implemented yet)
 const PlayerShipPart = styled(ShipPart)`
 cursor: ${({ lock }) => (lock ? 'none' : 'move')};
 `;

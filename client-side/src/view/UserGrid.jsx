@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import styled from 'styled-components'
 import { BsContext } from "../stateManager/stateManager";
 import { update_board_hit, update_board_miss } from "../logic/logic";
 import { SINK, SHIP_PART, HIT, MISS } from "../stateManager/stateManager";
@@ -18,10 +19,10 @@ const UserGrid = () => {
     lock_other_player_board
   } = useContext(BsContext)
 
-  // *** for reordering ships functionality
+  // *** for reordering ships functionality (Not implemented yet)
   const [lock_ship_position, set_lock_ship_position] = useState(false);
 
-  // *** lock the user's ship when ready after reordering
+  // *** lock the user's ship when ready after reordering (Not implemented yet)
   useEffect(() => {
     set_lock_ship_position(true)
   }, [player_is_ready])
@@ -36,7 +37,7 @@ const UserGrid = () => {
     return pixel.value;
   }
 
-  // updating the player's board and lock it.
+  // updating the player's board according to the other player's guess
   useEffect(() => {
     if (other_player_guess) {
       const { result, x, y } = other_player_guess;
@@ -55,10 +56,10 @@ const UserGrid = () => {
   }, [other_player_guess])
 
   return (
-    <GridWrapper>
+    <UserGridWrapper myturn={lock_other_player_board}>
       <GridHeaders>Your Grid</GridHeaders>
       <LittleWrapper>
-        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'300px'} height={'22px'} />
+        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
@@ -66,15 +67,20 @@ const UserGrid = () => {
         {player_board.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) =>
             <UserPixel
-              lock={lock_ship_position} // *** for the ship reordering function.
+              lock={lock_ship_position} // *** for the ship reordering function (Not implemented yet)
               key={`g${Yindex}`}
               status={pixelStatus(Xindex, Yindex, board, player_ships)}
             ></UserPixel>))}
       </PlayerGrid>
-    </GridWrapper>
+    </UserGridWrapper>
   )
 };
+const UserGridWrapper = styled(GridWrapper)`
+@media only screen and (max-width: 600px) {
+  {
+display: ${props => props.myturn ? 'grid' : 'none' }
 
+  }
+
+`
 export default UserGrid;
-
-
