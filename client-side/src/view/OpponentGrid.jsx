@@ -153,6 +153,6 @@ export default OpponentGrid;
 const OpponentGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
-display: ${props => props.myturn ? 'grid' : 'none'}
+// display: ${props => props.myturn ? 'grid' : 'none'}
 
   }`

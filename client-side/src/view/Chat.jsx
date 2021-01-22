@@ -213,14 +213,12 @@ ${flex("flex-end")};
 const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  // border: 2px solid red;
   max-width: 32.7vw;
   max-height: 15vw;
   border-radius: 0.5rem;
   color: white;
   overflow-y: scroll;
   overflow-x: hidden;
-  // background: red;
   ::-webkit-scrollbar {
     width: 1.5vw;
   }
