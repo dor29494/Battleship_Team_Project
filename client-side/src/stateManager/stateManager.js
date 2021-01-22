@@ -49,8 +49,7 @@ const StateManager = ({ children }) => {
   const [other_player_ready, set_other_player_ready] = useState(false);
   const [show_ready_box, set_show_ready_box] = useState(false);
   const [connected, set_connected] = useState(false);
-  const [show_join_button, set_show_join_button] = useState(false);
-  const [show_host_button, set_show_host_button] = useState(true);
+  const [show_start_button, set_show_start_button] = useState(true);
   const [game_started, set_game_started] = useState(false);
   const [play_again, set_play_again] = useState(false);
   const [users_counter, set_users_counter] = useState(1);
@@ -94,9 +93,8 @@ const StateManager = ({ children }) => {
     other_player_ready,
     show_ready_box,
     connected,
-    show_host_button,
+    show_start_button,
     show_ready_box,
-    show_join_button,
     game_started,
     play_again,
     users_counter,
@@ -134,9 +132,8 @@ const StateManager = ({ children }) => {
     set_other_player_ready,
     set_show_ready_box,
     set_connected,
-    set_show_host_button,
+    set_show_start_button,
     set_show_ready_box,
-    set_show_join_button,
     set_game_started,
     set_play_again,
     set_users_counter,
