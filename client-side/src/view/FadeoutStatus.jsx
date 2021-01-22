@@ -23,7 +23,6 @@ export default FadeoutStatus;
 const StatusBox = styled.div`
   ${flex()};
   align-self: start;
-  // ${position('absolute', '30%', false, false, '40.5%')};
   position: absolute;
   // height: 4rem;
   // min-width: 20rem;

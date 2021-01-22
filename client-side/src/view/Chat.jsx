@@ -113,10 +113,9 @@ setTimeout(() => {
                   ref={refToLast}
                   placeholder={"Write your message here..."}
                 ></InputHolder>
-                <FaPaperPlane
+                <FaPaperPlaneBox
                   style={SendButtonStyleObj}
                   onClick={submitMessage}
-                  style={{width: '1.5vw', height: '1.5vw',position: 'absolute', bottom: '2vw', right: '2vw', cursor: 'pointer' }}
                 />
               </InputWrapper>
             </ChatWrapper>
@@ -179,18 +178,25 @@ const ShowChatButton = styled(Button)`
     background: #696969;
     color: white;
   }
+  @media only screen and (max-width: 600px)
+  {
+width: 7vw;
+height: 7vw;
+  }
 `;
 
 const Wrapper = styled.div`
-${position("relative", "0%", false, false, "0%")};
+position: relative;
+top: -20vw;
+left: 6vw;
+z-index: 100;
 ${flex("flex-end")};
   align-self: flex-end;
   max-width: 33vw;
   flex-wrap: wrap;
   flex-direction: row;
   border: 0.1rem solid lightblue;
-  min-height: 15vw;
-  max-height: 16vw;
+  min-height: 12vw;
   border-radius: 0.8rem;
   color: white;
   background: #000000;
@@ -198,16 +204,18 @@ ${flex("flex-end")};
   margin-top: 2rem;
   @media only screen and (max-width: 600px)
     {
-      ${position("absolute", "55%", false, false, "13%")};
+      top: -32vw;
+      left: 8vw;
+      height: 20vw;
     }
 `;
 
 const ChatWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border: 2px solid red;
-  max-width: 30vw
-  max-height: 10vw;
+  // border: 2px solid red;
+  max-width: 32.7vw;
+  max-height: 15vw;
   border-radius: 0.5rem;
   color: white;
   overflow-y: scroll;
@@ -231,7 +239,12 @@ const ChatWrapper = styled.div`
     background: green;
   }
   padding: 0vw;
+  @media only screen and (max-width: 600px)
+  {
+    max-height: 19vw;
+  }
 `;
+
 const InputWrapper = styled.div`
   display: grid;
   grid-template-columns: 4fr 1fr;
@@ -241,12 +254,14 @@ const InputHolder = styled.input`
   align-self: flex-end;
   height: 1.7vw;
   flex-basis: 80%;
-  max-width: 33vw;
+  min-width: 26vw;
   border-radius: 25px;
   font-size: 1.5vw;
-  margin: 1.5vw;
+  margin: 1vw;
+  margin-right: 0;
   position: relative;
-  right: 1vw;
+  right: 0vw;
+  top: 0.5vw;
   bottom: 0;
   padding: 1vw;
   outline: none;
@@ -265,17 +280,15 @@ const InputHolder = styled.input`
 const MessageHolder = styled.div`
   padding: 2vw;
   max-height: 4vw;
-  border: 2px solid green;
   padding-left: 2vw;
   display: flex;
   flex-basis: 20%;
   color: white;
   font-family: sans-serif;
-  font-size: 1.1vw;
+  font-size: 1.5vw;
   padding-bottom: 0;
   outline: none;
   transition: border 0.5s;
-  opacity: 70%;
   margin: -1vw;
   // word-wrap    : break-word;
   // overflow-wrap: break-word;
@@ -283,14 +296,17 @@ const MessageHolder = styled.div`
   @media only screen and (max-width: 600px)
   {
     font-size: 2.2vw;
+    // margin-top: 0.005vw;
+    margin-bottom: 0.05vw;
   }
+
 
 `;
 
 const UserNameHolder = styled.div`
   color: ${({message,player_id})=> message.id === player_id ? '#0175f7' : '#ff1515'}  ;
   font-family: sans-serif;
-  font-size: 1.2vw;
+  font-size: 1.7vw;
   // text-decoration: underline;
   margin-right: 0.4rem;
   @media only screen and (max-width: 600px)
@@ -303,3 +319,20 @@ const Flash = styled.h1`
   animation-iteration-count: infinite;
   font-size: 2.5vw;
 `;
+
+const FaPaperPlaneBox = styled(FaPaperPlane)`
+width: 1.5vw;
+height: 1.5vw;
+position: relative;
+top: 1vw;
+right: -1.5vw;
+transform: rotate(7deg);
+cursor: pointer;
+
+@media only screen and (max-width: 600px)
+{
+right: -1vw;
+top: 1.4vw;
+}
+
+`

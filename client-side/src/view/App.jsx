@@ -17,19 +17,22 @@ const App = () => {
   const { winning, lock_other_player_board } = useContext(BsContext);
 
   return (
+    <AppWrapper>
       <BrowserRouter>
         {winning ? <Confetti width='1800vw' height='980vw' style={{ zIndex: 1000 }} /> : ' '}
         <Sockets />
         <TopBar />
         <Input />
         <GameWrapper myturn={!lock_other_player_board}>
-        <Chat />
           <UserGrid />
           <OpponentGrid />
         </GameWrapper>
+        <Chat />
         {/* <Footer /> */}
 
-    </BrowserRouter>
+      </BrowserRouter>
+    </AppWrapper>
+
 
 
   );
@@ -52,3 +55,6 @@ const GameWrapper = styled.div`
   }
 
 `;
+const AppWrapper = styled.div`
+position: relative;
+`
