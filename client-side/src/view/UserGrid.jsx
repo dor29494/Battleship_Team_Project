@@ -16,7 +16,9 @@ const UserGrid = () => {
     user_precents,
     set_user_precents,
     other_player_guess,
-    lock_other_player_board
+    both_players_connected,
+    lock_other_player_board,
+    both_players_ready
   } = useContext(BsContext)
 
   // *** for reordering ships functionality (Not implemented yet)
@@ -56,7 +58,7 @@ const UserGrid = () => {
   }, [other_player_guess])
 
   return (
-    <UserGridWrapper myturn={lock_other_player_board}>
+    <UserGridWrapper both_players_connected={both_players_connected} myturn={lock_other_player_board} both_players_ready={both_players_ready}>
       <GridHeaders>Your Grid</GridHeaders>
       <LittleWrapper>
         <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
@@ -78,7 +80,8 @@ const UserGrid = () => {
 const UserGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
-display: ${props => props.myturn ? 'grid' : 'none' }
+display: ${props => props.myturn ? 'grid' : 'none' };
+${({both_players_connected, both_players_ready }) => both_players_connected && !both_players_ready ? `position: absolute; top: 50vw` : ' ' } 
 
   }
 

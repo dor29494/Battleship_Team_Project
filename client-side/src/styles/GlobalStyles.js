@@ -162,12 +162,13 @@ export const PlayerGrid = styled.div`
   width: 40vw;
   color: #003B00;
   grid-area: grid;
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 600px)
     {
-height: 50vw;
-width: 50vw;
-
+      height: 50vw;
+      width: 50vw;
+      
     }
+    opacity: ${({ lock_other_player_board }) => (lock_other_player_board ? '0.3' : '1')};
 `;
 
 export const OtherPlayerGrid = styled(PlayerGrid)`

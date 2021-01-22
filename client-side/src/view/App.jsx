@@ -14,7 +14,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 const App = () => {
 
-  const { winning, lock_other_player_board } = useContext(BsContext);
+  const { winning, lock_other_player_board, both_players_connected, show_ready_box } = useContext(BsContext);
 
   return (
     <AppWrapper>
@@ -24,7 +24,7 @@ const App = () => {
         <TopBar />
         <Input />
         <GameWrapper myturn={!lock_other_player_board}>
-          <UserGrid />
+          <UserGrid both_players_connected={both_players_connected} show_ready_box={show_ready_box} />
           <OpponentGrid />
         </GameWrapper>
         <Chat />

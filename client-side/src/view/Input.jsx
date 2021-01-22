@@ -67,7 +67,8 @@ const Input = () => {
     leave,
     play_again_msg,
     set_mouseX,
-    set_mouseY
+    set_mouseY,
+    set_game_over_msg
   } = useContext(BsContext);
   // local states:
   const [copied_msg, set_copied_msg] = useState('');
@@ -210,9 +211,9 @@ const Input = () => {
   return (
     <>
       <FadeoutStatus />
-      <InputWrapper connected={player_room} game_over_msg={game_over_msg} game_started={game_started}>
+      <InputWrapper connected={player_room} both_players_connected={both_players_connected} game_over_msg={game_over_msg} game_started={game_started}>
         {!game_over_msg ?
-          <MiniWrapper>
+          <MiniWrapper both_players_connected={both_players_connected}>
             <StaticStatus>{game_status}
               {waiting ? <Loader type="Grid" color="white" height={'5vw'} width={'5vw'} style={{ margin: "1vw" }} /> : ' '}
             </StaticStatus>
@@ -230,19 +231,19 @@ export default Input;
 
 const InputWrapper = styled.div`
   ${({ game_started, game_over_msg, connected }) => game_started && !game_over_msg ? 'display: none' : connected ? flex('center', false) : flex()};
-position: absolute;
-top: 12vw;
+  position: absolute;
+  top: 12vw;
+  right: 3vw;
   z-index: 100;
   height: 60vw;
-  width: 123vw;
+  width: 125vw;
   justify-content: center;
   background: rgba(0,0,0,0.8);
   @media only screen and (max-width: 600px)
     {
   width: 100%;
   height: 100%;
-  left: -1vw;
-  // top: 10%;
+  ${({both_players_connected }) => both_players_connected ? `width: 60vw; top: 32vw` : ' ' };
     }
 
 `;
@@ -272,7 +273,7 @@ const MiniWrapper = styled.form`
   {
 width: 50vw;
 height: 50vw;
-margin-bottom: 10vw;
+${({both_players_connected }) => both_players_connected ? `position: absolute; left: 24vw; top: -18vw;` : ' ' };
   }
 `;
 
@@ -353,13 +354,12 @@ margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 90%;
-    top: 0;
-    // background
-    // top: 5%;
+    width: 68vw;
+    left: -4vw;
+    height: 80%;
+    top: -10vw;
+    background: black;
   }
-
 `;
 
 const ButtonsWrapper = styled.div`
