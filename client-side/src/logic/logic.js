@@ -92,7 +92,7 @@ export const place_ships = (board, ships) => {
                 return {ship_part_x: limited + num ,ship_part_y: unlimited}
             }
             if (ship.direction === HORIZONTAL) {
-                return { ship_head_x: unlimited, ship_head_y: limited + num}
+                return { ship_part_x: unlimited, ship_part_y: limited + num}
             }
         }
         
@@ -101,24 +101,24 @@ export const place_ships = (board, ships) => {
             let limited = random(9 - ship.length);  //generation of a random number limited by the ships length so as not to place a ship out of bounds
 
             for (let i = 0; i < ship.length; i++) { // iterates over the generated place for the ship to check if its viable
-                let {ship_part_x: ship_head_x} = directional_adder(limited, unlimited, i);// activation of the adder that adds a value to the direction that we need to iterate over
-                let {ship_part_y: ship_head_y} = directional_adder(limited, unlimited, i);
-                if (new_board[ship_head_x][ship_head_y].around_ship !== false) {
+                let {ship_part_x} = directional_adder(limited, unlimited, i);// activation of the adder that adds a value to the direction that we need to iterate over
+                let {ship_part_y} = directional_adder(limited, unlimited, i);
+                if (new_board[ship_part_x][ship_part_y].around_ship !== false) {
                     continue re_place_ship; // if is not viable, restarts the while loop and finds othe random spot on board
                 }
             }            
             for (let i = 0; i < ship.length; i++) { // actualy placing the ship
-                let {ship_part_x: ship_head_x} = directional_adder(limited, unlimited, i);
-                let {ship_part_y: ship_head_y} = directional_adder(limited, unlimited, i);
+                let {ship_part_x} = directional_adder(limited, unlimited, i);
+                let {ship_part_y} = directional_adder(limited, unlimited, i);
                 const new_ship_part = {
                     ship_index: index_of_ship,
-                    x: ship_head_x,
-                    y: ship_head_y,
+                    x: ship_part_x,
+                    y: ship_part_y,
                     is_hit: false,
                     value: SHIP_PART
                 }
                 ship.ship_parts.push(new_ship_part); // updating the ships array
-                new_board[ship_head_x][ship_head_y] = new_ship_part; // updating the board
+                new_board[ship_part_x][ship_part_y] = new_ship_part; // updating the board
             }            
             new_board = update_board_around_a_ship(new_board, ship, AROUND_SHIP); // updating around the ship to not place other ships there
             needs_placing = false;
