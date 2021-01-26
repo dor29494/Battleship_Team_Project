@@ -16,13 +16,14 @@ const Chat = () => {
     set_chat_array_message,
     player_id,
     other_player_message,
-    game_started
+    game_started,
   } = useContext(BsContext);
 
   // local states:
   const [show_chat, set_show_chat] = useState(false);
   const [input_msg, set_input_msg] = useState("");
   const [msg_alert, set_msg_alert] = useState(false);
+  const [msg_number, set_msg_number] = useState(0);
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
   const chatShower = () => {
@@ -53,7 +54,6 @@ const Chat = () => {
       },
     ]);
     setTimeout(() => {
-
       refToLast.current.focus();
     }, 60);
   };
@@ -71,6 +71,7 @@ const Chat = () => {
     if (other_player_message.length >= 1) {
       if (!show_chat) {
         set_msg_alert(true);
+        set_msg_number(msg_number + 1)
       } else {
         set_msg_alert(false);
       }
@@ -80,6 +81,7 @@ const Chat = () => {
   useEffect(() => {
     if (show_chat) {
       set_msg_alert(false);
+      set_msg_number(0)
       refToLast.current.focus();
     }
   }, [show_chat]);
@@ -95,15 +97,17 @@ const Chat = () => {
             <ChatWrapper>
               {chat_array_message.length > 0
                 ? chat_array_message.map((message, i) => (
-                  <MessageHolder
-                    key={i}
-                    ref={chatWrapperRef}
-                    id={chat_array_message.length}
-                  >
-                    <UserNameHolder message={message} player_id={player_id}>{(message.id === player_id) ? 'You' : 'Oppnent'}: </UserNameHolder>{" "}
-                    {message.msg}
-                  </MessageHolder>
-                ))
+                    <MessageHolder
+                      key={i}
+                      ref={chatWrapperRef}
+                      id={chat_array_message.length}
+                    >
+                      <UserNameHolder message={message} player_id={player_id}>
+                        {message.id === player_id ? "You" : "Oppnent"}:{" "}
+                      </UserNameHolder>{" "}
+                      {message.msg}
+                    </MessageHolder>
+                  ))
                 : ""}
               <h1 id={"end"}></h1>
               <InputWrapper>
@@ -125,19 +129,21 @@ const Chat = () => {
       </Wrapper>
     </>
   ) : (
-      <>
-        <ShowChatButton onClick={chatShower}>
-          {msg_alert && !show_chat ? (
-            <Flash>
-              {" "}
-              <FaCommentDots style={{ color: "#FA3E3E", marginTop: "20%" }} />
-            </Flash>
-          ) : (
-              <FaCommentDots />
-            )}
-        </ShowChatButton>
-      </>
-    );
+    <>
+      <ShowChatButton onClick={chatShower}>
+        
+        {" "}
+        {msg_alert && !show_chat ? (
+          <Flash>
+            <MsgNumberHolder>{msg_number}</MsgNumberHolder>
+            <FaCommentDots style={{ color: "#FA3E3E", minWidth: '100%', flexBasis: '50%',marginBottom: '2.5vw'}} />
+          </Flash>
+        ) : (
+          <FaCommentDots />
+        )}
+      </ShowChatButton>
+    </>
+  );
 };
 
 export default Chat;
@@ -151,21 +157,12 @@ const SendButtonStyleObj = {
 };
 const ShowChatButton = styled(Button)`
   ${position("relative", "0%", false, false, "0%")};
-  ${({ msg_alert, show_chat }) =>
-    msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
-    align-self: flex-end;
+  align-self: flex-end;
   text-align: center;
-  max-height: 2.5rem;
-  max-width: 2.5rem;
+  max-height: 4vw;
+  max-width: 4vw;
   font-size: 1.6rem;
-  //   msg_alert && !show_chat ? flex("flex-end", "stretch") : flex()}
-  // text-align: center;
-  // z-index: 10;
-  // max-height: 3.5vw;
-  // max-width: 3.5vw;
-  // font-size: 2.5vw;
-  // background: rgba(0, 0, 255, 0.3);
-  // border: 0.2vh solid #c0c0c0
+  
 
   box-shadow: ${({ msg_alert, show_chat }) =>
     msg_alert && !show_chat ? "none" : "inset 0 0.2rem 1.5rem #5880CE"};
@@ -179,19 +176,32 @@ const ShowChatButton = styled(Button)`
     background: #696969;
     color: white;
   }
-  @media only screen and (max-width: 600px)
-  {
-width: 7vw;
-height: 7vw;
+  @media only screen and (max-width: 600px) {
+    width: 7vw;
+    height: 7vw;
   }
 `;
+const MsgNumberHolder = styled.span`
+position: relative;
+order: 1;
+border: 2px solid red;
+border-radius: 50%;
+right: -70%;
+top: 90%;
+min-width: 1vw;
+flex-basis: 50%;
+min-height: 1vw;
+font-size: 1.5vw;
+z-index: 1;
+color: white;
+`
 
 const Wrapper = styled.div`
-position: relative;
-top: -20vw;
-left: 6vw;
-z-index: 100;
-${flex("flex-end")};
+  position: relative;
+  top: -20vw;
+  left: 6vw;
+  z-index: 100;
+  ${flex("flex-end")};
   align-self: flex-end;
   max-width: 33vw;
   flex-wrap: wrap;
@@ -203,12 +213,11 @@ ${flex("flex-end")};
   background: #000000;
   opacity: 80%;
   margin-top: 2rem;
-  @media only screen and (max-width: 600px)
-    {
-      top: -32vw;
-      left: 8vw;
-      height: 20vw;
-    }
+  @media only screen and (max-width: 600px) {
+    top: -32vw;
+    left: 8vw;
+    height: 20vw;
+  }
 `;
 
 const ChatWrapper = styled.div`
@@ -238,8 +247,7 @@ const ChatWrapper = styled.div`
     background: green;
   }
   padding: 0vw;
-  @media only screen and (max-width: 600px)
-  {
+  @media only screen and (max-width: 600px) {
     max-height: 19vw;
   }
 `;
@@ -270,8 +278,7 @@ const InputHolder = styled.input`
   &:focus {
     // border: white 1px solid;
   }
-  @media only screen and (max-width: 600px)
-  {
+  @media only screen and (max-width: 600px) {
     height: 3vw;
   }
 `;
@@ -292,46 +299,45 @@ const MessageHolder = styled.div`
   // word-wrap    : break-word;
   // overflow-wrap: break-word;
   // background: yellow;
-  @media only screen and (max-width: 600px)
-  {
+  @media only screen and (max-width: 600px) {
     font-size: 2.2vw;
     // margin-top: 0.005vw;
     margin-bottom: 0.05vw;
   }
-
-
 `;
 
 const UserNameHolder = styled.div`
-  color: ${({ message, player_id }) => message.id === player_id ? '#0175f7' : '#ff1515'}  ;
+  color: ${({ message, player_id }) =>
+    message.id === player_id ? "#0175f7" : "#ff1515"};
   font-family: sans-serif;
   font-size: 1.7vw;
   // text-decoration: underline;
   margin-right: 0.4rem;
-  @media only screen and (max-width: 600px)
-  {
+  @media only screen and (max-width: 600px) {
     font-size: 2.2vw;
   }
 `;
 const Flash = styled.h1`
+  position: relative;
   animation: 2s ${flashAnimation};
   animation-iteration-count: infinite;
   font-size: 2.5vw;
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: wrap;
 `;
 
 const FaPaperPlaneBox = styled(FaPaperPlane)`
-width: 1.5vw;
-height: 1.5vw;
-position: relative;
-top: 1vw;
-right: -1.5vw;
-transform: rotate(7deg);
-cursor: pointer;
+  width: 1.5vw;
+  height: 1.5vw;
+  position: relative;
+  top: 1vw;
+  right: -1.5vw;
+  transform: rotate(7deg);
+  cursor: pointer;
 
-@media only screen and (max-width: 600px)
-{
-right: -1vw;
-top: 1.4vw;
-}
-
-`
+  @media only screen and (max-width: 600px) {
+    right: -1vw;
+    top: 1.4vw;
+  }
+`;
