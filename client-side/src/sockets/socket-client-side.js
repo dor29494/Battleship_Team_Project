@@ -4,30 +4,30 @@ const Sockets = () => {
 
     const {
         socket,
-        player_room,
-        set_both_players_connected,
-        player_board,
-        set_other_player_board,
-        player_ships,
-        set_other_player_ships,
-        first_turn,
-        set_first_turn,
-        player_is_ready,
-        player_guess,
-        set_other_player_guess,
-        player_message,
-        set_other_player_message,
-        chat_array_message,
-        set_chat_array_message,
+        playerRoom,
+        setBothPlayersConnected,
+        playerBoard,
+        setOtherPlayerBoard,
+        playerShips,
+        setOtherPlayerShips,
+        firstTurn,
+        setFirstTurn,
+        playerIsReady,
+        playerGuess,
+        setOtherPlayerGuess,
+        playerMessage,
+        setOtherPlayerMessage,
+        chatMessage,
+        setChatMessage,
         winning,
-        set_winning,
-        set_show_dc_modal,
-        set_other_player_ready,
-        set_users_counter,
-        play_again,
-        set_play_again,
-        set_leave,
-        set_play_again_msg
+        setWinning,
+        setShowDcModal,
+        setOtherPlayerReady,
+        setUsersCounter,
+        playAgain,
+        setPlayAgain,
+        setLeave,
+        setPlayAgainMsg
     } = useContext(BsContext);
 
     const randomize = (min, max) => Math.round(min + Math.random() * (max - min));
@@ -39,19 +39,19 @@ const Sockets = () => {
 
     // joining a room (clicking "start" button)
     useEffect(() => {
-        socket.emit("data", { room: player_room, action: play });
-        // localStorage.setItem('battleship_room', player_room);
-    }, [player_room]);
+        socket.emit("data", { room: playerRoom, action: play });
+        // localStorage.setItem('battleship_room', playerRoom);
+    }, [playerRoom]);
 
     // ready to play (clicking "ready" button)
     useEffect(() => {
-        if (first_turn !== null) {
+        if (firstTurn !== null) {
             socket.emit("data", {
-                room: player_room,
+                room: playerRoom,
                 action: ready,
-                board: player_board,
-                ships: player_ships,
-                turn: !first_turn,
+                board: playerBoard,
+                ships: playerShips,
+                turn: !firstTurn,
                 to_player: "1",
             });
             console.log("this is player 2");
@@ -61,35 +61,34 @@ const Sockets = () => {
             const turn_generator = randomize(0, 1);
             turn_generator === 0 ? local_turn = true : local_turn = false;
             socket.emit("data", {
-                room: player_room,
+                room: playerRoom,
                 action: ready,
-                board: player_board,
-                ships: player_ships,
+                board: playerBoard,
+                ships: playerShips,
                 turn: !local_turn,
                 to_player: "2",
             });
-            if (player_room) { set_first_turn(local_turn) }
+            if (playerRoom) { setFirstTurn(local_turn) }
             console.log("this is player 1");
             console.log("player 1 turn is " + local_turn);
             console.log("player 1 emiting...");
         }
-    }, [player_is_ready]);
+    }, [playerIsReady]);
 
     // guessing (clicking on the opponents board)
     useEffect(() => {
-        socket.emit("data", { room: player_room, guess: player_guess });
+        socket.emit("data", { room: playerRoom, guess: playerGuess });
         // console.log("emited guess");
-    }, [player_guess]);
+    }, [playerGuess]);
 
     // send a message (using the chat)
     useEffect(() => {
-        // console.log('Inside UseEffect of player_message:', chat_array_message[chat_array_message.length - 1])
-        socket.emit("data", { room: player_room, action: chat_message, message: chat_array_message[chat_array_message.length - 1] });
-    }, [player_message])
+        socket.emit("data", { room: playerRoom, action: chat_message, message: chatMessage[chatMessage.length - 1] });
+    }, [playerMessage])
 
     // winning
     useEffect(() => {
-        if (winning === true) { socket.emit("data", { room: player_room, is_winning: true }) }
+        if (winning === true) { socket.emit("data", { room: playerRoom, is_winning: true }) }
     }, [winning]);
 
     // ---------------------------------------listening---------------------------------------
@@ -98,47 +97,36 @@ const Sockets = () => {
         socket.on("data", (data = {}) => {
             console.log(data)
             const { other_player_connected, turn, board, ships, ready_to_start, to_player, guess, message, is_winning, leave, users_count, wanna_play_again } = data;
-            if (users_count) set_users_counter(users_count);
-            if (wanna_play_again) set_play_again_msg(true);
+            if (users_count) setUsersCounter(users_count);
+            if (wanna_play_again) setPlayAgainMsg(true);
             if (other_player_connected) {
-                set_both_players_connected(true);
+                setBothPlayersConnected(true);
             } else if (to_player === "2") {
-                set_other_player_board(board);
-                set_other_player_ships(ships);
-                set_first_turn(turn);
+                setOtherPlayerBoard(board);
+                setOtherPlayerShips(ships);
+                setFirstTurn(turn);
                 // console.log("player's 1 data recived by player 2");
                 console.log("does player2 starts?: " + turn);
                 console.log("TOPLAYER2: ", data)
             } else if (to_player === "1") {
-                set_other_player_ready(true);
-                set_other_player_board(board);
-                set_other_player_ships(ships);
-                set_first_turn(turn);
+                setOtherPlayerReady(true);
+                setOtherPlayerBoard(board);
+                setOtherPlayerShips(ships);
+                setFirstTurn(turn);
                 console.log("player's 2 data recived by player 1");
                 console.log("does player1 starts?: " + turn);
                 //~~~~~~~~~~~~~~~
             }
-            // else if (ready_to_start) {
-            //     if (player_is_ready && other_player_ready) {
-            //         set_both_players_ready(true);
-            //         console.log("======================================");
-            //         console.log("READY TO START: ", ready_to_start);
-            //         console.log("DATA: ", data)
-            //         // alert("READY!")
-            //     }
-            //     // set_game_status("Lets Go!!!");
-            //     // ############
-            // }
             else if (guess) {
                 // console.log("Player has recived the opponents guess", guess);
-                set_other_player_guess(guess);
+                setOtherPlayerGuess(guess);
             } else if (message) {
                 console.log('I got message!')
-                set_other_player_message((prev)=> [
+                setOtherPlayerMessage((prev)=> [
                     ...prev,
                     message.msg
                 ]);
-                set_chat_array_message((prev) => [
+                setChatMessage((prev) => [
                     ...prev,
                     {
                         id: message.id,
@@ -147,21 +135,21 @@ const Sockets = () => {
                 ]);
             } else if (is_winning) {
                 // console.log("The other player won!");
-                set_winning(!is_winning);
+                setWinning(!is_winning);
             } else if (leave) {
-                set_leave(true);
-                set_show_dc_modal(true);
+                setLeave(true);
+                setShowDcModal(true);
             }
         }
         );
     }, [])
     //--------------- Play again ------------------------
     useEffect(() => {
-        if (play_again) {
-            socket.emit("data", { play_again_emit: true, room: player_room });
-            set_play_again(false);
+        if (playAgain) {
+            socket.emit("data", { play_again_emit: true, room: playerRoom });
+            setPlayAgain(false);
         }
-    }, [play_again])
+    }, [playAgain])
     return (
         <div></div>
     )

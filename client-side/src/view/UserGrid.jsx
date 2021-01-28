@@ -9,16 +9,16 @@ import ProgressBar from '@ramonak/react-progress-bar';
 
 const UserGrid = () => {
   const {
-    player_board,
-    set_player_board,
-    player_ships,
-    player_is_ready,
-    user_precents,
-    set_user_precents,
-    other_player_guess,
-    both_players_connected,
-    lock_other_player_board,
-    both_players_ready
+    playerBoard,
+    setPlayerBoard,
+    playerShips,
+    playerIsReady,
+    userPrecents,
+    setUserPrecents,
+    otherPlayerGuess,
+    bothPlayersConnected,
+    lockOtherPlayerBoard,
+    bothPlayersReady
   } = useContext(BsContext)
 
   // *** for reordering ships functionality (Not implemented yet)
@@ -27,7 +27,7 @@ const UserGrid = () => {
   // *** lock the user's ship when ready after reordering (Not implemented yet)
   useEffect(() => {
     set_lock_ship_position(true)
-  }, [player_is_ready])
+  }, [playerIsReady])
 
   // *** we are reusing this pure function in OpponentGrid - worth moving to Logic.
   // return the player's guess result (hit, miss...)
@@ -41,37 +41,37 @@ const UserGrid = () => {
 
   // updating the player's board according to the other player's guess
   useEffect(() => {
-    if (other_player_guess) {
-      const { result, x, y } = other_player_guess;
+    if (otherPlayerGuess) {
+      const { result, x, y } = otherPlayerGuess;
       let updated;
       if (result === MISS) {
-        updated = update_board_miss(player_board, x, y);
-        set_player_board(updated)
+        updated = update_board_miss(playerBoard, x, y);
+        setPlayerBoard(updated)
       } else if (result === HIT) {
-        set_user_precents(user_precents + 1);
-        updated = update_board_hit(x, y, player_board[x][y].ship_index, player_board, player_ships)
+        setUserPrecents(userPrecents + 1);
+        updated = update_board_hit(x, y, playerBoard[x][y].ship_index, playerBoard, playerShips)
         // *** need checking out
-        set_player_board(updated.board);
-        // set_player_ships(updated.ships);
+        setplayerBoard(updated.board);
+        // setPlayerShips(updated.ships);
       }
     }
-  }, [other_player_guess])
+  }, [otherPlayerGuess])
 
   return (
-    <UserGridWrapper both_players_connected={both_players_connected} myturn={lock_other_player_board} both_players_ready={both_players_ready}>
+    <UserGridWrapper bothPlayersConnected={bothPlayersConnected} myturn={lockOtherPlayerBoard} bothPlayersReady={bothPlayersReady}>
       <GridHeaders>Your Grid</GridHeaders>
       <LittleWrapper>
-        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={user_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
+        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={userPrecents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
       <PlayerGrid>
-        {player_board.map((xArr, Xindex, board) =>
+        {playerBoard.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) =>
             <UserPixel
               lock={lock_ship_position} // *** for the ship reordering function (Not implemented yet)
               key={`g${Yindex}`}
-              status={pixelStatus(Xindex, Yindex, board, player_ships)}
+              status={pixelStatus(Xindex, Yindex, board, playerShips)}
             ></UserPixel>))}
       </PlayerGrid>
     </UserGridWrapper>
@@ -81,7 +81,7 @@ const UserGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
 display: ${props => props.myturn ? 'grid' : 'none' };
-${({both_players_connected, both_players_ready }) => both_players_connected && !both_players_ready ? `position: absolute; top: 50vw` : ' ' } 
+${({bothPlayersConnected, bothPlayersReady }) => bothPlayersConnected && !bothPlayersReady ? `position: absolute; top: 50vw` : ' ' } 
 
   }
 

@@ -10,22 +10,22 @@ import ProgressBar from '@ramonak/react-progress-bar';
 
 const OpponentGrid = () => {
   const {
-    other_player_board,
-    set_other_player_board,
-    other_player_ships,
+    otherPlayerBoard,
+    setOtherPlayerBoard,
+    otherPlayerShips,
     first_turn,
-    both_players_ready,
-    set_note_status,
+    bothPlayersReady,
+    setNoteStatus,
     opponent_precents,
     set_opponent_precents,
-    set_player_guess,
-    other_player_guess,
-    lock_other_player_board,
-    set_lock_other_player_board,
-    set_winning,
-    set_mouseX,
+    setPlayerGuess,
+    otherPlayerGuess,
+    lockOtherPlayerBoard,
+    setLockOtherPlayerBoard,
+    setWinning,
+    setMouseX,
     set_mouseY,
-    game_started
+    gameStarted
   } = useContext(BsContext);
 
   const [lockArray, set_lockArray] = useState([]);
@@ -33,22 +33,22 @@ const OpponentGrid = () => {
   // unlock the board of the first player.
   useEffect(() => {
     if (first_turn) {
-      set_lock_other_player_board(false);
+      setLockOtherPlayerBoard(false);
     }
     else {
-      set_lock_other_player_board(true);
+      setLockOtherPlayerBoard(true);
     }
-  }, [both_players_ready]);
+  }, [bothPlayersReady]);
 
   // unlock the players board if the other player missed.
   useEffect(() => {
-    if (other_player_guess) {
-      const { result } = other_player_guess;
+    if (otherPlayerGuess) {
+      const { result } = otherPlayerGuess;
       if (result === MISS) {
-        set_lock_other_player_board(false);
+        setLockOtherPlayerBoard(false);
       }
     }
-  }, [other_player_guess]);
+  }, [otherPlayerGuess]);
 
   // *** we are reusing this pure function in UserGrid - worth moving to Logic.
   // return the player's guess result (hit, miss...)
@@ -64,44 +64,43 @@ const OpponentGrid = () => {
   // in the same time updating the player's opponent board and lock it
   // afterwards lock the used pixel
   const onClick = (x, y, lock) => {
-    set_mouseX(event.screenX);
+    setMouseX(event.screenX);
     set_mouseY(event.screenY);
     let updated;
     if (lock) {
-      set_note_status("Its not your turn!");
+      setNoteStatus("Its not your turn!");
     } else {
       if (!locked_pixels_arr(x, y)) {
-        const result = inspect_hit(other_player_board, x, y);
-        set_player_guess({ x, y, result });
+        const result = inspect_hit(otherPlayerBoard, x, y);
+        setPlayerGuess({ x, y, result });
         if (result === MISS) {
-          updated = update_board_miss(other_player_board, x, y);
-          set_other_player_board(updated)
-          set_lock_other_player_board(true);
+          updated = update_board_miss(otherPlayerBoard, x, y);
+          setOtherPlayerBoard(updated)
+          setLockOtherPlayerBoard(true);
           setTimeout(() => {
-            set_note_status('MISS');
+            setNoteStatus('MISS');
           }, 100);
         } else if (result === HIT) {
-          // console.log(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
-          updated = update_board_hit(x, y, other_player_board[x][y].ship_index, other_player_board, other_player_ships)
+          // console.log(x, y, otherPlayerBoard[x][y].ship_index, otherPlayerBoard, otherPlayerShips)
+          updated = update_board_hit(x, y, otherPlayerBoard[x][y].ship_index, otherPlayerBoard, otherPlayerShips)
           // console.log(updated)
           if (updated.sunk) {
-            set_note_status('SINK!')
+            setNoteStatus('SINK!')
             // NOT WORKING!!
           }
           else {
-            set_note_status('HIT!');
+            setNoteStatus('HIT!');
             set_opponent_precents((opponent_precents + 1));
           }
           if (updated.is_win) {
-            set_winning(true);
-            set_lock_other_player_board(true);
+            setWinning(true);
+            setLockOtherPlayerBoard(true);
           };
-          //  set_other_player_board(updated.board);
-          //  set_other_player_ships(updated.ships);
+          //  setOtherPlayerBoard(updated.board);
         }
         lock_Pixel(x, y);
       } else {
-        set_note_status('Already clicked!')
+        setNoteStatus('Already clicked!')
       }
     }
     event.stopPropagation();
@@ -122,20 +121,20 @@ const OpponentGrid = () => {
   };
 
   return (
-    <OpponentGridWrapper myturn={!lock_other_player_board} game_started={game_started}>
+    <OpponentGridWrapper myturn={!lockOtherPlayerBoard} gameStarted={gameStarted}>
       <GridHeaders>Opponents Grid</GridHeaders>
       <LittleWrapper>
         <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponent_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
-      <OtherPlayerGrid lock_other_player_board={lock_other_player_board}>
-        {other_player_board.map((xArr, Xindex, board) =>
+      <OtherPlayerGrid lockOtherPlayerBoard={lockOtherPlayerBoard}>
+        {otherPlayerBoard.map((xArr, Xindex, board) =>
           xArr.map((yArr, Yindex) => (
             <OpponentPixel
-              lock={lock_other_player_board}
+              lock={lockOtherPlayerBoard}
               key={`g${Yindex}`}
-              status={pixelStatus(Xindex, Yindex, board, other_player_ships)}
+              status={pixelStatus(Xindex, Yindex, board, otherPlayerShips)}
               x={Xindex}
               y={Yindex}
               clickhandler={onClick}>
@@ -157,5 +156,5 @@ const OpponentGridWrapper = styled(GridWrapper)`
     display: ${props => props.myturn ? 'grid' : 'none'}
     
   }
-  display: ${props => props.game_started ? 'grid' : 'none' };
+  display: ${props => props.gameStarted ? 'grid' : 'none' };
   `

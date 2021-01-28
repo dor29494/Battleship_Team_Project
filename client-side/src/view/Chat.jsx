@@ -10,13 +10,12 @@ const flashAnimation = keyframes`${flash}`; //
 
 const Chat = () => {
   const {
-    player_message,
-    set_player_message,
-    chat_array_message,
-    set_chat_array_message,
-    player_id,
-    other_player_message,
-    game_started,
+    playerMessage,
+    setPlayerMessage,
+    chatMessage,
+    setChatMessage,
+    playerID,
+    otherPlayerMessage,
   } = useContext(BsContext);
 
   // local states:
@@ -45,11 +44,11 @@ const Chat = () => {
   const submitMessage = (e) => {
     e.preventDefault();
     // console.log("message Submiting");
-    set_player_message([...player_message, input_msg]);
-    set_chat_array_message([
-      ...chat_array_message,
+    setPlayerMessage([...playerMessage, input_msg]);
+    setChatMessage([
+      ...chatMessage,
       {
-        id: player_id,
+        id: playerID,
         msg: input_msg,
       },
     ]);
@@ -60,15 +59,15 @@ const Chat = () => {
 
   // keep the chat scrolling down all the time
   useEffect(() => {
-    if (chat_array_message.length >= 1) {
+    if (chatMessage.length >= 1) {
       window.location = "#end";
     }
-    // console.log("inside of UseEffect with chat_array_message");
-  }, [chat_array_message]);
+    // console.log("inside of UseEffect with chatMessage");
+  }, [chatMessage]);
 
   useEffect(() => {
-    console.log("other_player_message useeffect");
-    if (other_player_message.length >= 1) {
+    console.log("otherPlayerMessage useeffect");
+    if (otherPlayerMessage.length >= 1) {
       if (!show_chat) {
         set_msg_alert(true);
         set_msg_number(msg_number + 1)
@@ -76,7 +75,7 @@ const Chat = () => {
         set_msg_alert(false);
       }
     }
-  }, [other_player_message]);
+  }, [otherPlayerMessage]);
 
   useEffect(() => {
     if (show_chat) {
@@ -89,21 +88,21 @@ const Chat = () => {
   return show_chat ? (
     <>
       <ShowChatButton msg_alert={msg_alert} onClick={chatShower}>
-        <FaCommentDots />
+        <FaCommentDots style={{height: '2vw', width: '3vw'}} />
       </ShowChatButton>
       <Wrapper>
         <form style={{ width: "100%" }} onSubmit={submitMessage}>
           <label>
             <ChatWrapper>
-              {chat_array_message.length > 0
-                ? chat_array_message.map((message, i) => (
+              {chatMessage.length > 0
+                ? chatMessage.map((message, i) => (
                     <MessageHolder
                       key={i}
                       ref={chatWrapperRef}
-                      id={chat_array_message.length}
+                      id={chatMessage.length}
                     >
-                      <UserNameHolder message={message} player_id={player_id}>
-                        {message.id === player_id ? "You" : "Oppnent"}:{" "}
+                      <UserNameHolder message={message} playerID={playerID}>
+                        {message.id === playerID ? "You" : "Oppnent"}:{" "}
                       </UserNameHolder>{" "}
                       {message.msg}
                     </MessageHolder>
@@ -136,11 +135,11 @@ const Chat = () => {
         {msg_alert && !show_chat ? (
           <Flash>
             <MsgNumberHolder>{msg_number}</MsgNumberHolder>
-            <FaCommentDots style={{ color: "#FA3E3E", minWidth: '100%', flexBasis: '50%',marginBottom: '2.5vw'}} />
+            <FaCommentDots style={{ color: "#FA3E3E",height: '2vw', width: '3vw',marginBottom: '2.2vw'}} />
           </Flash>
         ) : (
-          <FaCommentDots />
-        )}
+          <FaCommentDots style={{height: '2vw', width: '3vw'}} />
+          )}
       </ShowChatButton>
     </>
   );
@@ -159,8 +158,8 @@ const ShowChatButton = styled(Button)`
   ${position("relative", "0%", false, false, "0%")};
   align-self: flex-end;
   text-align: center;
-  max-height: 4vw;
-  max-width: 4vw;
+  max-height: 3vw;
+  max-width: 3vw;
   font-size: 1.6rem;
   
 
@@ -187,10 +186,9 @@ order: 1;
 border: 2px solid red;
 border-radius: 50%;
 right: -70%;
-top: 90%;
-min-width: 1vw;
+width: 2vw;
 flex-basis: 50%;
-min-height: 1vw;
+height: 2vw;
 font-size: 1.5vw;
 z-index: 1;
 color: white;
@@ -307,8 +305,8 @@ const MessageHolder = styled.div`
 `;
 
 const UserNameHolder = styled.div`
-  color: ${({ message, player_id }) =>
-    message.id === player_id ? "#0175f7" : "#ff1515"};
+  color: ${({ message, playerID }) =>
+    message.id === playerID ? "#0175f7" : "#ff1515"};
   font-family: sans-serif;
   font-size: 1.7vw;
   // text-decoration: underline;

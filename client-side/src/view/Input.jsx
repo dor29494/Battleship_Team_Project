@@ -30,45 +30,45 @@ import {
 
 const flashAnimation = keyframes`${flash}`;
 const startGame = (props) => {
-  const { set_connected, set_player_room, set_show_ready_box, set_show_start_button } = useContext(BsContext);
+  const { setConnected, setPlayerRoom, setShowReadyBox, setShowStartButton } = useContext(BsContext);
   let game_id = props.match.params.id;
-  set_show_ready_box(true);
-  set_connected(true);
-  set_player_room(game_id);
-  set_show_start_button(false);
+  setShowReadyBox(true);
+  setConnected(true);
+  setPlayerRoom(game_id);
+  setShowStartButton(false);
 
   return <h1></h1>
 }
 const Input = () => {
 
   const {
-    player_room,
-    show_start_button,
-    both_players_connected,
-    other_player_ships,
-    player_is_ready,
-    set_player_is_ready,
-    both_players_ready,
-    lock_other_player_board,
-    random_board,
-    set_random_board,
-    game_status,
-    set_game_status,
+    playerRoom,
+    showStartButton,
+    bothPlayersConnected,
+    otherPlayerShips,
+    playerIsReady,
+    setPlayerIsReady,
+    bothPlayersReady,
+    lockOtherPlayerBoard,
+    randomBoard,
+    setRandomBoard,
+    gameStatus,
+    setGameStatus,
     winning,
-    note_status,
-    set_note_status,
-    game_over_msg,
-    show_ready_box,
-    set_show_ready_box,
-    set_both_players_ready,
-    set_game_started,
-    game_started,
-    set_play_again,
+    noteStatus,
+    setNoteStatus,
+    gameOverMsg,
+    showReadyBox,
+    setShowReadyBox,
+    setBothPlayersReady,
+    setGameStarted,
+    gameStarted,
+    setPlayAgain,
     leave,
-    play_again_msg,
-    set_mouseX,
-    set_mouseY,
-    set_game_over_msg
+    playAgainMsg,
+    setMouseX,
+    setMouseY,
+    setGameOverMsg
   } = useContext(BsContext);
   // local states:
   const [copied_msg, set_copied_msg] = useState('');
@@ -86,19 +86,19 @@ const Input = () => {
   // copy the room ID so the player wont need to do in manually
   const copy_id = () => {
     event.preventDefault();
-    set_mouseX(event.screenX);
-    set_mouseY(event.screenY);
+    setMouseX(event.screenX);
+    setMouseY(event.screenY);
     navigator.clipboard.writeText(window.location.origin + "/" + room_id).then(function () {
-      set_note_status("Id copied to clipboard!");
+      setNoteStatus("Id copied to clipboard!");
     });
   }
 
   // nullify the note after every use
   useEffect(() => {
     setTimeout(() => {
-      set_note_status('');
+      setNoteStatus('');
     }, 2000);
-  }, [note_status]);
+  }, [noteStatus]);
 
 
   // nullify the copied message after every use
@@ -116,57 +116,57 @@ const Input = () => {
 
   // ready to play
   const ready_button = () => {
-    set_player_is_ready(true);
-    set_show_ready_box(false);
+    setPlayerIsReady(true);
+    setShowReadyBox(false);
   };
 
   // set the board randomly
   const RandomBoard = () => {
-    set_random_board(!random_board)
+    setRandomBoard(!randomBoard)
   }
 
   // set the game status message
   useEffect(() => {
     // if (play_again) return false;
-    if (other_player_ships && !player_is_ready) {
-      set_game_status('Your opponent is ready!');
+    if (otherPlayerShips && !playerIsReady) {
+      setGameStatus('Your opponent is ready!');
       set_waiting(false);
       return false;
     }
-    if (show_start_button) { set_game_status("Please copy the room ID and send it to your friend, Then press start.") }
-    if (player_is_ready && !other_player_ships) {
-      set_game_status("Waiting for your opponent to be ready...");
-      set_show_ready_box(false);
+    if (showStartButton) { setGameStatus("Please copy the room ID and send it to your friend, Then press start.") }
+    if (playerIsReady && !otherPlayerShips) {
+      setGameStatus("Waiting for your opponent to be ready...");
+      setShowReadyBox(false);
       set_waiting(true);
       return false;
     }
-    if (show_ready_box && !both_players_connected) {
-      set_game_status("You are connected! Waiting for another player to connect...");
+    if (showReadyBox && !bothPlayersConnected) {
+      setGameStatus("You are connected! Waiting for another player to connect...");
       set_waiting(true);
     }
-    if (player_is_ready && other_player_ships) {
+    if (playerIsReady && otherPlayerShips) {
       set_waiting(false);
-      set_game_status("You are good to go! Good luck!");
-      set_show_ready_box(false);
+      setGameStatus("You are good to go! Good luck!");
+      setShowReadyBox(false);
       setTimeout(() => {
-        set_game_started(true);
-        set_both_players_ready(true);
+        setGameStarted(true);
+        setBothPlayersReady(true);
       }
         , 2000);
       return false;
     }
-    if (!lock_other_player_board && game_started) { set_game_status("Its your turn") }
-    else if (lock_other_player_board && game_started) { set_game_status('') }
-    else if (show_ready_box && both_players_connected) { set_game_status("You are both connected! Please set your board. then press ready.") }
-  }, [show_start_button, show_ready_box, both_players_connected, player_is_ready, other_player_ships, both_players_ready, lock_other_player_board]);
+    if (!lockOtherPlayerBoard && gameStarted) { setGameStatus("Its your turn") }
+    else if (lockOtherPlayerBoard && gameStarted) { setGameStatus('') }
+    else if (showReadyBox && bothPlayersConnected) { setGameStatus("You are both connected! Please set your board. then press ready.") }
+  }, [showStartButton, showReadyBox, bothPlayersConnected, playerIsReady, otherPlayerShips, bothPlayersReady, lockOtherPlayerBoard]);
 
   // set the game over message according to the player status (winning / losing)
   useEffect(() => {
     if (winning === true) {
-      set_game_over_msg('YOU WON!!!');
+      setGameOverMsg('YOU WON!!!');
     }
     else if (winning === false) {
-      set_game_over_msg('you lose')
+      setGameOverMsg('you lose')
     }
   }, [winning]);
 
@@ -178,7 +178,7 @@ const Input = () => {
   // render the suitable buttons and inputs according to the player choices
   const renderDecideder = () => {
 
-    if (show_start_button) {
+    if (showStartButton) {
       return (
         <>
           <UrlHolder><CopyButton onClick={() => copy_id()}> {<MdContentCopy />} </CopyButton>{window.location.origin}/{room_id}</UrlHolder>
@@ -193,7 +193,7 @@ const Input = () => {
         </>
       )
     }
-    else if (show_ready_box && both_players_connected) {
+    else if (showReadyBox && bothPlayersConnected) {
       return (
         <>
           <Button onClick={() => ready_button()}><Flash>Ready</Flash></Button>
@@ -204,22 +204,22 @@ const Input = () => {
   }
   const PlayAgain = () => {
     if (!leave) {
-      set_play_again(true);
+      setPlayAgain(true);
       location.reload();
     }
   }
   return (
     <>
       <FadeoutStatus />
-      <InputWrapper connected={player_room} both_players_connected={both_players_connected} game_over_msg={game_over_msg} game_started={game_started}>
-        {!game_over_msg ?
-          <MiniWrapper both_players_connected={both_players_connected}>
-            <StaticStatus>{game_status}
+      <InputWrapper connected={playerRoom} bothPlayersConnected={bothPlayersConnected} gameOverMsg={gameOverMsg} gameStarted={gameStarted}>
+        {!gameOverMsg ?
+          <MiniWrapper bothPlayersConnected={bothPlayersConnected}>
+            <StaticStatus>{gameStatus}
               {waiting ? <Loader type="Grid" color="white" height={'5vw'} width={'5vw'} style={{ margin: "1vw" }} /> : ' '}
             </StaticStatus>
             {renderDecideder()}
           </MiniWrapper>
-          : <GameOver>{game_over_msg}<Button onClick={() => location.href = window.location.origin}>New Game!</Button><PlayAgainButton error={leave} onClick={() => PlayAgain()}>{play_again_msg ? <Flash>Play Again!</Flash> : 'Play Again!'}</PlayAgainButton></GameOver>}
+          : <GameOver>{gameOverMsg}<Button onClick={() => location.href = window.location.origin}>New Game!</Button><PlayAgainButton error={leave} onClick={() => PlayAgain()}>{playAgainMsg ? <Flash>Play Again!</Flash> : 'Play Again!'}</PlayAgainButton></GameOver>}
       </InputWrapper>
       <Switch>
         <Route path='/:id' component={startGame} />
@@ -230,7 +230,7 @@ const Input = () => {
 export default Input;
 
 const InputWrapper = styled.div`
-  ${({ game_started, game_over_msg, connected }) => game_started && !game_over_msg ? 'display: none' : connected ? flex('center', false) : flex()};
+  ${({ gameStarted, gameOverMsg, connected }) => gameStarted && !gameOverMsg ? 'display: none' : connected ? flex('center', false) : flex()};
   position: absolute;
   top: 12vw;
   right: 3vw;
@@ -247,7 +247,7 @@ const InputWrapper = styled.div`
     height: 90%;
     margin-top: 6vw;
     left: 0;
-    ${({both_players_connected }) => both_players_connected ? `width: 80vw; top: 7vw; margin-left: -19vw;` : ' ' };
+    ${({bothPlayersConnected }) => bothPlayersConnected ? `width: 80vw; top: 7vw; margin-left: -19vw;` : ' ' };
   }
 `;
 
@@ -276,7 +276,7 @@ const MiniWrapper = styled.form`
   {
 width: 50vw;
 height: 50vw;
-${({both_players_connected }) => both_players_connected ? `position: absolute; left: 8vw; top: 8vw;` : ' ' };
+${({bothPlayersConnected }) => bothPlayersConnected ? `position: absolute; left: 8vw; top: 8vw;` : ' ' };
   }
 `;
 

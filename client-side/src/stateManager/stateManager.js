@@ -22,123 +22,120 @@ const { Provider } = BsContext;
 
 const StateManager = ({ children }) => {
 
-  const [player_room, set_player_room] = useState(nanoid(4));
-  const [both_players_connected, set_both_players_connected] = useState(null);
-  const [player_board, set_player_board] = useState([]);
-  const [other_player_board, set_other_player_board] = useState(initial_game_board());
-  const [player_ships, set_player_ships] = useState(null);
-  const [other_player_ships, set_other_player_ships] = useState();
-  const [first_turn, set_first_turn] = useState(null);
-  const [random_board, set_random_board] = useState(false);
-  const [player_is_ready, set_player_is_ready] = useState(false);
-  const [both_players_ready, set_both_players_ready] = useState(false);
-  const [note_status, set_note_status] = useState();
-  const [game_status, set_game_status] = useState('Welcome');
-  const [user_precents, set_user_precents] = useState(0);
-  const [opponent_precents, set_opponent_precents] = useState(0);
-  const [player_guess, set_player_guess] = useState(null);
-  const [other_player_guess, set_other_player_guess] = useState(null);
-  const [player_message, set_player_message] = useState([]);
-  const [other_player_message, set_other_player_message] = useState([]);
-  const [chat_array_message, set_chat_array_message] = useState([]);
-  const [player_id, set_player_id] = useState(nanoid(5));
-  const [lock_other_player_board, set_lock_other_player_board] = useState(true);
-  const [winning, set_winning] = useState(null);
-  const [game_over_msg, set_game_over_msg] = useState(null);
-  const [show_dc_modal, set_show_dc_modal] = useState(false);
-  const [other_player_ready, set_other_player_ready] = useState(false);
-  const [show_ready_box, set_show_ready_box] = useState(false);
-  const [connected, set_connected] = useState(false);
-  const [show_start_button, set_show_start_button] = useState(true);
-  const [game_started, set_game_started] = useState(false);
-  const [play_again, set_play_again] = useState(false);
-  const [users_counter, set_users_counter] = useState(1);
-  const [leave, set_leave] = useState(false);
-  const [play_again_msg, set_play_again_msg] = useState(false);
+  const [playerRoom, setPlayerRoom] = useState(nanoid(4));
+  const [bothPlayersConnected, setBothPlayersConnected] = useState(null);
+  const [playerBoard, setPlayerBoard] = useState([]);
+  const [otherPlayerBoard, setOtherPlayerBoard] = useState(initial_game_board());
+  const [playerShips, setPlayerShips] = useState(null);
+  const [otherPlayerShips, setOtherPlayerShips] = useState();
+  const [firstTurn, setFirstTurn] = useState(null);
+  const [randomBoard, setRandomBoard] = useState(false);
+  const [playerIsReady, setPlayerIsReady] = useState(false);
+  const [bothPlayersReady, setBothPlayersReady] = useState(false);
+  const [noteStatus, setNoteStatus] = useState();
+  const [gameStatus, setGameStatus] = useState('Welcome');
+  const [userPrecents, setUserPrecents] = useState(0);
+  const [opponentsPrecents, setOpponentsPrecents] = useState(0);
+  const [playerGuess, setPlayerGuess] = useState(null);
+  const [otherPlayerGuess, setOtherPlayerGuess] = useState(null);
+  const [playerMessage, setPlayerMessage] = useState([]);
+  const [otherPlayerMessage, setOtherPlayerMessage] = useState([]);
+  const [chatMessage, setChatMessage] = useState([]);
+  const [playerID, setPlayerID] = useState(nanoid(5));
+  const [lockOtherPlayerBoard, setLockOtherPlayerBoard] = useState(true);
+  const [winning, setWinning] = useState(null);
+  const [gameOverMsg, setGameOverMsg] = useState(null);
+  const [showDcModal, setshowDcModal] = useState(false);
+  const [otherPlayerReady, setOtherPlayerReady] = useState(false);
+  const [showReadyBox, setShowReadyBox] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [showStartButton, setShowStartButton] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [playAgain, setPlayeAgain] = useState(false);
+  const [usersCounter, setUsersCounter] = useState(1);
+  const [leave, setLeave] = useState(false);
+  const [playAgainMsg, setPlayAgainMsg] = useState(false);
   const [mouseX, set_mouseX] = useState(0);
   const [mouseY, set_mouseY] = useState(0);
   
-  // const [show_ready_box, set_show_ready_box] = useState(false);
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
-    set_player_ships(ships);
-    set_player_board(board);
-  }, [random_board]);
+    setPlayerShips(ships);
+    setPlayerBoard(board);
+  }, [randomBoard]);
 
   const state = {
-    player_room,
-    both_players_connected,
-    player_board,
-    other_player_board,
-    player_ships,
-    other_player_ships,
-    first_turn,
-    random_board,
-    player_is_ready,
-    both_players_ready,
-    note_status,
-    game_status,
-    user_precents,
-    opponent_precents,
-    player_guess,
-    other_player_guess,
-    player_message,
-    other_player_message,
-    chat_array_message,
-    player_id,
-    lock_other_player_board,
+    playerRoom,
+    bothPlayersConnected,
+    playerBoard,
+    otherPlayerBoard,
+    playerShips,
+    otherPlayerShips,
+    firstTurn,
+    randomBoard,
+    playerIsReady,
+    bothPlayersReady,
+    noteStatus,
+    gameStatus,
+    userPrecents,
+    opponentsPrecents,
+    playerGuess,
+    otherPlayerGuess,
+    playerMessage,
+    otherPlayerMessage,
+    chatMessage,
+    playerID,
+    lockOtherPlayerBoard,
     winning,
-    game_over_msg,
-    show_dc_modal,
-    other_player_ready,
-    show_ready_box,
+    gameOverMsg,
+    showDcModal,
+    otherPlayerReady,
+    showReadyBox,
     connected,
-    show_start_button,
-    show_ready_box,
-    game_started,
-    play_again,
-    users_counter,
+    showStartButton,
+    gameStarted,
+    playAgain,
+    usersCounter,
     leave,
-    play_again_msg,
+    playAgainMsg,
     mouseX,
     mouseY,
   };
   
   const action = {
-    set_player_room,
-    set_both_players_connected,
-    set_player_board,
-    set_other_player_board,
-    set_player_ships,
-    set_other_player_ships,
-    set_first_turn,
-    set_random_board,
-    set_player_is_ready,
-    set_both_players_ready,
-    set_note_status,
-    set_game_status,
-    set_user_precents,
-    set_opponent_precents,
-    set_player_guess,
-    set_other_player_guess,
-    set_player_message,
-    set_other_player_message,
-    set_chat_array_message,
-    set_player_id,
-    set_lock_other_player_board,
-    set_winning,
-    set_game_over_msg,
-    set_show_dc_modal,
-    set_other_player_ready,
-    set_show_ready_box,
-    set_connected,
-    set_show_start_button,
-    set_show_ready_box,
-    set_game_started,
-    set_play_again,
-    set_users_counter,
-    set_leave,
-    set_play_again_msg,
+    setPlayerRoom,
+    setBothPlayersConnected,
+    setPlayerBoard,
+    setOtherPlayerBoard,
+    setPlayerShips,
+    setOtherPlayerShips,
+    setFirstTurn,
+    setRandomBoard,
+    setPlayerIsReady,
+    setBothPlayersReady,
+    setNoteStatus,
+    setGameStatus,
+    setUserPrecents,
+    setOpponentsPrecents,
+    setPlayerGuess,
+    setOtherPlayerGuess,
+    setPlayerMessage,
+    setOtherPlayerMessage,
+    setChatMessage,
+    setPlayerID,
+    setLockOtherPlayerBoard,
+    setWinning,
+    setGameOverMsg,
+    setshowDcModal,
+    setOtherPlayerReady,
+    setShowReadyBox,
+    setConnected,
+    setShowStartButton,
+    setGameStarted,
+    setPlayeAgain,
+    setUsersCounter,
+    setLeave,
+    setPlayAgainMsg,
     set_mouseX,
     set_mouseY,
   };
