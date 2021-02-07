@@ -23,6 +23,7 @@ const Chat = () => {
   const [input_msg, set_input_msg] = useState("");
   const [msg_alert, set_msg_alert] = useState(false);
   const [msg_number, set_msg_number] = useState(0);
+  console.log(input_msg)
   const chatWrapperRef = useRef(null); //
   const refToLast = useRef(false);
   const chatShower = () => {
@@ -38,23 +39,30 @@ const Chat = () => {
     if (e.key === "Enter") {
       e.target.value = "";
     }
+   if(e.key === "Shift"){
+      console.log('try')
+    }
   };
 
   // add the new message to the chat
   const submitMessage = (e) => {
     e.preventDefault();
     // console.log("message Submiting");
-    setPlayerMessage([...playerMessage, input_msg]);
-    setChatMessage([
-      ...chatMessage,
-      {
-        id: playerID,
-        msg: input_msg,
-      },
-    ]);
-    setTimeout(() => {
-      refToLast.current.focus();
-    }, 60);
+    if(input_msg){
+      setPlayerMessage([...playerMessage, input_msg]);
+      setChatMessage([
+        ...chatMessage,
+        {
+          id: playerID,
+          msg: input_msg,
+        },
+      ]);
+      set_input_msg('')
+      setTimeout(() => {
+        refToLast.current.focus();
+      }, 60);
+    }
+ 
   };
 
   // keep the chat scrolling down all the time
@@ -178,6 +186,9 @@ const ShowChatButton = styled(Button)`
   @media only screen and (max-width: 600px) {
     width: 7vw;
     height: 7vw;
+    position: relative;
+    top: -4vw;
+    left: -2vw;
   }
 `;
 const MsgNumberHolder = styled.span`
@@ -196,8 +207,8 @@ color: white;
 
 const Wrapper = styled.div`
   position: relative;
-  top: -20vw;
-  left: 6vw;
+  top: -17vw;
+  left: 5.5vw;
   z-index: 100;
   ${flex("flex-end")};
   align-self: flex-end;
@@ -212,9 +223,10 @@ const Wrapper = styled.div`
   opacity: 80%;
   margin-top: 2rem;
   @media only screen and (max-width: 600px) {
-    top: -32vw;
-    left: 8vw;
-    height: 20vw;
+    top: -24vw;
+    left: 2vw;
+    max-width: 17vw;
+    min-height: 14vw;
   }
 `;
 
@@ -277,7 +289,8 @@ const InputHolder = styled.input`
     // border: white 1px solid;
   }
   @media only screen and (max-width: 600px) {
-    height: 3vw;
+    min-width: 10vw;
+    min-height: 2vw;
   }
 `;
 
@@ -286,6 +299,7 @@ const MessageHolder = styled.div`
   max-height: 4vw;
   padding-left: 2vw;
   display: flex;
+  flex-wrap: wrap;
   flex-basis: 20%;
   color: white;
   font-family: sans-serif;
@@ -298,9 +312,9 @@ const MessageHolder = styled.div`
   // overflow-wrap: break-word;
   // background: yellow;
   @media only screen and (max-width: 600px) {
-    font-size: 2.2vw;
+    font-size: 1.5vw;
     // margin-top: 0.005vw;
-    margin-bottom: 0.05vw;
+    margin-bottom: 0.005vw;
   }
 `;
 
@@ -312,7 +326,9 @@ const UserNameHolder = styled.div`
   // text-decoration: underline;
   margin-right: 0.4rem;
   @media only screen and (max-width: 600px) {
-    font-size: 2.2vw;
+    font-size: 1.5vw;
+    margin-right: 0.2vw;
+
   }
 `;
 const Flash = styled.h1`

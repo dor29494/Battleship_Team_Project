@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
-import { flex, cool_shining_green } from "../styles/Mixins";
+import { flex, coolBlue } from "../styles/Mixins";
 
 const GlobalStyles = createGlobalStyle`
   html,
@@ -55,10 +55,10 @@ export const Button = styled.div`
   padding: 0.5vw;
   height: 4.5vw;
   // width: 55%;
-  border: 1px solid #00FF41;
+  border: 1px solid #80ffdb;
   border-radius: 3rem;
-  color: white;
-  background: #003B00;
+  color: black;
+  background: #64dfdf;
   font-size: 2.5vw;
   font-weight: 400;
   margin: 2%;
@@ -72,8 +72,8 @@ export const Button = styled.div`
       background: red;
     }
     &:hover {
-      ${cool_shining_green};
-      background: #1aff1a;
+      ${coolBlue};
+      background: #ccf2f4;
       color: black;
     }
     @media only screen and (max-width: 600px)
@@ -86,39 +86,40 @@ width: 20vw;
 // UserPixel + OpponentPixel components:
 
 export const RegularSquare = styled(StandardPixel)`
-  border: 0.1vw solid #00FF41;
+  border: 0.1vw solid #7fcdff;
 `;
 
 export const OpponentSquare = styled(RegularSquare)`
 
     :hover {
-      background: #00ff41;
+      background: #f70d1a;
       opacity: 0.5;
     }
 `;
 
 export const MissHit = styled(StandardPixel)`
-  border: 0.1vw solid #00FF41;
-  background: #00FF41;
+  border: 0.1vw solid #7fcdff;
+  background: white;
   opacity: 0.3;
 `;
 
 export const AroundSink = styled(StandardPixel)`
-  border: 0.1vw solid #00FF41;
-  background: red;
+  border: 0.1vw solid #7fcdff;
+  background: white;
   opacity: 0.3;
 `;
 
 export const ShipHit = styled(StandardPixel)`
   border: 0.1vw solid lightblue;
   background: rgba(255, 153, 153, 0.5);
-  color: red;
+  color: black;
   font-size: 5vw;
 `;
 
 export const ShipSink = styled(StandardPixel)`
-background: #008F11;
-border: 0.1vw solid #00FF41;
+font-size: 4vw;
+background: #f7630c;
+border: 0.1vw solid black;
   
 `;
 
@@ -134,7 +135,6 @@ export const GridWrapper = styled.div`
   border: none;
   height: 100%;
   width: 100%;
-  // width: 800px;
   color: white;
   display: grid;
   justify-content: center;
@@ -145,9 +145,10 @@ export const GridWrapper = styled.div`
   'numbersBar grid';
   @media only screen and (max-width: 600px) {
     {
-      // padding-bottom: 10vw;
-      padding-top: 5vw;
-      zoom: 125%;
+      margin-top: 0;
+      padding-top: 0;
+      zoom: 70%;
+     
 
     }
 

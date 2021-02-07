@@ -13,18 +13,18 @@ const OpponentGrid = () => {
     otherPlayerBoard,
     setOtherPlayerBoard,
     otherPlayerShips,
-    first_turn,
+    firstTurn,
     bothPlayersReady,
     setNoteStatus,
-    opponent_precents,
-    set_opponent_precents,
+    opponentsPrecents,
+    setOpponentsPrecents,
     setPlayerGuess,
     otherPlayerGuess,
     lockOtherPlayerBoard,
     setLockOtherPlayerBoard,
     setWinning,
     setMouseX,
-    set_mouseY,
+    setMouseY,
     gameStarted
   } = useContext(BsContext);
 
@@ -32,7 +32,7 @@ const OpponentGrid = () => {
 
   // unlock the board of the first player.
   useEffect(() => {
-    if (first_turn) {
+    if (firstTurn) {
       setLockOtherPlayerBoard(false);
     }
     else {
@@ -65,7 +65,7 @@ const OpponentGrid = () => {
   // afterwards lock the used pixel
   const onClick = (x, y, lock) => {
     setMouseX(event.screenX);
-    set_mouseY(event.screenY);
+    setMouseY(event.screenY);
     let updated;
     if (lock) {
       setNoteStatus("Its not your turn!");
@@ -90,7 +90,7 @@ const OpponentGrid = () => {
           }
           else {
             setNoteStatus('HIT!');
-            set_opponent_precents((opponent_precents + 1));
+            setOpponentsPrecents((opponentsPrecents + 1));
           }
           if (updated.is_win) {
             setWinning(true);
@@ -124,7 +124,7 @@ const OpponentGrid = () => {
     <OpponentGridWrapper myturn={!lockOtherPlayerBoard} gameStarted={gameStarted}>
       <GridHeaders>Opponents Grid</GridHeaders>
       <LittleWrapper>
-        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponent_precents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
+        <ProgressBar bgcolor="#00FF41" labelColor="grey" completed={opponentsPrecents * 5 || 0} width={'30vw'} height={'2vw'} labelSize={'2vw'} />
       </LittleWrapper>
       <NumbersBar>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => <BarPixel key={i}>{num}</BarPixel>)}</NumbersBar>
       <LettersBar>{['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map((letter, i) => <BarPixel key={i}>{letter}</BarPixel>)}</LettersBar>
@@ -153,8 +153,12 @@ export default OpponentGrid;
 const OpponentGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
-    display: ${props => props.myturn ? 'grid' : 'none'}
-    
+    margin-top: 0;
+    padding-top: 0;
+    margin-left: 1vw;
+    border:  ${props => props.myturn ? 'none' : '1px solid white' };
+    zoom: ${props => props.myturn ? '65%' : '35%' };
+    order: ${props => props.myturn ? '1' : '0' }
   }
   display: ${props => props.gameStarted ? 'grid' : 'none' };
   `

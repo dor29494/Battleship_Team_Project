@@ -9,10 +9,10 @@ const fadeoutAnimation = keyframes`${fadeOut}`;
 
 const FadeoutStatus = () => {
 
-  const { note_status, mouseX, mouseY, game_over_msg } = useContext(BsContext);
+  const { noteStatus, mouseX, mouseY, game_over_msg } = useContext(BsContext);
   if (game_over_msg) return ('');
   return (
-    <StatusBox mouseX={mouseX + 350} mouseY={mouseY + 100}> <Animated>{note_status}</Animated></StatusBox>
+    <StatusBox mouseX={mouseX + 350} mouseY={mouseY + 100}> <Animated>{noteStatus}</Animated></StatusBox>
   )
 
 }

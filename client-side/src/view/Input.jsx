@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { BsContext } from "../stateManager/stateManager";
 import { MdContentCopy } from 'react-icons/md';
-import { flex, position, cool_shining_green } from "../styles/Mixins";
+import { flex, position } from "../styles/Mixins";
 import { flash, __esModule } from 'react-animations';
 import { Button } from "../styles/GlobalStyles";
 import { nanoid } from "nanoid";
@@ -166,7 +166,7 @@ const Input = () => {
       setGameOverMsg('YOU WON!!!');
     }
     else if (winning === false) {
-      setGameOverMsg('you lose')
+      setGameOverMsg('You lose')
     }
   }, [winning]);
 
@@ -235,7 +235,7 @@ const InputWrapper = styled.div`
   top: 12vw;
   right: 3vw;
   z-index: 100;
-  height: 60vw;
+  height: 70vw;
   width: 125vw;
   justify-content: center;
   background: rgba(0,0,0,0.8);
@@ -254,11 +254,10 @@ const InputWrapper = styled.div`
 const MiniWrapper = styled.form`
   display: flex;
   flex-direction: column;
-  ${cool_shining_green};
   // ${({ connected }) => connected ? `height: 50%; width: 100%;` : `height: 50%; width: 35%;`};
-  border: 3px solid #00ff3c;
-  -webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
-  box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);
+  border: 3px solid #7fcdfe;
+  -webkit-box-shadow: 2px 3px 16px 5px #7fcdff; 
+  box-shadow: 2px 3px 16px 5px #7fcdff;
   border-radius: 2vw;
   -webkit-user-select: none;
   -ms-user-select: none;
@@ -275,7 +274,7 @@ const MiniWrapper = styled.form`
   @media only screen and (max-width: 600px)
   {
 width: 50vw;
-height: 50vw;
+height: 80vw;
 ${({bothPlayersConnected }) => bothPlayersConnected ? `position: absolute; left: 8vw; top: 8vw;` : ' ' };
   }
 `;
@@ -286,7 +285,6 @@ const CopyButton = styled.button`
   ${position('relative', false, false, false, '85%')};
 
     &:hover {
-      ${cool_shining_green};
       background: #1aff1a;
       color: black;
     }

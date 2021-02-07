@@ -45,7 +45,7 @@ const StateManager = ({ children }) => {
   const [lockOtherPlayerBoard, setLockOtherPlayerBoard] = useState(true);
   const [winning, setWinning] = useState(null);
   const [gameOverMsg, setGameOverMsg] = useState(null);
-  const [showDcModal, setshowDcModal] = useState(false);
+  const [showDcModal, setShowDcModal] = useState(false);
   const [otherPlayerReady, setOtherPlayerReady] = useState(false);
   const [showReadyBox, setShowReadyBox] = useState(false);
   const [connected, setConnected] = useState(false);
@@ -55,8 +55,8 @@ const StateManager = ({ children }) => {
   const [usersCounter, setUsersCounter] = useState(1);
   const [leave, setLeave] = useState(false);
   const [playAgainMsg, setPlayAgainMsg] = useState(false);
-  const [mouseX, set_mouseX] = useState(0);
-  const [mouseY, set_mouseY] = useState(0);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
   
   useEffect(() => {
     let { board, ships } = place_ships(initial_game_board(), initial_ships());
@@ -126,7 +126,7 @@ const StateManager = ({ children }) => {
     setLockOtherPlayerBoard,
     setWinning,
     setGameOverMsg,
-    setshowDcModal,
+    setShowDcModal,
     setOtherPlayerReady,
     setShowReadyBox,
     setConnected,
@@ -136,8 +136,8 @@ const StateManager = ({ children }) => {
     setUsersCounter,
     setLeave,
     setPlayAgainMsg,
-    set_mouseX,
-    set_mouseY,
+    setMouseX,
+    setMouseY,
   };
   
   const ws_connection = {

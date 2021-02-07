@@ -13,8 +13,8 @@ export const position = (pos , top, buttom, right, left) => {
             ${left ? `left: ${left}` : ``};`;
 }
 
-export const cool_shining_green = () => {
-    return `-webkit-box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75); 
-            box-shadow: 2px 3px 16px 5px rgba(0,255,65,0.75);`;
+export const coolBlue = () => {
+    return `-webkit-box-shadow: 2px 3px 16px 5px #51c2d5; 
+            box-shadow: 2px 3px 16px 5px #51c2d5;`;
 }
 

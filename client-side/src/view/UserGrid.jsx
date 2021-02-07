@@ -51,7 +51,7 @@ const UserGrid = () => {
         setUserPrecents(userPrecents + 1);
         updated = update_board_hit(x, y, playerBoard[x][y].ship_index, playerBoard, playerShips)
         // *** need checking out
-        setplayerBoard(updated.board);
+        setPlayerBoard(updated.board);
         // setPlayerShips(updated.ships);
       }
     }
@@ -80,8 +80,10 @@ const UserGrid = () => {
 const UserGridWrapper = styled(GridWrapper)`
 @media only screen and (max-width: 600px) {
   {
-display: ${props => props.myturn ? 'grid' : 'none' };
-${({bothPlayersConnected, bothPlayersReady }) => bothPlayersConnected && !bothPlayersReady ? `position: absolute; top: 50vw` : ' ' } 
+  margin: ${props => props.myturn ? '3vw;' : '0' };
+  zoom: ${props => props.myturn ? '65%' : '35%' };
+  border:  ${props => props.myturn ? 'none' : '1px solid white' };
+  ${({bothPlayersConnected, bothPlayersReady }) => bothPlayersConnected && !bothPlayersReady ? `position: absolute; top: 50vw` : ' ' } 
 
   }
 

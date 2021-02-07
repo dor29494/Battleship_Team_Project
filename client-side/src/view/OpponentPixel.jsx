@@ -14,10 +14,10 @@ const OpponentPixel = ({ status, x, y, lock, clickhandler }) => {
     return <MissHit onClick={() => clickhandler(x, y, lock)} >•</MissHit>
   }
   else if (status === HIT) {
-    return <ShipHit onClick={() => clickhandler(x, y, lock)} >X</ShipHit>
+    return <ShipHit onClick={() => clickhandler(x, y, lock)} >💥</ShipHit>
   }
   else if (status === SINK) {
-    return <ShipSink></ShipSink>
+    return <ShipSink>🔥</ShipSink>
   }
   else if (status === AROUND_SINK) {
     return <AroundSink>•</AroundSink>

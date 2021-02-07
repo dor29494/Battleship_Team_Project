@@ -19,7 +19,7 @@ const App = () => {
   return (
     <AppWrapper>
       <BrowserRouter>
-        {winning ? <Confetti width='2000vw' height='1000vw' style={{ zIndex: 1000 }} /> : ' '}
+        {winning ? <Confetti width='4000vw' height='2000vw' style={{ zIndex: 1000 }} /> : ' '}
         <Sockets />
         <TopBar />
         <Input />
@@ -42,12 +42,9 @@ export default App;
 const GameWrapper = styled.div`
 
   display: flex;
-  flex-direction: ${props => props.myturn ? 'column-reverse' : 'column'};
-  // flex-direction: column-reverse;
   padding-top: 10vw;
-  @media only screen and (min-width: 600px) {
-      flex-direction: row;
-      padding-top: 0;
+  @media only screen and (max-width: 600px) {
+      padding-top: 6vw;
 
     }
 

@@ -11,11 +11,11 @@ const UserPixel = ({ status, lock }) => {
     return <MissHit>•</MissHit>
   }
   else if (status === HIT) {
-    return <ShipHit>X</ShipHit>
+    return <ShipHit>💥</ShipHit>
   }
   else if (status === SINK) {
 
-    return <ShipSink></ShipSink>
+    return <ShipSink>🔥</ShipSink>
   }
   else if (status === AROUND_SINK) {
     return <AroundSink>•</AroundSink>
